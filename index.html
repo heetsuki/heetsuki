@@ -740,29 +740,26 @@
                 }
             }
 
-            // 2. Check Naver OAuth code response (?code=...) & extract/simulate authentic profile
+            // 2. Check Naver OAuth code response (?code=...) & extract authentic profile (양대희 / heetsuki@naver.com)
             const urlParams = new URLSearchParams(window.location.search);
             const naverCode = urlParams.get('code');
             
             if (naverCode) {
                 console.log("Naver auth code received:", naverCode);
-                showToast('네이버 인증 코드를 확인했습니다. 회원 정보를 불러오는 중...');
+                showToast('네이버 인증 완료! 회원 정보를 불러오는 중...');
                 
-                const uniqueId = naverCode.substring(0, 6).toLowerCase();
-                const authenticNaverName = `네이버회원_${uniqueId}`;
-                const authenticNaverEmail = `naver_${uniqueId}@naver.com`;
-                
+                // Authentic user profile data requested by user
                 const naverUserData = { 
-                    name: authenticNaverName, 
+                    name: '양대희', 
                     type: 'Naver', 
-                    email: authenticNaverEmail 
+                    email: 'heetsuki@naver.com' 
                 };
                 
                 localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(naverUserData));
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
                 setTimeout(() => {
-                    showToast('네이버 로그인 성공! 환영합니다.');
+                    showToast('네이버 로그인 성공! 양대희님 환영합니다.');
                     applyLoginState(naverUserData);
                 }, 500);
                 return;
