@@ -94,8 +94,10 @@
     <!-- Hero Banner with 45-degree Miter Cut Tank Border & Vallisneria Canvas -->
     <section class="max-w-6xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 pb-8">
         <div id="hero-canvas-wrapper" style="background: linear-gradient(180deg, #D9E8E0 0%, #C3D8CE 100%);" class="relative w-full h-[280px] sm:h-[360px] rounded-[24px] sm:rounded-[30px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.1),inset_0_0_0_3px_rgba(255,255,255,0.9),inset_0_0_0_7px_rgba(200,225,215,0.5),inset_0_0_20px_rgba(0,113,45,0.12)] border border-white/80 bg-[#D9E8E0] select-none cursor-crosshair">
-            <!-- Static Fallback Aquascape Background Layer (Prevents blank/white flash during preview reloads) -->
-            <div id="hero-static-fallback" class="absolute inset-0 pointer-events-none opacity-90 transition-opacity duration-500" style="background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.55) 0%, transparent 60%), linear-gradient(180deg, rgba(215,230,222,0.85) 0%, rgba(185,210,198,0.95) 100%);"></div>
+            <!-- Persistent Static Aquascape Fallback Background Layer (Prevents blank/white flash & rendering breakage during live preview updates) -->
+            <div id="hero-static-fallback" class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.65) 0%, transparent 65%), linear-gradient(180deg, #D9E8E0 0%, #B8D0C2 100%);">
+                <div class="absolute bottom-0 w-full h-16 bg-gradient-to-t from-[#2D3748]/20 to-transparent"></div>
+            </div>
             
             <canvas id="vallisneria-canvas" class="relative z-10 w-full h-full block"></canvas>
 
@@ -128,7 +130,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
             <!-- Item 1: 프리미엄 티셔츠 (의류) -->
-            <div onclick="openProductModal('프리미엄 피츠키 티셔츠', '₩48,000', '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠', ['S', 'M', 'L', 'XL'], [
+            <div onclick="openProductModal('프리미엄 피츠키 티셔츠', '₩100', '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠', ['S', 'M', 'L', 'XL'], [
                 'https://placehold.co/600x600/E8F0EC/00712D?text=HEETSUKI+Tee+Front',
                 'https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI+Tee+Back',
                 'https://placehold.co/600x600/DCE3DF/00712D?text=HEETSUKI+Tee+Detail+1',
@@ -146,7 +148,7 @@
                     <h3 class="text-2xl font-bold text-darkText group-hover:text-accentGreen transition-colors">프리미엄 피츠키 티셔츠</h3>
                     <p class="text-base text-grayText mt-2">최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠</p>
                     <div class="mt-6 flex items-center justify-between">
-                        <span class="text-2xl font-bold text-darkText">₩48,000</span>
+                        <span class="text-2xl font-bold text-darkText">₩100</span>
                         <span class="text-base font-semibold text-accentGreen flex items-center gap-1.5 group-hover:translate-x-1.5 transition-transform">
                             옵션 선택 및 구매 &rarr;
                         </span>
@@ -155,7 +157,7 @@
             </div>
 
             <!-- Item 2: 발리스네리아 수초 -->
-            <div onclick="openProductModal('발리스네리아 수초', '₩12,000', '우아하게 물결치는 아름다운 레이아웃 수초', ['표준 포트 (1포트)', '대형 풍성 포트 (2포트)'], [
+            <div onclick="openProductModal('발리스네리아 수초', '₩100', '우아하게 물결치는 아름다운 레이아웃 수초', ['표준 포트 (1포트)', '대형 풍성 포트 (2포트)'], [
                 'https://placehold.co/600x600/E3E8E5/00712D?text=Vallisneria+1',
                 'https://placehold.co/600x600/DCE3DF/00712D?text=Vallisneria+2',
                 'https://placehold.co/600x600/D5DDD9/00712D?text=Vallisneria+3'
@@ -172,7 +174,7 @@
                     <h3 class="text-2xl font-bold text-darkText group-hover:text-accentGreen transition-colors">발리스네리아 수초</h3>
                     <p class="text-base text-grayText mt-2">우아하게 물결치는 아름다운 레이아웃 수초</p>
                     <div class="mt-6 flex items-center justify-between">
-                        <span class="text-2xl font-bold text-darkText">₩12,000</span>
+                        <span class="text-2xl font-bold text-darkText">₩100</span>
                         <span class="text-base font-semibold text-accentGreen flex items-center gap-1.5 group-hover:translate-x-1.5 transition-transform">
                             옵션 선택 및 구매 &rarr;
                         </span>
@@ -181,7 +183,7 @@
             </div>
 
             <!-- Item 3: 미니 유리 입출수구 -->
-            <div onclick="openProductModal('미니 유리 입출수구', '₩38,000', '고투명 유리로 제작된 프리미엄 입출수구 세트', ['13mm (일반형)', '17mm (대형형)'], [
+            <div onclick="openProductModal('미니 유리 입출수구', '₩100', '고투명 유리로 제작된 프리미엄 입출수구 세트', ['13mm (일반형)', '17mm (대형형)'], [
                 'https://placehold.co/600x600/E3E8E5/00712D?text=Glass+Pipe+1',
                 'https://placehold.co/600x600/DCE3DF/00712D?text=Glass+Pipe+2'
             ])" class="apple-card p-8 sm:p-10 flex flex-col justify-between cursor-pointer group">
@@ -196,7 +198,7 @@
                     <h3 class="text-2xl font-bold text-darkText group-hover:text-accentGreen transition-colors">미니 유리 입출수구</h3>
                     <p class="text-base text-grayText mt-2">고투명 유리로 제작된 프리미엄 입출수구 세트</p>
                     <div class="mt-6 flex items-center justify-between">
-                        <span class="text-2xl font-bold text-darkText">₩38,000</span>
+                        <span class="text-2xl font-bold text-darkText">₩100</span>
                         <span class="text-base font-semibold text-accentGreen flex items-center gap-1.5 group-hover:translate-x-1.5 transition-transform">
                             옵션 선택 및 구매 &rarr;
                         </span>
@@ -205,7 +207,7 @@
             </div>
 
             <!-- Item 4: 올디아망 어항 -->
-            <div onclick="openProductModal('올디아망 어항', '₩150,000', '45도 미이터 컷 고투명 올디아망 어항', ['30큐브 (30x30x30)', '45큐브 (45x45x45)', '60사이즈 (60x30x36)'], [
+            <div onclick="openProductModal('올디아망 어항', '₩100', '45도 미이터 컷 고투명 올디아망 어항', ['30큐브 (30x30x30)', '45큐브 (45x45x45)', '60사이즈 (60x30x36)'], [
                 'https://placehold.co/600x600/E3E8E5/00712D?text=Tank+Front',
                 'https://placehold.co/600x600/DCE3DF/00712D?text=Tank+Miter+Cut'
             ])" class="apple-card p-8 sm:p-10 flex flex-col justify-between cursor-pointer group">
@@ -221,7 +223,7 @@
                     <h3 class="text-2xl font-bold text-darkText group-hover:text-accentGreen transition-colors">올디아망 어항</h3>
                     <p class="text-base text-grayText mt-2">45도 미이터 컷 고투명 올디아망 어항</p>
                     <div class="mt-6 flex items-center justify-between">
-                        <span class="text-2xl font-bold text-darkText">₩150,000</span>
+                        <span class="text-2xl font-bold text-darkText">₩100</span>
                         <span class="text-base font-semibold text-accentGreen flex items-center gap-1.5 group-hover:translate-x-1.5 transition-transform">
                             옵션 선택 및 구매 &rarr;
                         </span>
@@ -1185,7 +1187,7 @@
                 const measuredWidth = rect.width || wrapper.clientWidth || window.innerWidth || 800;
                 const measuredHeight = rect.height || wrapper.clientHeight || 320;
                 
-                // Guard against 0-dimension measurements during live preview re-mounts
+                // Safe guard against 0-dimension measurements during live editor re-mounts
                 if (measuredWidth <= 0 || measuredHeight <= 0) {
                     setTimeout(() => {
                         if (initScene() && !animationFrameId) {
@@ -1241,7 +1243,6 @@
                 shrimps = [];
                 for (let i = 0; i < 4; i++) shrimps.push(new CherryShrimp());
 
-                // Render first frame immediately to eliminate any blank frame gap
                 renderHeroFrame(performance.now());
                 return true;
             } catch (err) {
@@ -1294,7 +1295,6 @@
             animationFrameId = requestAnimationFrame(animate);
         }
 
-        // Pointer & Resize Interaction for Vallisneria Tank (with safe null guards)
         if (wrapper) {
             wrapper.addEventListener('pointermove', (e) => {
                 const rect = wrapper.getBoundingClientRect();
@@ -1307,7 +1307,6 @@
                 pointer.active = false;
             });
 
-            // Observe layout size changes immediately during preview updates
             if (typeof ResizeObserver !== 'undefined') {
                 const ro = new ResizeObserver(() => {
                     initScene();
@@ -1872,14 +1871,12 @@
                 return;
             }
 
-            // Fallback if Daum script is loading
             showToast('카카오 우편번호 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
         }
 
         function selectDaumAddress(zip, road, detailHint = '') {
             const cleanZip = String(zip || '21077').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
 
-            // Checkout page fields
             const orderZip = document.getElementById('order-zipcode');
             const orderAddr = document.getElementById('order-address');
             const orderDetail = document.getElementById('order-address-detail');
@@ -1890,7 +1887,6 @@
                 orderDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
             }
             
-            // My Page modal fields
             const myPageZip = document.getElementById('mypage-ship-zip');
             const myPageAddr = document.getElementById('mypage-ship-addr');
             const myPageDetail = document.getElementById('mypage-ship-detail');
@@ -1986,7 +1982,6 @@
             }, 2600);
         }
 
-        // Immediate initialization + DOMContentLoaded safeguard so banner never flashes blank
         if (document.readyState === 'loading') {
             window.addEventListener('DOMContentLoaded', () => {
                 initScene();
