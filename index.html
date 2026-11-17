@@ -711,7 +711,8 @@
             const redirectUri = window.location.origin + window.location.pathname;
             const state = Math.random().toString(36).substring(2);
             
-            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
+            // Added auth_type=reuse to prevent Naver from prompting the permission consent popup on re-login
+            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&auth_type=reuse`;
             
             showToast('네이버 공식 로그인 페이지로 이동합니다...');
             setTimeout(() => {
