@@ -539,7 +539,7 @@
                 </button>
             </div>
             
-            <!-- Unified Real-Time Autocomplete Search Box (Instant lookup on keystroke, no Enter/button needed) -->
+            <!-- Unified Real-Time Autocomplete Search Box -->
             <div id="realtime-addr-search-box" class="mt-4">
                 <div class="relative">
                     <input type="text" id="fallback-addr-query" autocomplete="off" oninput="filterFallbackAddresses()" placeholder="도로명, 건물명, 지번 타이핑 (예: 계산로 39, 테헤란로 152)" class="w-full pl-10 pr-9 py-3.5 rounded-2xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm font-medium outline-none transition-colors">
@@ -1934,7 +1934,7 @@
         let addressSearchTimer = null;
         function fetchJusoJsonp(keyword) {
             return new Promise((resolve, reject) => {
-                const callbackName = 'jusoCallback_' + Date.now + '_' + Math.floor(Math.random() * 1000);
+                const callbackName = 'jusoCallback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
                 const script = document.createElement('script');
                 const timeoutId = setTimeout(() => {
                     delete window[callbackName];
@@ -1949,7 +1949,6 @@
                     resolve(data);
                 };
 
-                // Public Ministry of the Interior and Safety (행정안전부) Juso JSONP endpoint
                 const confmKey = 'U01TX0FVVEgyMDI0MDEwMTEyMDAwMDExNDQwMDA=';
                 script.src = `https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do?confmKey=${confmKey}&currentPage=1&countPerPage=20&keyword=${encodeURIComponent(keyword)}&resultType=json&callback=${callbackName}`;
                 script.onerror = () => {
@@ -1979,7 +1978,6 @@
                 return;
             }
 
-            // Authentic nationwide pool with precise 5-digit new postal codes (새우편번호)
             const nationwidePool = [
                 { zip: '21077', road: '인천광역시 계양구 계산로 39 (계산동)', jibun: '인천광역시 계양구 계산동 968-5' },
                 { zip: '21077', road: '인천광역시 계양구 계산로 39-1 (계산동)', jibun: '인천광역시 계양구 계산동 968-6' },
@@ -2022,15 +2020,13 @@
 
             addressSearchTimer = setTimeout(async () => {
                 try {
-                    // 1. Try JSONP nationwide Juso API and correctly parse 5-digit zipNo or zonecode
                     const jsonpData = await fetchJusoJsonp(rawQuery);
                     if (jsonpData && jsonpData.results && jsonpData.results.juso && jsonpData.results.juso.length > 0) {
                         const mappedResults = jsonpData.results.juso.map(item => {
-                            const rawZip = item.zipNo || item.zonecode || '';
-                            const cleanZip = String(rawZip).replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
+                            const cleanZip = String(item.zipNo || item.zonecode || '').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
                             const bdNm = item.bdNm ? ` (${item.bdNm})` : '';
                             return {
-                                zip: cleanZip && cleanZip.length === 5 ? cleanZip : '21077',
+                                zip: cleanZip && cleanZip !== '00000' ? cleanZip : '21077',
                                 road: `${item.roadAddrPart1 || item.roadAddr}${bdNm}`,
                                 detailHint: item.roadAddrPart2 ? item.roadAddrPart2.replace(/^\s*\(|\)\s*$/g, '') : '',
                                 jibun: item.jibunAddr || ''
@@ -2042,7 +2038,6 @@
                 } catch (err) {}
 
                 try {
-                    // 2. Try Kakao Local Address Search Open REST Endpoint (zone_no mapping)
                     const kakaoRes = await fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(rawQuery)}&size=15`, {
                         headers: { 'Authorization': 'KakaoAK 7c1b30b2c5b6e0d2e8a4c9f1a2b3c4d5' }
                     });
@@ -2055,7 +2050,7 @@
                                 const building = doc.road_address?.building_name ? ` (${doc.road_address.building_name})` : '';
                                 const baseRoad = doc.road_address?.address_name || doc.address_name;
                                 return {
-                                    zip: cleanZip && cleanZip.length === 5 ? cleanZip : '21077',
+                                    zip: cleanZip && cleanZip !== '00000' ? cleanZip : '21077',
                                     road: `${baseRoad}${building}`,
                                     detailHint: doc.road_address?.building_name || '',
                                     jibun: doc.address?.address_name || doc.address_name
@@ -2071,12 +2066,6 @@
             }, 150);
         }
 
-        function handleAddressSearchSubmit(e) {
-            e.preventDefault();
-            filterFallbackAddresses();
-        }
-
-        // Store current rendered items safely by index to avoid string escaping or zip mapping bugs
         let currentRenderedAddresses = [];
 
         function renderAddressResults(results, rawQuery) {
@@ -2125,7 +2114,6 @@
         function selectFallbackAddress(zip, road, detailHint = '') {
             const cleanZip = String(zip || '21077').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
 
-            // Populate Checkout fields precisely with verified 5-digit postal code
             const orderZip = document.getElementById('order-zipcode');
             const orderAddr = document.getElementById('order-address');
             const orderDetail = document.getElementById('order-address-detail');
@@ -2136,7 +2124,6 @@
                 orderDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
             }
             
-            // Populate My Page fields precisely with verified 5-digit postal code
             const myPageZip = document.getElementById('mypage-ship-zip');
             const myPageAddr = document.getElementById('mypage-ship-addr');
             const myPageDetail = document.getElementById('mypage-ship-detail');
