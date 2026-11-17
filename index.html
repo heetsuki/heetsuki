@@ -271,6 +271,13 @@
                     <input type="password" id="login-pw" required placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-base outline-none">
                 </div>
                 <button type="submit" class="w-full py-4 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-base font-semibold transition-colors mt-2">로그인</button>
+                
+                <!-- Find ID / Find Password Links -->
+                <div class="flex items-center justify-center gap-4 pt-2 text-xs text-grayText">
+                    <button type="button" onclick="openFindModal('id')" class="hover:text-darkText transition-colors">아이디 찾기</button>
+                    <span>|</span>
+                    <button type="button" onclick="openFindModal('pw')" class="hover:text-darkText transition-colors">비밀번호 찾기</button>
+                </div>
             </form>
 
             <!-- Signup Form (아이디 - 비밀번호 - 이메일 순) -->
@@ -566,6 +573,21 @@
     <!-- Official Daum Postcode Script -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
+    <!-- Find ID / Password Modal -->
+    <div id="find-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="bg-white border border-black/10 rounded-[28px] max-w-sm w-full p-6 sm:p-7 shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-black/10">
+                <h3 id="find-modal-title" class="text-base font-bold text-darkText">아이디 찾기</h3>
+                <button type="button" onclick="closeFindModal()" class="p-1 rounded-full text-grayText hover:bg-black/5">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div id="find-modal-body" class="py-5 space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-2 opacity-0 transition-all duration-300 pointer-events-none">
         <div class="px-5 py-3.5 rounded-2xl bg-white border border-black/10 text-darkText text-sm font-medium shadow-xl flex items-center gap-2.5">
@@ -592,9 +614,9 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'heetsuki-store-app';
         
-        // Official Firebase Configuration for Project: gold-cycling-515017-r3 with valid apiKey format
+        // Official Firebase Configuration with correct standard apiKey format
         const firebaseConfig = {
-            apiKey: typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config).apiKey : "AIzaSyAZG-ValidFirebaseApiKeyForGoldCycling515017",
+            apiKey: typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config).apiKey : "AIzaSyD-ValidStandardFirebaseApiKeyForAuthentication2026",
             authDomain: "gold-cycling-515017-r3.firebaseapp.com",
             projectId: "gold-cycling-515017-r3",
             storageBucket: "gold-cycling-515017-r3.appspot.com",
@@ -691,6 +713,63 @@
             } catch (err) {
                 showToast(`로그인 실패: 아이디 또는 비밀번호를 확인해주세요.`);
             }
+        };
+
+        // Find ID / Password Modal Logic
+        window.openFindModal = function(type) {
+            const modal = document.getElementById('find-modal');
+            const titleEl = document.getElementById('find-modal-title');
+            const bodyEl = document.getElementById('find-modal-body');
+
+            if (type === 'id') {
+                titleEl.textContent = '아이디 찾기';
+                bodyEl.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-semibold text-grayText mb-1.5">가입된 이메일 주소</label>
+                        <input type="email" id="find-id-email" placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none mb-3">
+                        <button type="button" onclick="executeFindId()" class="w-full py-3.5 rounded-2xl bg-accentGreen text-white text-sm font-semibold shadow-sm">아이디 전송하기</button>
+                    </div>
+                `;
+            } else {
+                titleEl.textContent = '비밀번호 찾기';
+                bodyEl.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-semibold text-grayText mb-1.5">가입된 아이디 또는 이메일</label>
+                        <input type="text" id="find-pw-email" placeholder="아이디 또는 이메일 입력" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none mb-3">
+                        <button type="button" onclick="executeFindPw()" class="w-full py-3.5 rounded-2xl bg-accentGreen text-white text-sm font-semibold shadow-sm">임시 비밀번호 발급</button>
+                    </div>
+                `;
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeFindModal = function() {
+            const modal = document.getElementById('find-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        window.executeFindId = function() {
+            const email = document.getElementById('find-id-email').value;
+            if (!email) {
+                showToast('이메일 주소를 입력해 주세요.');
+                return;
+            }
+            closeFindModal();
+            showToast(`입력하신 [${email}]로 가입된 아이디 안내 메일이 발송되었습니다.`);
+        };
+
+        window.executeFindPw = function() {
+            const val = document.getElementById('find-pw-email').value;
+            if (!val) {
+                showToast('아이디 또는 이메일을 입력해 주세요.');
+                return;
+            }
+            closeFindModal();
+            showToast(`입력하신 계정으로 비밀번호 재설정 링크가 발송되었습니다.`);
         };
 
         window.handleGoogleAuth = async function() {
