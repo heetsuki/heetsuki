@@ -698,18 +698,18 @@
             }, 800);
         };
 
-        // Handle OAuth Callback (Google Implicit Flow & Naver Authorization Code Flow)
+        // Handle OAuth Callback & Session State Transition
         window.addEventListener('DOMContentLoaded', () => {
             // 1. Check Google OAuth hash response (#access_token=...)
             if (window.location.hash && window.location.hash.includes('access_token')) {
                 const hashParams = new URLSearchParams(window.location.hash.substring(1));
                 const accessToken = hashParams.get('access_token');
                 if (accessToken) {
+                    const userData = { name: '구글 회원', type: 'Google', email: 'google_user@gmail.com' };
+                    localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userData));
                     showToast('Google 계정 연동 및 로그인이 완료되었습니다!');
-                    localStorage.setItem('heetsuki_logged_in_user', JSON.stringify({ name: '구글 회원', type: 'Google' }));
-                    // Clean URL hash
                     window.history.replaceState({}, document.title, window.location.pathname);
-                    setTimeout(() => window.location.reload(), 1000);
+                    setTimeout(() => applyLoginState(userData), 500);
                     return;
                 }
             }
@@ -722,36 +722,50 @@
             if (naverCode) {
                 console.log("Naver auth code received:", naverCode);
                 showToast('네이버 인증 코드를 확인했습니다. 로그인 처리 중...');
-                // Simulate successful token exchange & profile retrieval
-                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify({ name: '네이버 회원', type: 'Naver' }));
+                
+                // Exchange code or simulate successful profile fetch from Naver API server
+                const naverUserData = { name: '네이버 회원', type: 'Naver', email: 'naver_user@naver.com' };
+                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(naverUserData));
+                
                 // Clean URL query parameters
                 window.history.replaceState({}, document.title, window.location.pathname);
                 setTimeout(() => {
                     showToast('네이버 로그인 성공! 환영합니다.');
-                    window.location.reload();
-                }, 1000);
+                    applyLoginState(naverUserData);
+                }, 800);
                 return;
             }
 
-            // 3. Check persistent localStorage login state
+            // 3. Check persistent localStorage login state on page load
             const savedUser = localStorage.getItem('heetsuki_logged_in_user');
             if (savedUser) {
                 try {
                     const userObj = JSON.parse(savedUser);
-                    const authContainer = document.getElementById('auth-buttons-container');
-                    if (authContainer) {
-                        authContainer.innerHTML = `
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm font-semibold text-darkText">${userObj.name}님 (${userObj.type})</span>
-                                <button onclick="handleLogout()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
-                                    로그아웃
-                                </button>
-                            </div>
-                        `;
-                    }
+                    applyLoginState(userObj);
                 } catch (e) {}
             }
         });
+
+        // Function to transition header UI to Logged-In state
+        function applyLoginState(userObj) {
+            const authContainer = document.getElementById('auth-buttons-container');
+            if (authContainer) {
+                authContainer.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <button onclick="openMyPageModal()" class="text-sm font-semibold text-darkText hover:text-accentGreen transition-colors flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
+                            <span>${userObj.name}님 반갑습니다</span>
+                        </button>
+                        <button onclick="openMyPageModal()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
+                            내 정보
+                        </button>
+                        <button onclick="handleLogout()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
+                            로그아웃
+                        </button>
+                    </div>
+                `;
+            }
+        }
 
         window.handleLogout = async function() {
             localStorage.removeItem('heetsuki_logged_in_user');
@@ -1428,9 +1442,100 @@
             const name = pendingOrderData ? pendingOrderData.name : '고객';
             const totalStr = pendingOrderData ? formatPrice(pendingOrderData.total) : '';
             
+            // Save order to history
+            const existingOrders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            existingOrders.unshift({
+                id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleDateString('ko-KR'),
+                total: totalStr,
+                payment: selectedPayment,
+                itemsCount: cart.length
+            });
+            localStorage.setItem('heetsuki_orders', JSON.stringify(existingOrders));
+
             cart = [];
             updateCartUI();
             showToast(`[${selectedPayment}] ${totalStr} 결제가 안전하게 승인 완료되었습니다! (${name}님)`);
+        }
+
+        // My Page Modal Logic
+        function openMyPageModal() {
+            let userObj = { name: '회원', type: '일반 회원', email: 'user@heetsuki.com' };
+            try {
+                const saved = localStorage.getItem('heetsuki_logged_in_user');
+                if (saved) userObj = JSON.parse(saved);
+            } catch (e) {}
+
+            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+
+            // Create or open MyPage modal dynamically
+            let modal = document.getElementById('mypage-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'mypage-modal';
+                modal.className = 'fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm';
+                document.body.appendChild(modal);
+            }
+
+            modal.innerHTML = `
+                <div class="bg-white border border-black/10 rounded-[28px] max-w-lg w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                    <button onclick="closeMyPageModal()" class="absolute top-6 right-6 p-2 rounded-full text-grayText hover:bg-black/5">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-4 pb-6 border-b border-black/10">
+                        <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center">
+                            ${userObj.name.charAt(0)}
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-darkText">${userObj.name}님</h3>
+                            <p class="text-sm text-grayText mt-0.5">${userObj.email || '회원 계정'} (${userObj.type})</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">주문 내역 (${orders.length}건)</h4>
+                        <div class="space-y-3 max-h-60 overflow-y-auto">
+                            ${orders.length === 0 ? `
+                                <div class="p-6 text-center text-sm text-grayText bg-[#F5F5F7] rounded-2xl">
+                                    아직 주문 내역이 없습니다.
+                                </div>
+                            ` : orders.map(ord => `
+                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-bold text-darkText">${ord.id}</span>
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-accentGreen/10 text-accentGreen font-semibold">${ord.payment}</span>
+                                        </div>
+                                        <p class="text-xs text-grayText mt-1">주문일자: ${ord.date} / 상품 ${ord.itemsCount}종</p>
+                                    </div>
+                                    <span class="text-sm font-bold text-darkText">${ord.total}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-black/10 flex justify-between items-center">
+                        <button onclick="handleLogout(); closeMyPageModal();" class="px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold transition-colors">
+                            로그아웃
+                        </button>
+                        <button onclick="closeMyPageModal()" class="px-6 py-3 rounded-2xl bg-accentGreen text-white text-sm font-semibold transition-colors">
+                            확인
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeMyPageModal() {
+            const modal = document.getElementById('mypage-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
         // Road Name Address Search (Daum Postcode + Built-in Search Modal)
