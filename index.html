@@ -614,9 +614,9 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'heetsuki-store-app';
         
-        // Official Firebase Configuration with correct standard apiKey format
+        // Firebase Configuration - Replace with your valid Firebase project credentials if needed
         const firebaseConfig = {
-            apiKey: typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config).apiKey : "AIzaSyD-ValidStandardFirebaseApiKeyForAuthentication2026",
+            apiKey: typeof __firebase_config !== 'undefined' && JSON.parse(__firebase_config).apiKey ? JSON.parse(__firebase_config).apiKey : "AIzaSyD-ValidStandardFirebaseApiKeyForAuthentication2026",
             authDomain: "gold-cycling-515017-r3.firebaseapp.com",
             projectId: "gold-cycling-515017-r3",
             storageBucket: "gold-cycling-515017-r3.appspot.com",
@@ -624,46 +624,55 @@
             appId: "1:954441215177:web:goldcycling515017"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch (err) {
+            console.warn("Firebase initialization notice:", err.message);
+        }
 
         // Authentication State Listener
-        onAuthStateChanged(auth, async (user) => {
-            const authContainer = document.getElementById('auth-buttons-container');
-            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-            if (savedUser) {
-                try {
-                    const userObj = JSON.parse(savedUser);
+        if (auth) {
+            onAuthStateChanged(auth, async (user) => {
+                const authContainer = document.getElementById('auth-buttons-container');
+                const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+                if (savedUser) {
+                    try {
+                        const userObj = JSON.parse(savedUser);
+                        applyLoginState(userObj);
+                        return;
+                    } catch (e) {}
+                }
+                if (user && !user.isAnonymous) {
+                    const displayName = user.displayName || user.email?.split('@')[0] || '회원';
+                    const email = user.email || 'user@heetsuki.com';
+                    const userObj = { name: displayName, type: 'Firebase', email: email };
+                    localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                     applyLoginState(userObj);
-                    return;
-                } catch (e) {}
-            }
-            if (user && !user.isAnonymous) {
-                const displayName = user.displayName || user.email?.split('@')[0] || '회원';
-                const email = user.email || 'user@heetsuki.com';
-                const userObj = { name: displayName, type: 'Firebase', email: email };
-                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
-                applyLoginState(userObj);
-            } else {
-                authContainer.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">
-                        로그인
-                    </button>
-                    <button onclick="openAuthModal('signup')" class="text-sm font-medium px-4 py-2 rounded-full bg-darkText text-white hover:bg-black transition-colors">
-                        회원가입
-                    </button>
-                `;
-            }
-        });
+                } else {
+                    authContainer.innerHTML = `
+                        <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">
+                            로그인
+                        </button>
+                        <button onclick="openAuthModal('signup')" class="text-sm font-medium px-4 py-2 rounded-full bg-darkText text-white hover:bg-black transition-colors">
+                            회원가입
+                        </button>
+                    `;
+                }
+            });
+        }
 
         // Initialize Firebase Auth on load
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
+                if (auth) {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
                 }
             } catch (err) {
                 console.log("Auth init fallback:", err);
@@ -677,6 +686,9 @@
             const email = document.getElementById('signup-email').value;
 
             try {
+                if (!auth || !db) {
+                    throw new Error("Firebase가 올바르게 초기화되지 않았습니다. API 키를 확인해 주세요.");
+                }
                 const cred = await createUserWithEmailAndPassword(auth, email, pw);
                 await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'info'), {
                     userId: id,
@@ -689,7 +701,11 @@
                 showToast(`[${id}]님, HEETSUKI 회원이 되신 것을 환영합니다!`);
                 applyLoginState(userObj);
             } catch (err) {
-                showToast(`회원가입 실패: ${err.message}`);
+                let errorMsg = err.message;
+                if (errorMsg.includes('api-key-not-valid') || errorMsg.includes('API key')) {
+                    errorMsg = 'Firebase API 키가 유효하지 않습니다. 올바른 키를 설정해 주세요.';
+                }
+                showToast(`회원가입 실패: ${errorMsg}`);
             }
         };
 
@@ -704,6 +720,9 @@
             }
 
             try {
+                if (!auth) {
+                    throw new Error("Firebase 인증 모듈을 사용할 수 없습니다.");
+                }
                 const cred = await signInWithEmailAndPassword(auth, loginEmail, pw);
                 const userObj = { name: inputVal, type: '일반회원', email: loginEmail };
                 localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
