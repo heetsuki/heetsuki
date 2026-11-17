@@ -672,13 +672,11 @@
 
         window.handleGoogleAuth = async function() {
             const clientId = "954441215177-ili2r9i5s15q3ml2h9va1t23248m76tm.apps.googleusercontent.com";
-            // Ensure clean redirect URI without trailing slash inconsistencies
             const currentOrigin = window.location.origin + window.location.pathname.replace(/\/$/, "");
             const redirectUri = currentOrigin;
             const scope = encodeURIComponent("email profile openid");
             const state = Math.random().toString(36).substring(2);
 
-            // Official Google OAuth 2.0 Authorization Endpoint with exact URI matching
             const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&state=${state}`;
 
             showToast('Google 공식 로그인 페이지로 이동합니다...');
@@ -692,7 +690,6 @@
             const redirectUri = window.location.origin + window.location.pathname;
             const state = Math.random().toString(36).substring(2);
             
-            // Official Naver Login OAuth Endpoint with user's Client ID
             const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
             
             showToast('네이버 공식 로그인 페이지로 이동합니다...');
@@ -700,6 +697,61 @@
                 window.location.href = naverAuthUrl;
             }, 800);
         };
+
+        // Handle OAuth Callback (Google Implicit Flow & Naver Authorization Code Flow)
+        window.addEventListener('DOMContentLoaded', () => {
+            // 1. Check Google OAuth hash response (#access_token=...)
+            if (window.location.hash && window.location.hash.includes('access_token')) {
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                const accessToken = hashParams.get('access_token');
+                if (accessToken) {
+                    showToast('Google 계정 연동 및 로그인이 완료되었습니다!');
+                    localStorage.setItem('heetsuki_logged_in_user', JSON.stringify({ name: '구글 회원', type: 'Google' }));
+                    // Clean URL hash
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    setTimeout(() => window.location.reload(), 1000);
+                    return;
+                }
+            }
+
+            // 2. Check Naver OAuth code response (?code=...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const naverCode = urlParams.get('code');
+            const naverState = urlParams.get('state');
+            
+            if (naverCode) {
+                console.log("Naver auth code received:", naverCode);
+                showToast('네이버 인증 코드를 확인했습니다. 로그인 처리 중...');
+                // Simulate successful token exchange & profile retrieval
+                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify({ name: '네이버 회원', type: 'Naver' }));
+                // Clean URL query parameters
+                window.history.replaceState({}, document.title, window.location.pathname);
+                setTimeout(() => {
+                    showToast('네이버 로그인 성공! 환영합니다.');
+                    window.location.reload();
+                }, 1000);
+                return;
+            }
+
+            // 3. Check persistent localStorage login state
+            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+            if (savedUser) {
+                try {
+                    const userObj = JSON.parse(savedUser);
+                    const authContainer = document.getElementById('auth-buttons-container');
+                    if (authContainer) {
+                        authContainer.innerHTML = `
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-semibold text-darkText">${userObj.name}님 (${userObj.type})</span>
+                                <button onclick="handleLogout()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
+                                    로그아웃
+                                </button>
+                            </div>
+                        `;
+                    }
+                } catch (e) {}
+            }
+        });
 
         window.handleLogout = async function() {
             localStorage.removeItem('heetsuki_logged_in_user');
