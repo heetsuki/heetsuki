@@ -1905,26 +1905,35 @@
         }
 
         function formatPhoneNumber(input) {
-            // Preserve cursor position stability by avoiding abrupt value rewrites when possible
             let cursorPosition = input.selectionStart;
-            let originalLength = input.value.length;
-
-            let num = input.value.replace(/[^0-9]/g, '');
+            let originalValue = input.value;
+            
+            // Extract only digits
+            let num = originalValue.replace(/[^0-9]/g, '');
             let formatted = '';
 
             if (num.startsWith('02')) {
+                // Seoul local numbers (02)
                 if (num.length > 10) num = num.slice(0, 10);
-                if (num.length > 5) {
-                    formatted = num.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+                if (num.length >= 10) {
+                    formatted = num.replace(/^(\d{2})(\d{4})(\d{4})$/, '$1-$2-$3');
+                } else if (num.length > 5) {
+                    formatted = num.replace(/^(\d{2})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
                 } else if (num.length > 2) {
                     formatted = num.replace(/^(\d{2})(\d{1,3})$/, '$1-$2');
                 } else {
                     formatted = num;
                 }
             } else {
+                // General mobile & regional numbers
                 if (num.length > 11) num = num.slice(0, 11);
-                if (num.length > 7) {
+                if (num.length >= 11) {
                     formatted = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
+                } else if (num.length === 10) {
+                    // Handle 10-digit numbers like 02-xxx-xxxx or 010-xxx-xxxx
+                    formatted = num.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
+                } else if (num.length > 6) {
+                    formatted = num.replace(/^(\d{3})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
                 } else if (num.length > 3) {
                     formatted = num.replace(/^(\d{3})(\d{1,4})$/, '$1-$2');
                 } else {
@@ -1932,11 +1941,14 @@
                 }
             }
 
+            // Always update input value to maintain smooth instantaneous formatting
             if (input.value !== formatted) {
+                let oldLength = input.value.length;
                 input.value = formatted;
-                // Maintain smooth cursor placement without jumping to the end
+                
                 try {
-                    let diff = input.value.length - originalLength;
+                    // Smart cursor adjustment to prevent jumping or jittering
+                    let diff = input.value.length - oldLength;
                     let newPos = Math.max(0, cursorPosition + diff);
                     input.setSelectionRange(newPos, newPos);
                 } catch (e) {}
