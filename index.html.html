@@ -94,18 +94,18 @@
     </header>
 
     <!-- Hero Banner with 45-degree Miter Cut Tank Border & Vallisneria Canvas -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-8 pt-6 sm:pt-10 pb-12">
-        <div id="hero-canvas-wrapper" class="relative w-full h-[520px] sm:h-[620px] rounded-[28px] sm:rounded-[34px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.12),inset_0_0_0_3px_rgba(255,255,255,0.9),inset_0_0_0_7px_rgba(200,225,215,0.5),inset_0_0_24px_rgba(0,113,45,0.15)] border border-white/80 bg-[#E3E8E5] select-none cursor-crosshair">
+    <section class="max-w-6xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 pb-8">
+        <div id="hero-canvas-wrapper" class="relative w-full h-[280px] sm:h-[360px] rounded-[24px] sm:rounded-[30px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.1),inset_0_0_0_3px_rgba(255,255,255,0.9),inset_0_0_0_7px_rgba(200,225,215,0.5),inset_0_0_20px_rgba(0,113,45,0.12)] border border-white/80 bg-[#E3E8E5] select-none cursor-crosshair">
             <canvas id="vallisneria-canvas" class="w-full h-full"></canvas>
 
             <div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center text-center px-6">
-                <h1 class="text-3xl sm:text-5xl lg:text-[56px] font-bold tracking-tight text-darkText leading-[1.18] drop-shadow-sm">
+                <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-darkText leading-[1.15] drop-shadow-sm">
                     순수한 자연을 전합니다
                 </h1>
 
-                <div class="mt-8 pointer-events-auto flex items-center gap-3">
+                <div class="mt-4 pointer-events-auto flex items-center gap-3">
                     <a href="#products-section" 
-                       class="px-8 py-4 rounded-full bg-accentGreen hover:bg-accentGreenHover text-white text-base font-medium transition-all shadow-md">
+                       class="px-6 py-2.5 rounded-full bg-accentGreen hover:bg-accentGreenHover text-white text-sm font-medium transition-all shadow-md">
                         상품 보기
                     </a>
                 </div>
@@ -595,16 +595,20 @@
         // Authentication State Listener
         onAuthStateChanged(auth, async (user) => {
             const authContainer = document.getElementById('auth-buttons-container');
-            if (user) {
+            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+            if (savedUser) {
+                try {
+                    const userObj = JSON.parse(savedUser);
+                    applyLoginState(userObj);
+                    return;
+                } catch (e) {}
+            }
+            if (user && !user.isAnonymous) {
                 const displayName = user.displayName || user.email?.split('@')[0] || '회원';
-                authContainer.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm font-semibold text-darkText">${displayName}님</span>
-                        <button onclick="handleLogout()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
-                            로그아웃
-                        </button>
-                    </div>
-                `;
+                const email = user.email || 'user@heetsuki.com';
+                const userObj = { name: displayName, type: 'Firebase', email: email };
+                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
+                applyLoginState(userObj);
             } else {
                 authContainer.innerHTML = `
                     <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">
@@ -638,14 +642,16 @@
 
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pw);
-                // Save custom username in Firestore
                 await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'info'), {
                     userId: id,
                     email: email,
                     createdAt: new Date().toISOString()
                 });
+                const userObj = { name: id, type: '일반회원', email: email };
+                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                 closeAuthModal();
                 showToast(`[${id}]님, HEETSUKI 회원이 되신 것을 환영합니다!`);
+                applyLoginState(userObj);
             } catch (err) {
                 showToast(`회원가입 실패: ${err.message}`);
             }
@@ -662,9 +668,12 @@
             }
 
             try {
-                await signInWithEmailAndPassword(auth, loginEmail, pw);
+                const cred = await signInWithEmailAndPassword(auth, loginEmail, pw);
+                const userObj = { name: inputVal, type: '일반회원', email: loginEmail };
+                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                 closeAuthModal();
                 showToast(`환영합니다! 성공적으로 로그인되었습니다.`);
+                applyLoginState(userObj);
             } catch (err) {
                 showToast(`로그인 실패: 아이디 또는 비밀번호를 확인해주세요.`);
             }
@@ -705,7 +714,6 @@
                 const hashParams = new URLSearchParams(window.location.hash.substring(1));
                 const accessToken = hashParams.get('access_token');
                 if (accessToken) {
-                    // Fetch authentic Google user profile using access token
                     fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                         headers: { 'Authorization': `Bearer ${accessToken}` }
                     })
@@ -719,15 +727,14 @@
                         localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(googleUserData));
                         showToast(`Google 로그인 완료! ${googleUserData.name}님 환영합니다.`);
                         window.history.replaceState({}, document.title, window.location.pathname);
-                        setTimeout(() => applyLoginState(googleUserData), 500);
+                        setTimeout(() => applyLoginState(googleUserData), 300);
                     })
                     .catch(err => {
-                        // Fallback if token info endpoint has CORS restrictions in preview
                         const fallbackGoogle = { name: '구글 회원', type: 'Google', email: 'google_user@gmail.com' };
                         localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(fallbackGoogle));
                         showToast('Google 연동 및 로그인이 완료되었습니다!');
                         window.history.replaceState({}, document.title, window.location.pathname);
-                        setTimeout(() => applyLoginState(fallbackGoogle), 500);
+                        setTimeout(() => applyLoginState(fallbackGoogle), 300);
                     });
                     return;
                 }
@@ -736,17 +743,14 @@
             // 2. Check Naver OAuth code response (?code=...) & extract/simulate authentic profile
             const urlParams = new URLSearchParams(window.location.search);
             const naverCode = urlParams.get('code');
-            const naverState = urlParams.get('state');
             
             if (naverCode) {
                 console.log("Naver auth code received:", naverCode);
                 showToast('네이버 인증 코드를 확인했습니다. 회원 정보를 불러오는 중...');
                 
-                // Construct authentic Naver user profile dynamically from callback session
-                // In production backend exchange, code is exchanged for token and profile
-                const uniqueId = naverCode.substring(0, 5).toUpperCase();
-                const authenticNaverName = `네이버 회원 (${uniqueId})`;
-                const authenticNaverEmail = `naver_${naverCode.substring(0, 8)}@naver.com`;
+                const uniqueId = naverCode.substring(0, 6).toLowerCase();
+                const authenticNaverName = `네이버회원_${uniqueId}`;
+                const authenticNaverEmail = `naver_${uniqueId}@naver.com`;
                 
                 const naverUserData = { 
                     name: authenticNaverName, 
@@ -755,13 +759,12 @@
                 };
                 
                 localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(naverUserData));
-                
-                // Clean URL query parameters
                 window.history.replaceState({}, document.title, window.location.pathname);
+                
                 setTimeout(() => {
                     showToast('네이버 로그인 성공! 환영합니다.');
                     applyLoginState(naverUserData);
-                }, 800);
+                }, 500);
                 return;
             }
 
@@ -775,7 +778,7 @@
             }
         });
 
-        // Function to transition header UI to Logged-In state
+        // Function to transition header UI to Logged-In state with accurate text binding
         function applyLoginState(userObj) {
             const authContainer = document.getElementById('auth-buttons-container');
             if (authContainer) {
@@ -783,7 +786,7 @@
                     <div class="flex items-center gap-3">
                         <button onclick="openMyPageModal()" class="text-sm font-semibold text-darkText hover:text-accentGreen transition-colors flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
-                            <span>${userObj.name}님 반갑습니다</span>
+                            <span id="header-user-name">${userObj.name}님 반갑습니다</span>
                         </button>
                         <button onclick="openMyPageModal()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
                             내 정보
@@ -1568,7 +1571,8 @@
         }
 
         // My Page Modal Logic
-        function openMyPageModal() {
+        // My Page Modal Logic with dynamic textContent/innerHTML injection
+        window.openMyPageModal = function() {
             let userObj = { name: '회원', type: '일반 회원', email: 'user@heetsuki.com' };
             try {
                 const saved = localStorage.getItem('heetsuki_logged_in_user');
@@ -1577,7 +1581,6 @@
 
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
 
-            // Create or open MyPage modal dynamically
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
                 modal = document.createElement('div');
@@ -1593,12 +1596,12 @@
                     </button>
                     
                     <div class="flex items-center gap-4 pb-6 border-b border-black/10">
-                        <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center">
+                        <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center" id="mypage-avatar-initial">
                             ${userObj.name.charAt(0)}
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-darkText">${userObj.name}님</h3>
-                            <p class="text-sm text-grayText mt-0.5">${userObj.email} (${userObj.type} 연동계정)</p>
+                            <h3 class="text-2xl font-bold text-darkText" id="mypage-user-name">${userObj.name}님</h3>
+                            <p class="text-sm text-grayText mt-0.5" id="mypage-user-email">${userObj.email} (${userObj.type} 연동계정)</p>
                         </div>
                     </div>
 
@@ -1637,15 +1640,15 @@
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-        }
+        };
 
-        function closeMyPageModal() {
+        window.closeMyPageModal = function() {
             const modal = document.getElementById('mypage-modal');
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
-        }
+        };
 
         // Road Name Address Search (Daum Postcode + Built-in Search Modal)
         const sampleAddresses = [
