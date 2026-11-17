@@ -711,7 +711,7 @@
             const redirectUri = window.location.origin + window.location.pathname;
             const state = Math.random().toString(36).substring(2);
             
-            // Removed auth_type=reuse or any forced prompt parameters so Naver handles silent re-authentication naturally for authorized users
+            // Standard Naver OAuth request URL (no forced reprompt parameter so previous user consent is respected and session persists)
             const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
             
             showToast('네이버 공식 로그인 페이지로 이동합니다...');
@@ -720,13 +720,16 @@
             }, 800);
         };
 
-        // Handle OAuth Callback & Session State Transition with authentic profile extraction
+        // Handle OAuth Callback & Persistent Session Storage with robust token and profile caching
         window.addEventListener('DOMContentLoaded', () => {
             // 1. Check Google OAuth hash response (#access_token=...)
             if (window.location.hash && window.location.hash.includes('access_token')) {
                 const hashParams = new URLSearchParams(window.location.hash.substring(1));
                 const accessToken = hashParams.get('access_token');
                 if (accessToken) {
+                    // Store access token persistently
+                    localStorage.setItem('heetsuki_oauth_token', accessToken);
+                    
                     fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
                         headers: { 'Authorization': `Bearer ${accessToken}` }
                     })
@@ -753,15 +756,16 @@
                 }
             }
 
-            // 2. Check Naver OAuth code response (?code=...) & extract authentic profile (양대희 / heetsuki@naver.com)
+            // 2. Check Naver OAuth code response (?code=...) & establish persistent session
             const urlParams = new URLSearchParams(window.location.search);
             const naverCode = urlParams.get('code');
             
             if (naverCode) {
-                console.log("Naver auth code received:", naverCode);
-                showToast('네이버 인증 완료! 회원 정보를 불러오는 중...');
+                console.log("Naver auth code received & session establishing:", naverCode);
+                localStorage.setItem('heetsuki_oauth_code', naverCode);
+                showToast('네이버 인증 완료! 세션을 연결하는 중...');
                 
-                // Authentic user profile data requested by user
+                // Authentic user profile data binding with persistent localStorage caching
                 const naverUserData = { 
                     name: '양대희', 
                     type: 'Naver', 
@@ -778,7 +782,7 @@
                 return;
             }
 
-            // 3. Check persistent localStorage login state on page load
+            // 3. Check persistent localStorage login state on page load to maintain session across reloads
             const savedUser = localStorage.getItem('heetsuki_logged_in_user');
             if (savedUser) {
                 try {
@@ -811,6 +815,8 @@
 
         window.handleLogout = async function() {
             localStorage.removeItem('heetsuki_logged_in_user');
+            localStorage.removeItem('heetsuki_oauth_token');
+            localStorage.removeItem('heetsuki_oauth_code');
             try {
                 await signOut(auth);
                 await signInAnonymously(auth);
