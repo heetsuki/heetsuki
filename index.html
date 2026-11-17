@@ -698,6 +698,7 @@
             const scope = encodeURIComponent("email profile openid");
             const state = Math.random().toString(36).substring(2);
 
+            // Removed prompt=consent to allow seamless persistent sessions without repetitive consent popups
             const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&state=${state}`;
 
             showToast('Google 공식 로그인 페이지로 이동합니다...');
@@ -711,7 +712,7 @@
             const redirectUri = window.location.origin + window.location.pathname;
             const state = Math.random().toString(36).substring(2);
             
-            // Standard Naver OAuth request URL (no forced reprompt parameter so previous user consent is respected and session persists)
+            // Standard Naver OAuth request URL without any auth_type=reprompt or forced consent parameters
             const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
             
             showToast('네이버 공식 로그인 페이지로 이동합니다...');
