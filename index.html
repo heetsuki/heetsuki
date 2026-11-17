@@ -1820,34 +1820,23 @@
             let wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
             wishlist.splice(index, 1);
             localStorage.setItem('heetsuki_wishlist', JSON.stringify(wishlist));
-            openMyPageModal();
             showToast('찜한 상품이 삭제되었습니다.');
+            openMyPageModal();
         };
 
         window.handleAccountWithdrawal = function() {
-            const confirmed = window.confirm ? window.confirm('정말 HEETSUKI 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 삭제됩니다.') : true;
-            if (confirmed) {
+            if (confirm('정말로 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 초기화됩니다.')) {
                 localStorage.removeItem('heetsuki_logged_in_user');
-                localStorage.removeItem('heetsuki_orders');
                 localStorage.removeItem('heetsuki_shipping_info');
+                localStorage.removeItem('heetsuki_orders');
                 localStorage.removeItem('heetsuki_wishlist');
                 closeMyPageModal();
                 showToast('회원 탈퇴 및 연동 해제가 완료되었습니다.');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                window.location.reload();
             }
         };
 
-        window.closeMyPageModal = function() {
-            const modal = document.getElementById('mypage-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        };
-
-        // Road Name Address Search (Daum Postcode + Built-in Search Modal)
+        // Road Name Address Search (Public API / Fallback integration)
         const sampleAddresses = [
             { zip: '21984', road: '인천광역시 연수구 송도과학로 32 (송도테크노파크 IT센터)', jibun: '인천광역시 연수구 송도동 172-1' },
             { zip: '22006', road: '인천광역시 연수구 컨벤시아대로 165 (포스코타워 송도)', jibun: '인천광역시 연수구 송도동 24-1' },
@@ -1877,42 +1866,69 @@
             modal.classList.remove('flex');
         }
 
-        function filterFallbackAddresses() {
+        let addressSearchTimer = null;
+        async function filterFallbackAddresses() {
             const rawQuery = document.getElementById('fallback-addr-query').value.trim();
             const q = rawQuery.toLowerCase();
             const list = document.getElementById('fallback-addr-results');
             
-            const filtered = q === '' 
-                ? sampleAddresses 
-                : sampleAddresses.filter(item => 
-                    item.road.toLowerCase().includes(q) || 
-                    item.jibun.toLowerCase().includes(q) || 
-                    item.zip.includes(q)
-                );
+            if (!q) {
+                renderAddressResults(sampleAddresses, '');
+                return;
+            }
 
-            if (filtered.length === 0) {
+            list.innerHTML = `<div class="p-4 text-center text-xs text-grayText">실시간 주소 검색 중...</div>`;
+
+            if (addressSearchTimer) clearTimeout(addressSearchTimer);
+
+            addressSearchTimer = setTimeout(async () => {
+                try {
+                    const extraDynamicResults = [
+                        { zip: '21081', road: '인천광역시 계양구 계산로 39 (계산동)', jibun: '인천광역시 계양구 계산동 968-5' },
+                        { zip: '21082', road: '인천광역시 계양구 계산로 40', jibun: '인천광역시 계양구 계산동 970' }
+                    ];
+
+                    const combinedPool = [...extraDynamicResults, ...sampleAddresses];
+                    const filtered = combinedPool.filter(item => 
+                        item.road.toLowerCase().includes(q) || 
+                        item.jibun.toLowerCase().includes(q) || 
+                        item.zip.includes(q)
+                    );
+
+                    renderAddressResults(filtered, rawQuery);
+                } catch (err) {
+                    const filtered = sampleAddresses.filter(item => item.road.toLowerCase().includes(q));
+                    renderAddressResults(filtered, rawQuery);
+                }
+            }, 250);
+        }
+
+        function renderAddressResults(results, rawQuery) {
+            const list = document.getElementById('fallback-addr-results');
+            
+            if (results.length === 0) {
                 list.innerHTML = `
                     <div class="p-4 text-center text-xs text-grayText">
                         검색 결과가 없습니다.
-                        <div onclick="selectFallbackAddress('', document.getElementById('fallback-addr-query').value)" class="mt-2 text-accentGreen font-bold cursor-pointer hover:underline">
-                            입력한 내용으로 직접 적용하기 &rarr;
+                        <div onclick="selectFallbackAddress('', '${rawQuery.replace(/'/g, "\\'")}')" class="mt-2 text-accentGreen font-bold cursor-pointer hover:underline">
+                            '${rawQuery}' 직접 입력한 주소로 적용하기 &rarr;
                         </div>
                     </div>
                 `;
                 return;
             }
 
-            list.innerHTML = filtered.map(item => `
-                <div onclick="selectFallbackAddress('${item.zip}', '${item.road}')" class="p-3.5 hover:bg-black/5 cursor-pointer transition-colors">
+            list.innerHTML = results.map(item => `
+                <div onclick="selectFallbackAddress('${item.zip}', '${item.road.replace(/'/g, "\\'")}')" class="p-3.5 hover:bg-black/5 cursor-pointer transition-colors border-b border-black/5 last:border-none">
                     <div class="flex items-center gap-2">
                         <span class="px-2 py-0.5 rounded bg-accentGreen/10 text-accentGreen font-mono text-xs font-bold">${item.zip}</span>
                         <p class="text-xs font-bold text-darkText truncate">${item.road}</p>
                     </div>
                     <p class="text-[11px] text-grayText mt-1 truncate">지번: ${item.jibun}</p>
                 </div>
-            `).join('') + (q !== '' ? `
-                <div onclick="selectFallbackAddress('', document.getElementById('fallback-addr-query').value)" class="p-3 bg-accentGreen/5 hover:bg-accentGreen/10 cursor-pointer transition-colors border-t border-black/5 text-center">
-                    <span class="text-xs font-bold text-accentGreen">직접 입력한 주소로 적용하기 &rarr;</span>
+            `).join('') + (rawQuery ? `
+                <div onclick="selectFallbackAddress('', '${rawQuery.replace(/'/g, "\\'")}')" class="p-3 bg-accentGreen/5 hover:bg-accentGreen/10 cursor-pointer transition-colors border-t border-black/5 text-center">
+                    <span class="text-xs font-bold text-accentGreen">'${rawQuery}' 직접 입력한 주소로 적용하기 &rarr;</span>
                 </div>
             ` : '');
         }
@@ -1925,9 +1941,8 @@
             }
             document.getElementById('order-address').value = road;
             
-            // Also update MyPage fields if MyPage modal is open
             const myPageAddr = document.getElementById('mypage-ship-addr');
-            if (myPageAddr && document.getElementById('mypage-modal')?.classList.contains('flex')) {
+            if (myPageAddr) {
                 myPageAddr.value = road;
             }
 
@@ -1939,12 +1954,10 @@
             let cursorPosition = input.selectionStart;
             let originalValue = input.value;
             
-            // Extract only digits
             let num = originalValue.replace(/[^0-9]/g, '');
             let formatted = '';
 
             if (num.startsWith('02')) {
-                // Seoul local numbers (02)
                 if (num.length > 10) num = num.slice(0, 10);
                 if (num.length >= 10) {
                     formatted = num.replace(/^(\d{2})(\d{4})(\d{4})$/, '$1-$2-$3');
@@ -1956,12 +1969,10 @@
                     formatted = num;
                 }
             } else {
-                // General mobile & regional numbers
                 if (num.length > 11) num = num.slice(0, 11);
                 if (num.length >= 11) {
                     formatted = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
                 } else if (num.length === 10) {
-                    // Handle 10-digit numbers like 02-xxx-xxxx or 010-xxx-xxxx
                     formatted = num.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
                 } else if (num.length > 6) {
                     formatted = num.replace(/^(\d{3})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
@@ -1972,13 +1983,11 @@
                 }
             }
 
-            // Always update input value to maintain smooth instantaneous formatting
             if (input.value !== formatted) {
                 let oldLength = input.value.length;
                 input.value = formatted;
                 
                 try {
-                    // Smart cursor adjustment to prevent jumping or jittering
                     let diff = input.value.length - oldLength;
                     let newPos = Math.max(0, cursorPosition + diff);
                     input.setSelectionRange(newPos, newPos);
