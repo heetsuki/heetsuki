@@ -1562,76 +1562,23 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-grayText mb-1.5">카드 번호</label>
-                            <input type="text" maxlength="19" placeholder="4123 - 4567 - 8901 - 2345" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none font-mono tracking-wider">
+                            <label class="block text-xs font-semibold text-grayText mb-1.5">할부 개월</label>
+                            <select id="pg-card-installment" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none">
+                                <option>일시불 (무이자)</option>
+                                <option>2개월 (무이자)</option>
+                                <option>3개월 (무이자)</option>
+                                <option>6개월</option>
+                            </select>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-grayText mb-1.5">유효기간 (MM/YY)</label>
-                                <input type="text" maxlength="5" placeholder="10/28" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none font-mono text-center">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-grayText mb-1.5">비밀번호 앞 2자리</label>
-                                <input type="password" maxlength="2" placeholder="**" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none font-mono text-center">
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (method === '페이북/ISP') {
-                badgeEl.textContent = 'BC CARD / PAYBOOC';
-                titleEl.textContent = '페이북/ISP 인증 결제';
-                contentEl.innerHTML = `
-                    <div class="py-6 text-center space-y-3 bg-[#E6242E]/10 rounded-2xl border border-[#E6242E]/30">
-                        <div class="w-12 h-12 rounded-full bg-[#E6242E] text-white font-bold flex items-center justify-center mx-auto text-sm">paybooc</div>
-                        <p class="text-sm font-bold text-darkText">페이북(paybooc) 앱 간편인증</p>
-                        <p class="text-xs text-grayText">BC카드 및 페이북 앱 비밀번호 6자리로 안전하게 결제합니다.</p>
-                    </div>
-                `;
-            } else if (method === '네이버페이') {
-                badgeEl.textContent = 'NAVER PAY';
-                titleEl.textContent = '네이버페이 간편결제';
-                contentEl.innerHTML = `
-                    <div class="py-6 text-center space-y-3 bg-[#03C75A]/5 rounded-2xl border border-[#03C75A]/20">
-                        <div class="w-12 h-12 rounded-full bg-[#03C75A] text-white font-bold flex items-center justify-center mx-auto text-xl">N</div>
-                        <p class="text-sm font-bold text-darkText">네이버페이 비밀번호 6자리 인증</p>
-                        <div class="flex justify-center gap-2 pt-2">
-                            <input type="password" maxlength="1" class="w-10 h-12 rounded-xl bg-white border border-black/20 text-center font-bold text-lg" value="•">
-                            <input type="password" maxlength="1" class="w-10 h-12 rounded-xl bg-white border border-black/20 text-center font-bold text-lg" value="•">
-                            <input type="password" maxlength="1" class="w-10 h-12 rounded-xl bg-white border border-black/20 text-center font-bold text-lg" value="•">
-                            <input type="password" maxlength="1" class="w-10 h-12 rounded-xl bg-white border border-black/20 text-center font-bold text-lg" value="•">
-                            <input type="password" maxlength="1" class="w-10 h-12 rounded-xl bg-white border border-black/20 text-center font-bold text-lg" value="•">
-                            <input type="password" maxlength="1" class="w-10 h-12 rounded-xl bg-white border border-black/20 text-center font-bold text-lg" value="•">
-                        </div>
-                    </div>
-                `;
-            } else if (method === '카카오페이') {
-                badgeEl.textContent = 'KAKAO PAY';
-                titleEl.textContent = '카카오페이 인증';
-                contentEl.innerHTML = `
-                    <div class="py-6 text-center space-y-3 bg-[#FFE812]/20 rounded-2xl border border-[#FFE812]/50">
-                        <div class="w-12 h-12 rounded-full bg-[#FFE812] text-darkText font-bold flex items-center justify-center mx-auto text-lg">톡</div>
-                        <p class="text-sm font-bold text-darkText">카카오톡 앱에서 결제 요청을 확인하세요.</p>
-                        <p class="text-xs text-grayText">생체 인증 또는 비밀번호로 즉시 승인됩니다.</p>
-                    </div>
-                `;
-            } else if (method === '토스페이') {
-                badgeEl.textContent = 'TOSS PAY';
-                titleEl.textContent = '토스페이 간편결제';
-                contentEl.innerHTML = `
-                    <div class="py-6 text-center space-y-3 bg-[#0064FF]/10 rounded-2xl border border-[#0064FF]/30">
-                        <div class="w-12 h-12 rounded-full bg-[#0064FF] text-white font-bold flex items-center justify-center mx-auto text-sm">toss</div>
-                        <p class="text-sm font-bold text-darkText">토스 원클릭 안전결제</p>
-                        <p class="text-xs text-grayText">지문 또는 비밀번호 입력으로 안전하게 결제합니다.</p>
                     </div>
                 `;
             } else {
-                badgeEl.textContent = 'BANK TRANSFER';
-                titleEl.textContent = '무통장 입금 안내';
+                badgeEl.textContent = 'PG SAFE';
+                titleEl.textContent = `${method} 간편결제`;
                 contentEl.innerHTML = `
-                    <div class="p-4 rounded-2xl bg-[#F5F5F7] space-y-2 text-sm">
-                        <div class="flex justify-between"><span class="text-grayText">입금 은행</span><span class="font-bold text-darkText">국민은행 382901-04-192837</span></div>
-                        <div class="flex justify-between"><span class="text-grayText">예금주</span><span class="font-bold text-darkText">희츠키(HEETSUKI)</span></div>
-                        <div class="flex justify-between pt-2 border-t border-black/10"><span class="text-grayText">입금 기한</span><span class="font-bold text-accentGreen">주문 후 24시간 이내</span></div>
+                    <div class="py-6 text-center space-y-2">
+                        <p class="text-base font-bold text-darkText">${method}로 안전하게 결제합니다.</p>
+                        <p class="text-xs text-grayText">결제하기 버튼을 누르면 가상 승인이 진행됩니다.</p>
                     </div>
                 `;
             }
@@ -1649,28 +1596,26 @@
         function executePgPayment() {
             closePgModal();
             closeCheckoutPage();
-            
-            const name = pendingOrderData ? pendingOrderData.name : '고객';
-            const totalStr = pendingOrderData ? formatPrice(pendingOrderData.total) : '';
-            
-            // Save order to history
-            const existingOrders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            existingOrders.unshift({
+
+            // Save order to localStorage
+            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            const newOrder = {
                 id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
                 date: new Date().toLocaleDateString('ko-KR'),
-                total: totalStr,
                 payment: selectedPayment,
+                total: formatPrice(pendingOrderData.total),
                 itemsCount: cart.length
-            });
-            localStorage.setItem('heetsuki_orders', JSON.stringify(existingOrders));
+            };
+            orders.unshift(newOrder);
+            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
+            // Clear cart & reset
             cart = [];
             updateCartUI();
-            showToast(`[${selectedPayment}] ${totalStr} 결제가 안전하게 승인 완료되었습니다! (${name}님)`);
+            showToast(`[${newOrder.id}] 주문 및 결제가 완료되었습니다!`);
         }
 
-        // My Page Modal Logic
-        // My Page Modal Logic with dynamic textContent/innerHTML injection
+        // My Page Modal Logic with dynamic textContent/innerHTML injection & expanded features
         window.openMyPageModal = function() {
             let userObj = { name: '회원', type: '일반 회원', email: 'user@heetsuki.com' };
             try {
@@ -1679,6 +1624,14 @@
             } catch (e) {}
 
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            const wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
+            const shippingInfo = JSON.parse(localStorage.getItem('heetsuki_shipping_info') || JSON.stringify({
+                name: userObj.name !== '회원' ? userObj.name : '홍길동',
+                phone: '010-1234-5678',
+                zipcode: '21984',
+                address: '인천광역시 연수구 송도과학로 32',
+                detail: '101동 1204호'
+            }));
 
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
@@ -1689,7 +1642,7 @@
             }
 
             modal.innerHTML = `
-                <div class="bg-white border border-black/10 rounded-[28px] max-w-lg w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                <div class="bg-white border border-black/10 rounded-[28px] max-w-xl w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
                     <button onclick="closeMyPageModal()" class="absolute top-6 right-6 p-2 rounded-full text-grayText hover:bg-black/5">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
                     </button>
@@ -1704,33 +1657,86 @@
                         </div>
                     </div>
 
-                    <div class="mt-6 space-y-4">
-                        <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">주문 내역 (${orders.length}건)</h4>
-                        <div class="space-y-3 max-h-60 overflow-y-auto">
+                    <!-- 1. 배송지 정보 영역 -->
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">배송지 관리</h4>
+                            <button onclick="saveMyPageShippingInfo()" class="text-xs font-semibold text-accentGreen hover:underline">수정 저장</button>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-grayText mb-1">받는 분 성함</label>
+                                    <input type="text" id="mypage-ship-name" value="${shippingInfo.name}" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-grayText mb-1">연락처</label>
+                                    <input type="text" id="mypage-ship-phone" value="${shippingInfo.phone}" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-grayText mb-1">배송 주소</label>
+                                <div class="flex gap-2 mb-2">
+                                    <input type="text" id="mypage-ship-zip" value="${shippingInfo.zipcode}" readonly class="w-24 px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none">
+                                    <input type="text" id="mypage-ship-addr" value="${shippingInfo.address}" readonly onclick="openMyPageAddressSearch()" class="flex-1 px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none cursor-pointer">
+                                </div>
+                                <input type="text" id="mypage-ship-detail" value="${shippingInfo.detail}" placeholder="상세 주소 입력" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 최근 구매 내역 영역 -->
+                    <div class="mt-6 space-y-3">
+                        <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">최근 구매 내역 (${orders.length}건)</h4>
+                        <div class="space-y-2.5 max-h-40 overflow-y-auto pr-1">
                             ${orders.length === 0 ? `
-                                <div class="p-6 text-center text-sm text-grayText bg-[#F5F5F7] rounded-2xl">
-                                    아직 주문 내역이 없습니다.
+                                <div class="p-4 text-center text-xs text-grayText bg-[#F5F5F7] rounded-2xl">
+                                    최근 주문 내역이 없습니다.
                                 </div>
                             ` : orders.map(ord => `
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
+                                <div class="p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <span class="text-xs font-bold text-darkText">${ord.id}</span>
                                             <span class="text-[10px] px-2 py-0.5 rounded-full bg-accentGreen/10 text-accentGreen font-semibold">${ord.payment}</span>
                                         </div>
-                                        <p class="text-xs text-grayText mt-1">주문일자: ${ord.date} / 상품 ${ord.itemsCount}종</p>
+                                        <p class="text-[11px] text-grayText mt-0.5">${ord.date} / 상품 ${ord.itemsCount}종</p>
                                     </div>
-                                    <span class="text-sm font-bold text-darkText">${ord.total}</span>
+                                    <span class="text-xs font-bold text-darkText">${ord.total}</span>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
 
-                    <div class="mt-8 pt-6 border-t border-black/10 flex justify-between items-center">
-                        <button onclick="handleLogout(); closeMyPageModal();" class="px-4 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold transition-colors">
-                            로그아웃
+                    <!-- 3. 찜한 상품 목록 영역 -->
+                    <div class="mt-6 space-y-3">
+                        <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">찜한 상품 (${wishlist.length}개)</h4>
+                        <div class="space-y-2.5 max-h-36 overflow-y-auto pr-1">
+                            ${wishlist.length === 0 ? `
+                                <div class="p-4 text-center text-xs text-grayText bg-[#F5F5F7] rounded-2xl">
+                                    찜한 상품이 없습니다. 상품 카드에서 하트를 눌러보세요.
+                                </div>
+                            ` : wishlist.map((item, wIdx) => `
+                                <div class="p-3 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg object-cover bg-white">
+                                        <div>
+                                            <p class="text-xs font-bold text-darkText">${item.name}</p>
+                                            <p class="text-[11px] text-grayText">${item.price}</p>
+                                        </div>
+                                    </div>
+                                    <button onclick="removeWishlistItem(${wIdx})" class="text-grayText hover:text-red-600 text-xs p-1">삭제</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- 4. 회원 탈퇴 및 연동 해제 버튼 -->
+                    <div class="mt-8 pt-6 border-t border-black/15 flex justify-between items-center">
+                        <button onclick="handleAccountWithdrawal()" class="text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2.5 rounded-xl transition-colors">
+                            회원 탈퇴 및 연동 해제
                         </button>
-                        <button onclick="closeMyPageModal()" class="px-6 py-3 rounded-2xl bg-accentGreen text-white text-sm font-semibold transition-colors">
+                        <button onclick="closeMyPageModal()" class="px-6 py-3 rounded-2xl bg-accentGreen text-white text-sm font-semibold transition-colors shadow-sm">
                             확인
                         </button>
                     </div>
@@ -1739,6 +1745,56 @@
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+        };
+
+        window.saveMyPageShippingInfo = function() {
+            const name = document.getElementById('mypage-ship-name').value;
+            const phone = document.getElementById('mypage-ship-phone').value;
+            const zipcode = document.getElementById('mypage-ship-zip').value;
+            const address = document.getElementById('mypage-ship-addr').value;
+            const detail = document.getElementById('mypage-ship-detail').value;
+
+            const newInfo = { name, phone, zipcode, address, detail };
+            localStorage.setItem('heetsuki_shipping_info', JSON.stringify(newInfo));
+            showToast('배송지 정보가 안전하게 저장되었습니다.');
+        };
+
+        window.openMyPageAddressSearch = function() {
+            if (typeof daum !== 'undefined' && daum.Postcode) {
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        document.getElementById('mypage-ship-zip').value = data.zonecode;
+                        document.getElementById('mypage-ship-addr').value = data.roadAddress || data.address;
+                        document.getElementById('mypage-ship-detail').focus();
+                        showToast('배송지가 선택되었습니다.');
+                    }
+                }).open();
+            } else {
+                showToast('주소 검색 서비스를 이용할 수 없습니다.');
+            }
+        };
+
+        window.removeWishlistItem = function(index) {
+            let wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
+            wishlist.splice(index, 1);
+            localStorage.setItem('heetsuki_wishlist', JSON.stringify(wishlist));
+            openMyPageModal();
+            showToast('찜한 상품이 삭제되었습니다.');
+        };
+
+        window.handleAccountWithdrawal = function() {
+            const confirmed = window.confirm ? window.confirm('정말 HEETSUKI 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 삭제됩니다.') : true;
+            if (confirmed) {
+                localStorage.removeItem('heetsuki_logged_in_user');
+                localStorage.removeItem('heetsuki_orders');
+                localStorage.removeItem('heetsuki_shipping_info');
+                localStorage.removeItem('heetsuki_wishlist');
+                closeMyPageModal();
+                showToast('회원 탈퇴 및 연동 해제가 완료되었습니다.');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
         };
 
         window.closeMyPageModal = function() {
@@ -1755,20 +1811,7 @@
             { zip: '22006', road: '인천광역시 연수구 컨벤시아대로 165 (포스코타워 송도)', jibun: '인천광역시 연수구 송도동 24-1' },
             { zip: '21556', road: '인천광역시 남동구 예술로 198 (구월동, 인천시청)', jibun: '인천광역시 남동구 구월동 1138' },
             { zip: '06236', road: '서울특별시 강남구 테헤란로 152 (강남파이낸스센터)', jibun: '서울특별시 강남구 역삼동 737' },
-            { zip: '06164', road: '서울특별시 강남구 영동대로 513 (코엑스)', jibun: '서울특별시 강남구 삼성동 159' },
-            { zip: '04323', road: '서울특별시 용산구 한강대로 42 (아모레퍼시픽)', jibun: '서울특별시 용산구 한강로2가 181' },
-            { zip: '03171', road: '서울특별시 종로구 세종대로 175 (세종문화회관)', jibun: '서울특별시 종로구 세종로 81-3' },
-            { zip: '04524', road: '서울특별시 중구 세종대로 110 (서울특별시청)', jibun: '서울특별시 중구 태평로1가 31' },
-            { zip: '03925', road: '서울특별시 마포구 월드컵북로 396 (누리꿈스퀘어)', jibun: '서울특별시 마포구 상암동 1605' },
-            { zip: '07326', road: '서울특별시 영등포구 여의대로 108 (파크원 타워)', jibun: '서울특별시 영등포구 여의도동 22' },
-            { zip: '05551', road: '서울특별시 송파구 올림픽로 300 (롯데월드타워)', jibun: '서울특별시 송파구 신천동 29' },
-            { zip: '13529', road: '경기도 성남시 분당구 판교역로 166 (카카오 판교 아지트)', jibun: '경기도 성남시 분당구 백현동 532' },
-            { zip: '16229', road: '경기도 수원시 영통구 광교중앙로 140 (수원컨벤션센터)', jibun: '경기도 수원시 영통구 하동 864-10' },
-            { zip: '48058', road: '부산광역시 해운대구 센텀남대로 35 (신세계백화점 센텀시티점)', jibun: '부산광역시 해운대구 우동 1495' },
-            { zip: '41911', road: '대구광역시 중구 동성로2가 88-1', jibun: '대구광역시 중구 동성로2가 88-1' },
-            { zip: '35220', road: '대전광역시 서구 둔산대로 117번길 66', jibun: '대전광역시 서구 만년동 396' },
-            { zip: '61945', road: '광주광역시 서구 상무중앙로 110', jibun: '광주광역시 서구 치평동 1200' },
-            { zip: '63122', road: '제주특별자치도 제주시 문연로 6 (제주특별자치도청)', jibun: '제주특별자치도 제주시 연동 312-1' }
+            { zip: '06164', road: '서울특별시 강남구 영동대로 513 (코엑스)', jibun: '서울특별시 강남구 삼성동 159' }
         ];
 
         function openAddressSearch() {
@@ -1859,7 +1902,6 @@
             showToast('주소가 입력되었습니다.');
         }
 
-        // Auto-format Korean Phone Number (010-XXXX-XXXX)
         function formatPhoneNumber(input) {
             let num = input.value.replace(/[^0-9]/g, '');
             if (num.startsWith('02')) {
@@ -1880,45 +1922,6 @@
                 } else {
                     input.value = num;
                 }
-            }
-        }
-
-        // Road Name Address Search (Official MOLIT / Daum Postcode API Integration)
-        // Road Name Address Search (Road Name Address Search & Daum Postcode Integration)
-        function openAddressSearch() {
-            if (typeof daum !== 'undefined' && daum.Postcode) {
-                new daum.Postcode({
-                    oncomplete: function(data) {
-                        let roadAddr = data.roadAddress; // 도로명 주소
-                        let jibunAddr = data.jibunAddress; // 지번 주소
-                        let extraRoadAddr = ''; 
-
-                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-                            extraRoadAddr += data.bname;
-                        }
-                        if (data.buildingName !== '' && data.apartment === 'Y') {
-                            extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                        }
-                        if (extraRoadAddr !== '') {
-                            roadAddr += ' (' + extraRoadAddr + ')';
-                        }
-
-                        // Set Zipcode and Address
-                        document.getElementById('order-zipcode').value = data.zonecode;
-                        document.getElementById('order-address').value = roadAddr;
-                        
-                        // Focus on detail address input
-                        document.getElementById('order-address-detail').focus();
-                        showToast('주소가 선택되었습니다.');
-                    }
-                }).open();
-            } else {
-                const modal = document.getElementById('address-search-modal');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                document.getElementById('fallback-addr-query').value = '';
-                filterFallbackAddresses();
-                setTimeout(() => document.getElementById('fallback-addr-query').focus(), 50);
             }
         }
 
