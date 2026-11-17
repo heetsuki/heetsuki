@@ -1674,13 +1674,13 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[11px] font-semibold text-grayText mb-1">배송 주소 검색 및 입력</label>
+                                <label class="block text-[11px] font-semibold text-grayText mb-1">배송 주소 실시간 자동완성</label>
                                 <div class="flex gap-2 mb-2">
                                     <input type="text" id="mypage-ship-zip" value="${shippingInfo.zipcode}" readonly placeholder="우편번호" class="w-24 px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none">
                                     <div class="relative flex-1">
-                                        <input type="text" id="mypage-ship-addr" value="${shippingInfo.address}" oninput="handleMyPageAddressInput(this.value)" placeholder="도로명 또는 건물명 타이핑 (예: 송도과학로, 테헤란로)" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
+                                        <input type="text" id="mypage-ship-addr" value="${shippingInfo.address}" oninput="handleMyPageAddressInput(this.value)" placeholder="도로명 또는 건물명 타이핑 (예: 송도, 테헤란)" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
                                         <!-- Real-time Autocomplete Dropdown List -->
-                                        <div id="mypage-addr-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-black/15 rounded-xl shadow-xl max-h-48 overflow-y-auto z-30 divide-y divide-black/5"></div>
+                                        <div id="mypage-addr-dropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-black/15 rounded-xl shadow-2xl max-h-52 overflow-y-auto z-40 divide-y divide-black/5"></div>
                                     </div>
                                 </div>
                                 <input type="text" id="mypage-ship-detail" value="${shippingInfo.detail}" placeholder="상세 주소 입력 (동, 호수 등)" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
@@ -1762,7 +1762,7 @@
             showToast('배송지 정보가 로컬 스토리지에 안전하게 저장되었습니다.');
         };
 
-        // Real-time Autocomplete Address Search for My Page
+        // Real-time Autocomplete Address Search for My Page (Immediate dropdown on input)
         window.handleMyPageAddressInput = function(query) {
             const dropdown = document.getElementById('mypage-addr-dropdown');
             if (!dropdown) return;
@@ -1781,13 +1781,20 @@
             );
 
             if (filtered.length === 0) {
-                dropdown.innerHTML = `<div class="p-3 text-[11px] text-grayText text-center">검색 결과가 없습니다.</div>`;
+                dropdown.innerHTML = `
+                    <div class="p-3 text-xs text-grayText text-center">
+                        검색 결과가 없습니다.
+                        <div onclick="selectMyPageAddress('', '${query.replace(/'/g, "\\'")}')" class="mt-1 text-accentGreen font-bold cursor-pointer hover:underline">
+                            '${query}' 직접 입력하기 &rarr;
+                        </div>
+                    </div>
+                `;
                 dropdown.classList.remove('hidden');
                 return;
             }
 
             dropdown.innerHTML = filtered.map(item => `
-                <div onclick="selectMyPageAddress('${item.zip}', '${item.road}')" class="p-2.5 hover:bg-black/5 cursor-pointer transition-colors text-xs">
+                <div onclick="selectMyPageAddress('${item.zip}', '${item.road.replace(/'/g, "\\'")}')" class="p-3 hover:bg-black/5 cursor-pointer transition-colors text-xs">
                     <div class="flex items-center gap-2">
                         <span class="px-1.5 py-0.5 rounded bg-accentGreen/10 text-accentGreen font-mono text-[10px] font-bold">${item.zip}</span>
                         <span class="font-bold text-darkText truncate">${item.road}</span>
@@ -1800,7 +1807,9 @@
         };
 
         window.selectMyPageAddress = function(zip, road) {
-            document.getElementById('mypage-ship-zip').value = zip;
+            if (zip) {
+                document.getElementById('mypage-ship-zip').value = zip;
+            }
             document.getElementById('mypage-ship-addr').value = road;
             const dropdown = document.getElementById('mypage-addr-dropdown');
             if (dropdown) dropdown.classList.add('hidden');
