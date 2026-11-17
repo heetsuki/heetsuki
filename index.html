@@ -712,8 +712,8 @@
             const redirectUri = window.location.origin + window.location.pathname;
             const state = Math.random().toString(36).substring(2);
             
-            // Standard Naver OAuth request URL without any auth_type=reprompt or forced consent parameters
-            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
+            // Added auth_type=reauthenticate or standard silent handling to prevent repetitive consent prompts for returning Naver users
+            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&auth_type=reauthenticate`;
             
             showToast('네이버 공식 로그인 페이지로 이동합니다...');
             setTimeout(() => {
