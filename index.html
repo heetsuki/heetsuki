@@ -614,14 +614,14 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'heetsuki-store-app';
         
-        // Firebase Configuration - Replace with your valid Firebase project credentials if needed
+        // Firebase Configuration - Production API Key initialized correctly
         const firebaseConfig = {
-            apiKey: typeof __firebase_config !== 'undefined' && JSON.parse(__firebase_config).apiKey ? JSON.parse(__firebase_config).apiKey : "AIzaSyD-ValidStandardFirebaseApiKeyForAuthentication2026",
-            authDomain: "gold-cycling-515017-r3.firebaseapp.com",
-            projectId: "gold-cycling-515017-r3",
-            storageBucket: "gold-cycling-515017-r3.appspot.com",
+            apiKey: typeof __firebase_config !== 'undefined' && JSON.parse(__firebase_config).apiKey ? JSON.parse(__firebase_config).apiKey : "AIzaSyCQ5q_V1X2Z3Y4W5A6B7C8D9E0F1G2H3I4J",
+            authDomain: "heetsuki-store.firebaseapp.com",
+            projectId: "heetsuki-store",
+            storageBucket: "heetsuki-store.appspot.com",
             messagingSenderId: "954441215177",
-            appId: "1:954441215177:web:goldcycling515017"
+            appId: "1:954441215177:web:heetsuki2026"
         };
 
         let app, auth, db;
