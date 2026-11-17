@@ -1932,24 +1932,24 @@
 
             // Immediate local match display while fetching nationwide live data
             const nationwidePool = [
-                { zip: '21081', road: '인천광역시 계양구 계산로 39 (계산동)', jibun: '인천광역시 계양구 계산동 968-5' },
-                { zip: '21081', road: '인천광역시 계양구 계산로 39-1 (계산동)', jibun: '인천광역시 계양구 계산동 968-6' },
-                { zip: '21082', road: '인천광역시 계양구 계산로 40 (계산동)', jibun: '인천광역시 계양구 계산동 970' },
-                { zip: '21080', road: '인천광역시 계양구 계산새로 65 (계산동, 하이베라스)', jibun: '인천광역시 계양구 계산동 1062' },
+                { zip: '21077', road: '인천광역시 계양구 계산로 39 (계산동)', jibun: '인천광역시 계양구 계산동 968-5' },
+                { zip: '21077', road: '인천광역시 계양구 계산로 39-1 (계산동)', jibun: '인천광역시 계양구 계산동 968-6' },
+                { zip: '21077', road: '인천광역시 계양구 계산로 40 (계산동)', jibun: '인천광역시 계양구 계산동 970' },
+                { zip: '21061', road: '인천광역시 계양구 계산새로 65 (계산동, 하이베라스)', jibun: '인천광역시 계양구 계산동 1062' },
                 { zip: '21984', road: '인천광역시 연수구 송도과학로 32 (송도테크노파크 IT센터)', jibun: '인천광역시 연수구 송도동 172-1' },
                 { zip: '22006', road: '인천광역시 연수구 컨벤시아대로 165 (포스코타워 송도)', jibun: '인천광역시 연수구 송도동 24-1' },
-                { zip: '21556', road: '인천광역시 남동구 예술로 198 (구월동, 인천시청)', jibun: '인천광역시 남동구 구월동 1138' },
+                { zip: '21554', road: '인천광역시 남동구 정각로 29 (구월동, 인천광역시청)', jibun: '인천광역시 남동구 구월동 1138' },
                 { zip: '06236', road: '서울특별시 강남구 테헤란로 152 (강남파이낸스센터)', jibun: '서울특별시 강남구 역삼동 737' },
                 { zip: '06164', road: '서울특별시 강남구 영동대로 513 (코엑스)', jibun: '서울특별시 강남구 삼성동 159' },
                 { zip: '04524', road: '서울특별시 중구 세종대로 110 (서울특별시청)', jibun: '서울특별시 중구 태평로1가 31' },
-                { zip: '03172', road: '서울특별시 종로구 세종대로 209 (정부서울청사)', jibun: '서울특별시 종로구 세종로 77-6' },
+                { zip: '03171', road: '서울특별시 종로구 세종대로 209 (정부서울청사)', jibun: '서울특별시 종로구 세종로 77-6' },
                 { zip: '04320', road: '서울특별시 용산구 한강대로 405 (서울역)', jibun: '서울특별시 용산구 동자동 43-205' },
                 { zip: '13494', road: '경기도 성남시 분당구 판교역로 235 (에이치스퀘어 N동)', jibun: '경기도 성남시 분당구 삼평동 681' },
-                { zip: '16490', road: '경기도 수원시 팔달구 효원로 1 (경기도청)', jibun: '경기도 수원시 팔달구 매산로3가 1' },
+                { zip: '16508', road: '경기도 수원시 영통구 도청로 30 (이의동, 경기도청)', jibun: '경기도 수원시 영통구 이의동 184' },
                 { zip: '48058', road: '부산광역시 해운대구 센텀중앙로 79 (우동)', jibun: '부산광역시 해운대구 우동 1473' },
                 { zip: '47254', road: '부산광역시 부산진구 중앙대로 702 (부전동)', jibun: '부산광역시 부산진구 부전동 503-15' },
                 { zip: '41911', road: '대구광역시 중구 공평로 88 (동인동1가, 대구시청)', jibun: '대구광역시 중구 동인동1가 2-1' },
-                { zip: '34126', road: '대전광역시 유성구 대학로 99 (궁동, 충남대학교)', jibun: '대전광역시 유성구 궁동 220' },
+                { zip: '34134', road: '대전광역시 유성구 대학로 99 (궁동, 충남대학교)', jibun: '대전광역시 유성구 궁동 220' },
                 { zip: '61945', road: '광주광역시 서구 내방로 111 (치평동, 광주광역시청)', jibun: '광주광역시 서구 치평동 1200' },
                 { zip: '63122', road: '제주특별자치도 제주시 문연로 6 (연동, 제주특별자치도청)', jibun: '제주특별자치도 제주시 연동 312-1' }
             ];
@@ -1973,32 +1973,44 @@
 
             addressSearchTimer = setTimeout(async () => {
                 try {
-                    // 1. Try JSONP nationwide Juso API (bypasses CORS in browsers)
+                    // 1. Try JSONP nationwide Juso API (official 5-digit zipNo mapping)
                     const jsonpData = await fetchJusoJsonp(rawQuery);
                     if (jsonpData && jsonpData.results && jsonpData.results.juso && jsonpData.results.juso.length > 0) {
-                        const mappedResults = jsonpData.results.juso.map(item => ({
-                            zip: item.zipNo,
-                            road: item.roadAddr,
-                            jibun: item.jibunAddr
-                        }));
+                        const mappedResults = jsonpData.results.juso.map(item => {
+                            const cleanZip = String(item.zipNo || '').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
+                            const bdNm = item.bdNm ? ` (${item.bdNm})` : '';
+                            return {
+                                zip: cleanZip,
+                                road: `${item.roadAddrPart1 || item.roadAddr}${bdNm}`,
+                                detailHint: item.roadAddrPart2 ? item.roadAddrPart2.replace(/^\s*\(|\)\s*$/g, '') : '',
+                                jibun: item.jibunAddr || ''
+                            };
+                        });
                         renderAddressResults(mappedResults, rawQuery);
                         return;
                     }
                 } catch (err) {}
 
                 try {
-                    // 2. Try Kakao Local Address Search Open REST Endpoint
+                    // 2. Try Kakao Local Address Search Open REST Endpoint (zone_no mapping)
                     const kakaoRes = await fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(rawQuery)}&size=15`, {
                         headers: { 'Authorization': 'KakaoAK 7c1b30b2c5b6e0d2e8a4c9f1a2b3c4d5' }
                     });
                     if (kakaoRes.ok) {
                         const kData = await kakaoRes.json();
                         if (kData.documents && kData.documents.length > 0) {
-                            const mappedKakao = kData.documents.map(doc => ({
-                                zip: doc.road_address?.zone_no || doc.address?.zip_code || '00000',
-                                road: doc.road_address?.address_name || doc.address_name,
-                                jibun: doc.address?.address_name || doc.address_name
-                            }));
+                            const mappedKakao = kData.documents.map(doc => {
+                                const rawZone = doc.road_address?.zone_no || doc.address?.zip_code || '';
+                                const cleanZip = String(rawZone).replace(/[^0-9]/g, '').slice(0, 5);
+                                const building = doc.road_address?.building_name ? ` (${doc.road_address.building_name})` : '';
+                                const baseRoad = doc.road_address?.address_name || doc.address_name;
+                                return {
+                                    zip: cleanZip,
+                                    road: `${baseRoad}${building}`,
+                                    detailHint: doc.road_address?.building_name || '',
+                                    jibun: doc.address?.address_name || doc.address_name
+                                };
+                            });
                             renderAddressResults(mappedKakao, rawQuery);
                             return;
                         }
@@ -2014,14 +2026,18 @@
             filterFallbackAddresses();
         }
 
+        // Store current rendered items safely by index to avoid string escaping bugs
+        let currentRenderedAddresses = [];
+
         function renderAddressResults(results, rawQuery) {
             const list = document.getElementById('fallback-addr-results');
+            currentRenderedAddresses = results;
             
             if (results.length === 0) {
                 list.innerHTML = `
                     <div class="p-4 text-center text-xs text-grayText">
                         검색 결과가 없습니다.
-                        <div onclick="selectFallbackAddress('', '${rawQuery.replace(/'/g, "\\'")}')" class="mt-2 text-accentGreen font-bold cursor-pointer hover:underline">
+                        <div onclick="applyDirectAddressInput()" class="mt-2 text-accentGreen font-bold cursor-pointer hover:underline">
                             '${rawQuery}' 직접 입력한 주소로 적용하기 &rarr;
                         </div>
                     </div>
@@ -2029,36 +2045,65 @@
                 return;
             }
 
-            list.innerHTML = results.map(item => `
-                <div onclick="selectFallbackAddress('${item.zip}', '${item.road.replace(/'/g, "\\'")}')" class="p-3.5 hover:bg-black/5 cursor-pointer transition-colors border-b border-black/5 last:border-none">
+            list.innerHTML = results.map((item, idx) => `
+                <div onclick="selectAddressByIndex(${idx})" class="p-3.5 hover:bg-black/5 cursor-pointer transition-colors border-b border-black/5 last:border-none">
                     <div class="flex items-center gap-2">
-                        <span class="px-2 py-0.5 rounded bg-accentGreen/10 text-accentGreen font-mono text-xs font-bold">${item.zip}</span>
+                        <span class="px-2 py-0.5 rounded bg-accentGreen/10 text-accentGreen font-mono text-xs font-bold">${item.zip || '우편번호'}</span>
                         <p class="text-xs font-bold text-darkText truncate">${item.road}</p>
                     </div>
                     <p class="text-[11px] text-grayText mt-1 truncate">지번: ${item.jibun}</p>
                 </div>
             `).join('') + (rawQuery ? `
-                <div onclick="selectFallbackAddress('', '${rawQuery.replace(/'/g, "\\'")}')" class="p-3 bg-accentGreen/5 hover:bg-accentGreen/10 cursor-pointer transition-colors border-t border-black/5 text-center">
+                <div onclick="applyDirectAddressInput()" class="p-3 bg-accentGreen/5 hover:bg-accentGreen/10 cursor-pointer transition-colors border-t border-black/5 text-center">
                     <span class="text-xs font-bold text-accentGreen">'${rawQuery}' 직접 입력한 주소로 적용하기 &rarr;</span>
                 </div>
             ` : '');
         }
 
-        function selectFallbackAddress(zip, road) {
-            if (zip) {
-                document.getElementById('order-zipcode').value = zip;
-                const myPageZip = document.getElementById('mypage-ship-zip');
-                if (myPageZip) myPageZip.value = zip;
+        function selectAddressByIndex(index) {
+            const selected = currentRenderedAddresses[index];
+            if (!selected) return;
+            selectFallbackAddress(selected.zip, selected.road, selected.detailHint || '');
+        }
+
+        function applyDirectAddressInput() {
+            const rawQuery = document.getElementById('fallback-addr-query').value.trim();
+            if (!rawQuery) return;
+            selectFallbackAddress('', rawQuery, '');
+        }
+
+        function selectFallbackAddress(zip, road, detailHint = '') {
+            const cleanZip = String(zip || '').replace(/[^0-9]/g, '').slice(0, 5);
+
+            // Populate Checkout fields
+            const orderZip = document.getElementById('order-zipcode');
+            const orderAddr = document.getElementById('order-address');
+            const orderDetail = document.getElementById('order-address-detail');
+
+            if (orderZip) orderZip.value = cleanZip;
+            if (orderAddr) orderAddr.value = road;
+            if (orderDetail && !orderDetail.value && detailHint) {
+                orderDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
             }
-            document.getElementById('order-address').value = road;
             
+            // Populate My Page fields
+            const myPageZip = document.getElementById('mypage-ship-zip');
             const myPageAddr = document.getElementById('mypage-ship-addr');
-            if (myPageAddr) {
-                myPageAddr.value = road;
+            const myPageDetail = document.getElementById('mypage-ship-detail');
+
+            if (myPageZip) myPageZip.value = cleanZip;
+            if (myPageAddr) myPageAddr.value = road;
+            if (myPageDetail) {
+                if (detailHint && !myPageDetail.value) {
+                    myPageDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
+                }
+                setTimeout(() => myPageDetail.focus(), 80);
+            } else if (orderDetail) {
+                setTimeout(() => orderDetail.focus(), 80);
             }
 
             closeFallbackAddressModal();
-            showToast('주소가 입력되었습니다.');
+            showToast(cleanZip ? `[${cleanZip}] 우편번호와 도로명 주소가 정확히 입력되었습니다.` : '주소가 입력되었습니다.');
         }
 
         function formatPhoneNumber(input) {
