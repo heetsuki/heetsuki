@@ -1905,25 +1905,41 @@
         }
 
         function formatPhoneNumber(input) {
+            // Preserve cursor position stability by avoiding abrupt value rewrites when possible
+            let cursorPosition = input.selectionStart;
+            let originalLength = input.value.length;
+
             let num = input.value.replace(/[^0-9]/g, '');
+            let formatted = '';
+
             if (num.startsWith('02')) {
                 if (num.length > 10) num = num.slice(0, 10);
                 if (num.length > 5) {
-                    input.value = num.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+                    formatted = num.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2-$3');
                 } else if (num.length > 2) {
-                    input.value = num.replace(/^(\d{2})(\d{1,3})$/, '$1-$2');
+                    formatted = num.replace(/^(\d{2})(\d{1,3})$/, '$1-$2');
                 } else {
-                    input.value = num;
+                    formatted = num;
                 }
             } else {
                 if (num.length > 11) num = num.slice(0, 11);
                 if (num.length > 7) {
-                    input.value = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
+                    formatted = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
                 } else if (num.length > 3) {
-                    input.value = num.replace(/^(\d{3})(\d{1,4})$/, '$1-$2');
+                    formatted = num.replace(/^(\d{3})(\d{1,4})$/, '$1-$2');
                 } else {
-                    input.value = num;
+                    formatted = num;
                 }
+            }
+
+            if (input.value !== formatted) {
+                input.value = formatted;
+                // Maintain smooth cursor placement without jumping to the end
+                try {
+                    let diff = input.value.length - originalLength;
+                    let newPos = Math.max(0, cursorPosition + diff);
+                    input.setSelectionRange(newPos, newPos);
+                } catch (e) {}
             }
         }
 
