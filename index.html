@@ -711,8 +711,8 @@
             const redirectUri = window.location.origin + window.location.pathname;
             const state = Math.random().toString(36).substring(2);
             
-            // Added auth_type=reuse to prevent Naver from prompting the permission consent popup on re-login
-            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&auth_type=reuse`;
+            // Removed auth_type=reuse or any forced prompt parameters so Naver handles silent re-authentication naturally for authorized users
+            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
             
             showToast('네이버 공식 로그인 페이지로 이동합니다...');
             setTimeout(() => {
