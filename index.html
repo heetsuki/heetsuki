@@ -1673,7 +1673,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-semibold text-grayText mb-1">연락처</label>
-                                    <input type="text" id="mypage-ship-phone" value="${shippingInfo.phone}" placeholder="010-0000-0000" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
+                                    <input type="tel" id="mypage-ship-phone" value="${shippingInfo.phone}" maxlength="13" oninput="formatPhoneNumber(this)" placeholder="010-0000-0000" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
                                 </div>
                             </div>
                             <div>
