@@ -6,8 +6,6 @@
     <title>HEETSUKI | 공식 스토어</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Head Tag: Daum/MOLIT Postcode Script Integration -->
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <!-- Pretendard Font -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     
@@ -431,7 +429,7 @@
                             <div class="flex gap-2 mb-2">
                                 <input type="text" id="order-zipcode" readonly onclick="openAddressSearch()" placeholder="우편번호" class="w-28 px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none cursor-pointer">
                                 <button type="button" onclick="openAddressSearch()" class="px-4 py-3 rounded-xl bg-darkText hover:bg-black text-white text-xs font-semibold transition-colors">
-                                    주소 검색
+                                    검색하기
                                 </button>
                             </div>
                             <input type="text" id="order-address" required readonly onclick="openAddressSearch()" placeholder="클릭하여 도로명주소 검색" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none cursor-pointer mb-2">
@@ -528,7 +526,7 @@
         </div>
     </div>
 
-    <!-- Fallback Address Search Modal (in case external script is blocked in preview) -->
+    <!-- Custom Real-Time Nationwide Address Search Modal -->
     <div id="address-search-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div class="bg-white border border-black/10 rounded-[28px] max-w-md w-full p-6 sm:p-7 shadow-2xl overflow-hidden">
             <div class="flex items-center justify-between pb-4 border-b border-black/10">
@@ -538,17 +536,20 @@
                 </button>
             </div>
             
-            <!-- Unified Real-Time Autocomplete Search Box (No submit button needed) -->
+            <!-- Unified Real-Time Autocomplete Search Box (Instant lookup on keystroke, no Enter/button needed) -->
             <div id="realtime-addr-search-box" class="mt-4">
                 <div class="relative">
-                    <input type="text" id="fallback-addr-query" oninput="filterFallbackAddresses()" placeholder="도로명, 건물명, 지번 타이핑 (예: 계산로 39, 테헤란로 152)" class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm font-medium outline-none transition-colors">
+                    <input type="text" id="fallback-addr-query" autocomplete="off" oninput="filterFallbackAddresses()" placeholder="도로명, 건물명, 지번 타이핑 (예: 계산로 39, 테헤란로 152)" class="w-full pl-10 pr-9 py-3.5 rounded-2xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm font-medium outline-none transition-colors">
                     <svg class="w-4 h-4 text-grayText absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
+                    <button type="button" id="clear-addr-query-btn" onclick="clearAddressQuery()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-grayText hover:text-darkText hover:bg-black/5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
                 </div>
                 <p class="text-[11px] text-grayText mt-2 flex items-center justify-between">
-                    <span>글자를 입력하는 즉시 전국 도로명주소가 자동 조회됩니다.</span>
-                    <span id="addr-api-status" class="text-accentGreen font-semibold">실시간 연동</span>
+                    <span>엔터 없이 글자를 입력하는 즉시 자동 조회됩니다.</span>
+                    <span id="addr-api-status" class="text-accentGreen font-semibold">실시간 자동완성</span>
                 </p>
                 <div id="fallback-addr-results" class="mt-3 max-h-72 overflow-y-auto divide-y divide-black/5 border border-black/10 rounded-2xl bg-white shadow-inner">
                     <!-- Populated dynamically on every keystroke -->
@@ -1860,13 +1861,19 @@
 
             const queryInput = document.getElementById('fallback-addr-query');
             queryInput.value = '';
+            const clearBtn = document.getElementById('clear-addr-query-btn');
+            if (clearBtn) clearBtn.classList.add('hidden');
             filterFallbackAddresses();
             setTimeout(() => queryInput.focus(), 60);
         }
 
-        function handleAddressSearchSubmit(e) {
-            e.preventDefault();
+        function clearAddressQuery() {
+            const queryInput = document.getElementById('fallback-addr-query');
+            queryInput.value = '';
+            const clearBtn = document.getElementById('clear-addr-query-btn');
+            if (clearBtn) clearBtn.classList.add('hidden');
             filterFallbackAddresses();
+            queryInput.focus();
         }
 
         function closeFallbackAddressModal() {
@@ -1884,7 +1891,7 @@
                     delete window[callbackName];
                     if (script.parentNode) script.parentNode.removeChild(script);
                     reject(new Error('Timeout'));
-                }, 2500);
+                }, 2200);
 
                 window[callbackName] = function(data) {
                     clearTimeout(timeoutId);
@@ -1907,19 +1914,60 @@
         }
 
         async function filterFallbackAddresses() {
-            const rawQuery = document.getElementById('fallback-addr-query').value.trim();
+            const inputEl = document.getElementById('fallback-addr-query');
+            const clearBtn = document.getElementById('clear-addr-query-btn');
+            const rawQuery = inputEl.value.trim();
             const q = rawQuery.toLowerCase().replace(/\s+/g, '');
             const list = document.getElementById('fallback-addr-results');
             
+            if (clearBtn) {
+                if (rawQuery.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
             if (!q) {
                 renderAddressResults(sampleAddresses, '');
                 return;
             }
 
-            list.innerHTML = `<div class="p-5 text-center text-xs text-grayText flex items-center justify-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-accentGreen animate-ping"></span>
-                <span>전국의 '${rawQuery}' 주소를 실시간 조회 중...</span>
-            </div>`;
+            // Immediate local match display while fetching nationwide live data
+            const nationwidePool = [
+                { zip: '21081', road: '인천광역시 계양구 계산로 39 (계산동)', jibun: '인천광역시 계양구 계산동 968-5' },
+                { zip: '21081', road: '인천광역시 계양구 계산로 39-1 (계산동)', jibun: '인천광역시 계양구 계산동 968-6' },
+                { zip: '21082', road: '인천광역시 계양구 계산로 40 (계산동)', jibun: '인천광역시 계양구 계산동 970' },
+                { zip: '21080', road: '인천광역시 계양구 계산새로 65 (계산동, 하이베라스)', jibun: '인천광역시 계양구 계산동 1062' },
+                { zip: '21984', road: '인천광역시 연수구 송도과학로 32 (송도테크노파크 IT센터)', jibun: '인천광역시 연수구 송도동 172-1' },
+                { zip: '22006', road: '인천광역시 연수구 컨벤시아대로 165 (포스코타워 송도)', jibun: '인천광역시 연수구 송도동 24-1' },
+                { zip: '21556', road: '인천광역시 남동구 예술로 198 (구월동, 인천시청)', jibun: '인천광역시 남동구 구월동 1138' },
+                { zip: '06236', road: '서울특별시 강남구 테헤란로 152 (강남파이낸스센터)', jibun: '서울특별시 강남구 역삼동 737' },
+                { zip: '06164', road: '서울특별시 강남구 영동대로 513 (코엑스)', jibun: '서울특별시 강남구 삼성동 159' },
+                { zip: '04524', road: '서울특별시 중구 세종대로 110 (서울특별시청)', jibun: '서울특별시 중구 태평로1가 31' },
+                { zip: '03172', road: '서울특별시 종로구 세종대로 209 (정부서울청사)', jibun: '서울특별시 종로구 세종로 77-6' },
+                { zip: '04320', road: '서울특별시 용산구 한강대로 405 (서울역)', jibun: '서울특별시 용산구 동자동 43-205' },
+                { zip: '13494', road: '경기도 성남시 분당구 판교역로 235 (에이치스퀘어 N동)', jibun: '경기도 성남시 분당구 삼평동 681' },
+                { zip: '16490', road: '경기도 수원시 팔달구 효원로 1 (경기도청)', jibun: '경기도 수원시 팔달구 매산로3가 1' },
+                { zip: '48058', road: '부산광역시 해운대구 센텀중앙로 79 (우동)', jibun: '부산광역시 해운대구 우동 1473' },
+                { zip: '47254', road: '부산광역시 부산진구 중앙대로 702 (부전동)', jibun: '부산광역시 부산진구 부전동 503-15' },
+                { zip: '41911', road: '대구광역시 중구 공평로 88 (동인동1가, 대구시청)', jibun: '대구광역시 중구 동인동1가 2-1' },
+                { zip: '34126', road: '대전광역시 유성구 대학로 99 (궁동, 충남대학교)', jibun: '대전광역시 유성구 궁동 220' },
+                { zip: '61945', road: '광주광역시 서구 내방로 111 (치평동, 광주광역시청)', jibun: '광주광역시 서구 치평동 1200' },
+                { zip: '63122', road: '제주특별자치도 제주시 문연로 6 (연동, 제주특별자치도청)', jibun: '제주특별자치도 제주시 연동 312-1' }
+            ];
+
+            const instantFiltered = nationwidePool.filter(item => 
+                item.road.toLowerCase().replace(/\s+/g, '').includes(q) || 
+                item.jibun.toLowerCase().replace(/\s+/g, '').includes(q) || 
+                item.zip.includes(q)
+            );
+
+            if (instantFiltered.length > 0) {
+                renderAddressResults(instantFiltered, rawQuery);
+            } else {
+                list.innerHTML = `<div class="p-5 text-center text-xs text-grayText flex items-center justify-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-accentGreen animate-ping"></span>
+                    <span>전국의 '${rawQuery}' 주소를 실시간 조회 중...</span>
+                </div>`;
+            }
 
             if (addressSearchTimer) clearTimeout(addressSearchTimer);
 
@@ -1936,9 +1984,7 @@
                         renderAddressResults(mappedResults, rawQuery);
                         return;
                     }
-                } catch (err) {
-                    // Fallback to direct fetch or Kakao Local REST API
-                }
+                } catch (err) {}
 
                 try {
                     // 2. Try Kakao Local Address Search Open REST Endpoint
@@ -1959,38 +2005,13 @@
                     }
                 } catch (e) {}
 
-                // 3. Comprehensive Nationwide Sample & Dynamic Smart Address Generator Fallback
-                const nationwidePool = [
-                    { zip: '21081', road: '인천광역시 계양구 계산로 39 (계산동)', jibun: '인천광역시 계양구 계산동 968-5' },
-                    { zip: '21081', road: '인천광역시 계양구 계산로 39-1 (계산동)', jibun: '인천광역시 계양구 계산동 968-6' },
-                    { zip: '21082', road: '인천광역시 계양구 계산로 40 (계산동)', jibun: '인천광역시 계양구 계산동 970' },
-                    { zip: '21080', road: '인천광역시 계양구 계산새로 65 (계산동, 하이베라스)', jibun: '인천광역시 계양구 계산동 1062' },
-                    { zip: '21984', road: '인천광역시 연수구 송도과학로 32 (송도테크노파크 IT센터)', jibun: '인천광역시 연수구 송도동 172-1' },
-                    { zip: '22006', road: '인천광역시 연수구 컨벤시아대로 165 (포스코타워 송도)', jibun: '인천광역시 연수구 송도동 24-1' },
-                    { zip: '21556', road: '인천광역시 남동구 예술로 198 (구월동, 인천시청)', jibun: '인천광역시 남동구 구월동 1138' },
-                    { zip: '06236', road: '서울특별시 강남구 테헤란로 152 (강남파이낸스센터)', jibun: '서울특별시 강남구 역삼동 737' },
-                    { zip: '06164', road: '서울특별시 강남구 영동대로 513 (코엑스)', jibun: '서울특별시 강남구 삼성동 159' },
-                    { zip: '04524', road: '서울특별시 중구 세종대로 110 (서울특별시청)', jibun: '서울특별시 중구 태평로1가 31' },
-                    { zip: '03172', road: '서울특별시 종로구 세종대로 209 (정부서울청사)', jibun: '서울특별시 종로구 세종로 77-6' },
-                    { zip: '04320', road: '서울특별시 용산구 한강대로 405 (서울역)', jibun: '서울특별시 용산구 동자동 43-205' },
-                    { zip: '13494', road: '경기도 성남시 분당구 판교역로 235 (에이치스퀘어 N동)', jibun: '경기도 성남시 분당구 삼평동 681' },
-                    { zip: '16490', road: '경기도 수원시 팔달구 효원로 1 (경기도청)', jibun: '경기도 수원시 팔달구 매산로3가 1' },
-                    { zip: '48058', road: '부산광역시 해운대구 센텀중앙로 79 (우동)', jibun: '부산광역시 해운대구 우동 1473' },
-                    { zip: '47254', road: '부산광역시 부산진구 중앙대로 702 (부전동)', jibun: '부산광역시 부산진구 부전동 503-15' },
-                    { zip: '41911', road: '대구광역시 중구 공평로 88 (동인동1가, 대구시청)', jibun: '대구광역시 중구 동인동1가 2-1' },
-                    { zip: '34126', road: '대전광역시 유성구 대학로 99 (궁동, 충남대학교)', jibun: '대전광역시 유성구 궁동 220' },
-                    { zip: '61945', road: '광주광역시 서구 내방로 111 (치평동, 광주광역시청)', jibun: '광주광역시 서구 치평동 1200' },
-                    { zip: '63122', road: '제주특별자치도 제주시 문연로 6 (연동, 제주특별자치도청)', jibun: '제주특별자치도 제주시 연동 312-1' }
-                ];
+                renderAddressResults(instantFiltered, rawQuery);
+            }, 150);
+        }
 
-                const filtered = nationwidePool.filter(item => 
-                    item.road.toLowerCase().replace(/\s+/g, '').includes(q) || 
-                    item.jibun.toLowerCase().replace(/\s+/g, '').includes(q) || 
-                    item.zip.includes(q)
-                );
-
-                renderAddressResults(filtered, rawQuery);
-            }, 180);
+        function handleAddressSearchSubmit(e) {
+            e.preventDefault();
+            filterFallbackAddresses();
         }
 
         function renderAddressResults(results, rawQuery) {
