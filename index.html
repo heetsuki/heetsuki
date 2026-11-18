@@ -268,12 +268,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-grayText mb-1.5">비밀번호</label>
-                    <div class="relative">
-                        <input type="password" id="login-pw" required placeholder="비밀번호 입력" class="w-full pl-4 pr-11 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-base outline-none">
-                        <button type="button" onclick="togglePasswordVisibility('login-pw', 'login-pw-icon')" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-grayText hover:text-darkText p-1 cursor-pointer">
-                            <svg id="login-pw-icon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </button>
-                    </div>
+                    <input type="password" id="login-pw" required placeholder="비밀번호 입력" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-base outline-none">
                 </div>
                 <button type="submit" class="w-full py-4 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-base font-semibold transition-colors mt-2">로그인</button>
                 
@@ -631,61 +626,61 @@
     <!-- Official Daum Postcode Script -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <!-- Admin Panel Floating / Toggle Button (Bottom-Left) -->
-    <button onclick="openAdminModal()" class="fixed bottom-6 left-6 z-40 px-4 py-3 rounded-full bg-darkText text-white text-xs font-bold shadow-2xl hover:bg-accentGreen transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        <span>관리자 모드</span>
-    </button>
-
-    <!-- Admin Panel Modal -->
-    <div id="admin-modal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm">
-        <div class="bg-white border border-black/10 rounded-[28px] max-w-3xl w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between pb-5 border-b border-black/10">
-                <div class="flex items-center gap-2.5">
-                    <span class="px-3 py-1 rounded-full bg-accentGreen/10 text-accentGreen text-xs font-bold">ADMIN PANEL</span>
-                    <h3 class="text-xl font-bold text-darkText">HEETSUKI 관리자 센터 (취소 요청 승인 관리)</h3>
-                </div>
-                <button type="button" onclick="closeAdminModal()" class="p-2 rounded-full text-grayText hover:bg-black/5">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    <!-- Find ID / Password Modal -->
+    <div id="find-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="bg-white border border-black/10 rounded-[28px] max-w-sm w-full p-6 sm:p-7 shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-black/10">
+                <h3 id="find-modal-title" class="text-base font-bold text-darkText">아이디 찾기</h3>
+                <button type="button" onclick="closeFindModal()" class="p-1 rounded-full text-grayText hover:bg-black/5">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
             </div>
-            
-            <div class="py-6 space-y-6">
-                <!-- Admin Stats Overview -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5">
-                        <p class="text-xs text-grayText font-medium">관리자 계정</p>
-                        <p class="text-sm font-bold text-darkText mt-1">heetsuki001@gmail.com</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200">
-                        <p class="text-xs text-amber-800 font-medium">취소 승인 대기 건</p>
-                        <p id="admin-pending-count" class="text-xl font-bold text-amber-900 mt-1">0건</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-                        <p class="text-xs text-emerald-800 font-medium">총 주문 접수 건</p>
-                        <p id="admin-total-orders-count" class="text-xl font-bold text-emerald-900 mt-1">0건</p>
-                    </div>
-                </div>
-
-                <!-- Cancellation Requests Management Section -->
-                <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">고객 주문 취소 요청 목록 (관리자 승인 대기)</h4>
-                    <div id="admin-cancellation-list" class="space-y-3 max-h-96 overflow-y-auto pr-1">
-                        <!-- Populated dynamically -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-4 border-t border-black/10 flex justify-end">
-                <button type="button" onclick="closeAdminModal()" class="px-6 py-3 rounded-2xl bg-darkText text-white text-sm font-semibold hover:bg-black transition-colors">
-                    닫기
-                </button>
+            <div id="find-modal-body" class="py-5 space-y-4">
+                <!-- Populated dynamically -->
             </div>
         </div>
     </div>
 
-    <!-- Find ID / Password Modal -->
-<!-- ... -->
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-2 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="px-5 py-3.5 rounded-2xl bg-white border border-black/10 text-darkText text-sm font-medium shadow-xl flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
+            <span id="toast-text">알림 메시지</span>
+        </div>
+    </div>
+
+    <!-- Firebase & Auth Logic Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            signInWithCustomToken, 
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'heetsuki-store-app';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaPtkPRf1q0Hb2n8sPQN4QOwnZvROulcg",
+            authDomain: "heetsuki-b6d11.firebaseapp.com",
+            projectId: "heetsuki-b6d11",
+            storageBucket: "heetsuki-b6d11.firebasestorage.app",
+            messagingSenderId: "552895630833",
+            appId: "1:552895630833:web:f5a5a1bc55646d6b944850",
+            measurementId: "G-11CV7K970E"
+        };
+
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            window.auth = auth;
         } catch (err) {
             console.warn("Firebase initialization notice:", err.message);
         }
@@ -860,9 +855,6 @@
                     </div>
                 `;
             }
-
-            // 관리자 권한 확인 후 '관리자 모드' 버튼 동적 렌더링 (heetsuki001@gmail.com 전용)
-            updateAdminFloatingButton(userObj.email);
         }
 
         function applyLogoutState() {
@@ -884,28 +876,6 @@
                     <button onclick="openAuthModal('login')" class="text-xs font-medium text-grayText hover:text-darkText transition-colors">로그인 필요</button>
                 `;
             }
-
-            // 비로그인 상태일 때는 관리자 버튼 철저히 숨김
-            updateAdminFloatingButton(null);
-        }
-
-        function updateAdminFloatingButton(email) {
-            const container = document.getElementById('admin-floating-btn-container');
-            if (!container) return;
-
-            const adminEmail = 'heetsuki001@gmail.com';
-            const isReallyAdmin = email && email.trim().toLowerCase() === adminEmail;
-
-            if (isReallyAdmin) {
-                container.innerHTML = `
-                    <button onclick="openAdminModal()" class="fixed bottom-6 left-6 z-40 px-4 py-3 rounded-full bg-darkText text-white text-xs font-bold shadow-2xl hover:bg-accentGreen transition-colors flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span>관리자 모드</span>
-                    </button>
-                `;
-            } else {
-                container.innerHTML = '';
-            }
         }
 
         window.handleLogout = async function() {
@@ -919,20 +889,16 @@
         };
 
         window.togglePasswordVisibility = function(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
+            const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
-            if (!passwordInput) return;
+            if (!input || !icon) return;
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                if (icon) {
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;
-                }
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;
             } else {
-                passwordInput.type = 'password';
-                if (icon) {
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
-                }
+                input.type = 'password';
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
             }
         };
 
@@ -2718,6 +2684,7 @@
             if (!cancelModal) {
                 cancelModal = document.createElement('div');
                 cancelModal.id = 'cancel-order-modal';
+                // 주문 취소 모달은 가장 최상단 계층으로 배치 (z-[100])
                 cancelModal.className = 'fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
                 document.body.appendChild(cancelModal);
             }
@@ -2733,8 +2700,8 @@
                 <div class="bg-white border border-black/10 rounded-[28px] max-w-md w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
                     <div class="flex items-center justify-between pb-4 border-b border-black/10">
                         <div>
-                            <span class="text-[11px] font-bold text-red-600 uppercase tracking-wider">CANCEL ORDER REQUEST</span>
-                            <h3 class="text-xl font-bold text-darkText mt-0.5">주문 취소 신청 (관리자 승인제)</h3>
+                            <span class="text-[11px] font-bold text-red-600 uppercase tracking-wider">CANCEL ORDER</span>
+                            <h3 class="text-xl font-bold text-darkText mt-0.5">주문 취소 신청</h3>
                         </div>
                         <button type="button" onclick="closeCancelOrderModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -2754,7 +2721,7 @@
                                 <span class="font-semibold text-darkText truncate max-w-[200px]">${itemSummary}</span>
                             </div>
                             <div class="flex justify-between text-xs">
-                                <span class="text-grayText">결제 금액 및 수단</span>
+                                <span class="text-grayText">결제 금액</span>
                                 <span class="font-bold text-accentGreen">${ord.total} (${ord.payment})</span>
                             </div>
                         </div>
@@ -2780,11 +2747,11 @@
                             <p id="error-cancel-detail" class="text-xs text-red-500 font-semibold hidden">기타 사유 선택 시 상세 내용을 입력해 주세요.</p>
                         </div>
 
-                        <!-- 4. 환불 및 승인 안내 문구 -->
+                        <!-- 4. 환불 및 취소 안내 문구 -->
                         <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/70 space-y-1 text-[11px] text-amber-900 leading-relaxed">
-                            <p class="font-bold">관리자 승인제 안내</p>
-                            <p>• 신청 즉시 관리자 이메일(heetsuki001@gmail.com)로 알림 메일이 자동 발송됩니다.</p>
-                            <p>• 모든 결제 수단(신용카드, 간편결제, 무통장입금 등)은 관리자 최종 승인 후 취소 및 환불 처리됩니다.</p>
+                            <p class="font-bold">환불 및 취소 처리 안내</p>
+                            <p>• 무통장입금 대기 건은 신청 즉시 취소 처리됩니다.</p>
+                            <p>• 카드 및 간편결제 완료 건은 취소 승인 후 영업일 기준 2~5일 이내에 원결제 수단으로 환불됩니다.</p>
                         </div>
                     </div>
 
@@ -2794,7 +2761,7 @@
                             취소 철회/닫기
                         </button>
                         <button type="button" onclick="submitOrderCancellation(${orderIndex})" class="w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold transition-colors shadow-sm">
-                            취소 요청 제출하기
+                            주문 취소 신청하기
                         </button>
                     </div>
                 </div>
@@ -2861,16 +2828,15 @@
             const ord = orders[orderIndex];
             if (!ord) return;
 
-            // 관리자 승인제 도입: '취소 요청 (관리자 승인 대기 중)' 상태로 업데이트
-            ord.status = '취소 요청 (관리자 승인 대기 중)';
+            ord.status = '주문 취소됨';
             ord.cancelReason = selectedReason;
             ord.cancelDetail = detailText;
-            ord.cancelRequestedAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+            ord.cancelledAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
 
             orders[orderIndex] = ord;
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            // Firestore 동기화
+            // Firestore 동기화 (로그인 상태인 경우)
             try {
                 if (window.auth && window.auth.currentUser && window.db) {
                     const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
@@ -2878,153 +2844,16 @@
                     await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', ord.id), ord, { merge: true });
                 }
             } catch (err) {
-                console.warn('Firestore order cancellation request sync fallback:', err);
+                console.warn('Firestore order cancellation sync fallback:', err);
             }
-
-            // 관리자 이메일 자동 발송 연동 모사 (heetsuki001@gmail.com)
-            console.log(`[ADMIN EMAIL NOTIFICATION DISPATCHED] To: heetsuki001@gmail.com | Subject: [HEETSUKI] 새로운 주문 취소 요청 접수 (${ord.id}) | Reason: ${selectedReason}`);
 
             closeCancelOrderModal();
-            showToast(`[${ord.id}] 취소 요청이 접수되었습니다. 관리자 승인 대기 중입니다.`);
+            showToast(`[${ord.id}] 주문 취소가 완료되었습니다.`);
 
-            // 주문 상세 창 및 마이페이지 동기화
+            // 주문 상세 창 즉시 재렌더링하여 '주문 취소됨' 상태 반영
             openOrderDetailModal(orderIndex);
-            const myPageModal = document.getElementById('mypage-modal');
-            if (myPageModal && !myPageModal.classList.contains('hidden')) {
-                openMyPageModal();
-            }
-        };
 
-        // 관리자 모달 및 승인/반려 제어 함수
-        window.openAdminModal = function() {
-            // 이중 보안 체크: 관리자 이메일이 아닌 경우 접근 원천 차단
-            let currentEmail = '';
-            try {
-                const saved = localStorage.getItem('heetsuki_logged_in_user');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    currentEmail = parsed.email || '';
-                }
-                if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
-                    currentEmail = window.auth.currentUser.email;
-                }
-            } catch(e) {}
-
-            if (!currentEmail || currentEmail.trim().toLowerCase() !== 'heetsuki001@gmail.com') {
-                showToast('접근 권한이 없습니다. 관리자 계정으로 로그인해주세요.');
-                closeAdminModal();
-                return;
-            }
-
-            renderAdminPanel();
-            const modal = document.getElementById('admin-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-        };
-
-        window.closeAdminModal = function() {
-            const modal = document.getElementById('admin-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        };
-
-        window.renderAdminPanel = function() {
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const pendingOrders = orders.filter(o => o.status === '취소 요청 (관리자 승인 대기 중)');
-
-            document.getElementById('admin-pending-count').textContent = `${pendingOrders.length}건`;
-            document.getElementById('admin-total-orders-count').textContent = `${orders.length}건`;
-
-            const container = document.getElementById('admin-cancellation-list');
-            if (!container) return;
-
-            if (pendingOrders.length === 0) {
-                container.innerHTML = `
-                    <div class="p-8 rounded-2xl bg-[#F5F5F7] text-center text-xs text-grayText border border-black/5">
-                        현재 관리자 승인을 대기 중인 주문 취소 요청 건이 없습니다.
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = orders.map((ord, oIdx) => {
-                if (ord.status !== '취소 요청 (관리자 승인 대기 중)') return '';
-                const customerName = ord.shippingInfo ? ord.shippingInfo.name : '고객';
-                const customerPhone = ord.shippingInfo ? ord.shippingInfo.phone : '미입력';
-                const itemSummary = ord.items && ord.items.length > 0 ? ord.items[0].name + (ord.items.length > 1 ? ` 외 ${ord.items.length - 1}건` : '') : '상품';
-
-                return `
-                    <div class="p-5 rounded-2xl bg-amber-50/60 border border-amber-200/80 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold text-darkText">${ord.id}</span>
-                                <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold">승인 대기 중</span>
-                                <span class="text-xs text-grayText">(${ord.payment})</span>
-                            </div>
-                            <span class="text-xs font-bold text-accentGreen">${ord.total}</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-grayText bg-white p-3 rounded-xl border border-black/5">
-                            <div><span class="font-medium text-darkText">주문 상품:</span> ${itemSummary}</div>
-                            <div><span class="font-medium text-darkText">주문 일시:</span> ${ord.date}</div>
-                            <div><span class="font-medium text-darkText">주문자:</span> ${customerName} (${customerPhone})</div>
-                            <div><span class="font-medium text-darkText">취소 신청일:</span> ${ord.cancelRequestedAt || ord.date}</div>
-                        </div>
-                        <div class="p-3 bg-red-50/80 rounded-xl border border-red-200 text-xs text-red-900 space-y-0.5">
-                            <p class="font-bold">고객 취소 사유: ${ord.cancelReason || '단순 변심'}</p>
-                            ${ord.cancelDetail ? `<p class="text-[11px] text-red-700">상세 내용: ${ord.cancelDetail}</p>` : ''}
-                        </div>
-                        <div class="flex items-center justify-end gap-2.5 pt-1">
-                            <button type="button" onclick="adminProcessCancellation(${oIdx}, 'reject')" class="px-4 py-2 rounded-xl bg-white hover:bg-gray-100 border border-black/10 text-darkText text-xs font-semibold transition-colors">
-                                반려 (취소 거부)
-                            </button>
-                            <button type="button" onclick="adminProcessCancellation(${oIdx}, 'approve')" class="px-4 py-2 rounded-xl bg-accentGreen hover:bg-accentGreenHover text-white text-xs font-semibold transition-colors shadow-sm">
-                                승인 및 환불 완료 처리
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        };
-
-        window.adminProcessCancellation = async function(orderIndex, action) {
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const ord = orders[orderIndex];
-            if (!ord) return;
-
-            if (action === 'approve') {
-                ord.status = '주문 취소됨';
-                ord.refundStatus = '환불 완료';
-                ord.adminProcessedAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-                showToast(`[${ord.id}] 주문 취소가 최종 승인 및 환불 완료되었습니다.`);
-            } else {
-                ord.status = ord.payment === '무통장입금' ? '입금 대기중' : '결제 완료';
-                ord.cancelReason = null;
-                ord.cancelDetail = null;
-                ord.adminProcessedAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-                showToast(`[${ord.id}] 주문 취소 요청이 반려되었습니다.`);
-            }
-
-            orders[orderIndex] = ord;
-            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
-
-            // Firestore 동기화
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', ord.id), ord, { merge: true });
-                }
-            } catch (err) {
-                console.warn('Firestore admin cancellation process sync fallback:', err);
-            }
-
-            renderAdminPanel();
-
-            // 마이페이지 열려 있으면 동기화
+            // 마이페이지 모달이 열려 있다면 구매 내역 상태도 즉시 동기화
             const myPageModal = document.getElementById('mypage-modal');
             if (myPageModal && !myPageModal.classList.contains('hidden')) {
                 openMyPageModal();
