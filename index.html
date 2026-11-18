@@ -1692,9 +1692,19 @@
             if (!isAuthed) {
                 closeCartDrawer();
                 showToast('로그인이 필요한 서비스입니다.');
+                // 수정: 기존 주문 정보 입력창(checkout-page)을 닫지 않고 배경 Dim 상태를 유지한 채 로그인 모달만 최상단(z-[110])으로 덧씌움
+                const checkoutPage = document.getElementById('checkout-page');
+                if (checkoutPage) {
+                    checkoutPage.classList.remove('hidden');
+                }
                 setTimeout(() => {
                     openAuthModal('login');
-                }, 300);
+                    // 로그인 모달의 z-index를 주문창(z-50)보다 높은 z-[110]으로 설정하여 깜빡임 없이 부드럽게 오버레이
+                    const authModal = document.getElementById('auth-modal');
+                    if (authModal) {
+                        authModal.style.zIndex = '110';
+                    }
+                }, 100);
                 return;
             }
 
@@ -1886,11 +1896,15 @@
             const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
 
             if (!isAuthed) {
-                closeCheckoutPage();
+                // 수정: 기존 주문 정보 입력창(checkout-page)을 닫지 않고 배경 상태를 유지한 채 로그인 모달을 오버레이
                 showToast('로그인이 필요한 서비스입니다.');
                 setTimeout(() => {
                     openAuthModal('login');
-                }, 300);
+                    const authModal = document.getElementById('auth-modal');
+                    if (authModal) {
+                        authModal.style.zIndex = '110';
+                    }
+                }, 100);
                 return;
             }
 
