@@ -645,23 +645,59 @@
         const EMAIL_SERVICE_ID = "service_wevgw6t"; // 👈 서비스 ID
         const EMAIL_TEMPLATE_ID = "template_w4lct8h"; // 👈 템플릿 ID
 
+        // Helper function to resolve accurate customer name according to user priority rules:
+        // 1. Firebase Auth user.displayName (if available and valid)
+        // 2. Shipping recipient name or saved user profile name (e.g., 양대희)
+        // 3. Fallback to "고객님"
+        function resolveAccurateCustomerName(orderData) {
+            // Check Firebase Auth currentUser displayName if present
+            try {
+                if (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) {
+                    const dn = window.auth.currentUser.displayName.trim();
+                    if (dn && dn !== '유저' && !dn.includes('google_user')) {
+                        return dn;
+                    }
+                }
+            } catch(e) {}
+
+            // Check orderData shippingInfo name
+            if (orderData && orderData.shippingInfo && orderData.shippingInfo.name) {
+                const sName = orderData.shippingInfo.name.trim();
+                if (sName && sName !== '구글' && sName !== '구글회원' && sName !== '유저' && !sName.includes('google_user')) {
+                    return sName;
+                }
+            }
+
+            // Check localStorage logged in user profile
+            try {
+                const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
+                if (savedUser.name) {
+                    const uName = savedUser.name.trim();
+                    if (uName && uName !== '유저' && uName !== '구글' && !uName.includes('google_user')) {
+                        return uName;
+                    }
+                }
+            } catch(e) {}
+
+            // Check stored shipping info in localStorage
+            try {
+                const savedShip = JSON.parse(localStorage.getItem('heetsuki_shipping_info') || '{}');
+                if (savedShip.name) {
+                    const shName = savedShip.name.trim();
+                    if (shName && shName !== '유저' && shName !== '구글' && !shName.includes('google_user')) {
+                        return shName;
+                    }
+                }
+            } catch(e) {}
+
+            return '고객님';
+        }
+
         // ==========================================
         // 2. 주문 완료 시 관리자 이메일 발송 함수 (상세 정보 포함)
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
-            // 수정: 소셜 로그인 기본값이나 구글 계정 이름(google_user) 대신, 사용자가 배송지 정보에 직접 입력한 수령인 성함을 정확하게 사용
-            const customerName = (orderData.shippingInfo && orderData.shippingInfo.name && orderData.shippingInfo.name.trim() !== '' && orderData.shippingInfo.name !== '구글' && orderData.shippingInfo.name !== '구글회원' && !orderData.shippingInfo.name.includes('google_user')) 
-                ? orderData.shippingInfo.name 
-                : (function() {
-                    try {
-                        const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
-                        if (savedUser.name && savedUser.name !== '구글' && !savedUser.name.includes('google_user')) {
-                            return savedUser.name;
-                        }
-                    } catch(e) {}
-                    return 'HEETSUKI 고객님';
-                })();
-
+            const customerName = resolveAccurateCustomerName(orderData);
             const customerPhone = orderData.shippingInfo && orderData.shippingInfo.phone ? orderData.shippingInfo.phone : '미입력';
             const customerAddress = orderData.shippingInfo && orderData.shippingInfo.address ? orderData.shippingInfo.address : '미입력';
             const customerMemo = orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음';
@@ -738,19 +774,7 @@
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            // 수정: 구글 계정 이름이나 google_user 대신 배송지 입력란에 입력된 고객 성함 우선 반영
-            const customerName = (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name && targetOrder.shippingInfo.name.trim() !== '' && targetOrder.shippingInfo.name !== '구글' && targetOrder.shippingInfo.name !== '구글회원' && !targetOrder.shippingInfo.name.includes('google_user')) 
-                ? targetOrder.shippingInfo.name 
-                : (function() {
-                    try {
-                        const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
-                        if (savedUser.name && savedUser.name !== '구글' && !savedUser.name.includes('google_user')) {
-                            return savedUser.name;
-                        }
-                    } catch(e) {}
-                    return 'HEETSUKI 고객님';
-                })();
-
+            const customerName = resolveAccurateCustomerName(targetOrder);
             const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
             const customerPhone = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.phone ? targetOrder.shippingInfo.phone : '미입력';
 
