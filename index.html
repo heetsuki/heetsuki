@@ -631,7 +631,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         // ==========================================
-        // 1. EmailJS 초기화 및 관리자 이메일 설정 (진짜 Public Key 적용 완료)
+        // 1. EmailJS 초기화 및 전역 유저 이름 통일 관리 로직 (Global Name Single Source of Truth)
         // ==========================================
         (function() {
             try {
@@ -645,12 +645,17 @@
         const EMAIL_SERVICE_ID = "service_wevgw6t"; // 👈 서비스 ID
         const EMAIL_TEMPLATE_ID = "template_w4lct8h"; // 👈 템플릿 ID
 
-        // Helper function to resolve accurate customer name according to user priority rules:
-        // 1. Firebase Auth user.displayName (if available and valid)
-        // 2. Shipping recipient name or saved user profile name (e.g., 양대희)
-        // 3. Fallback to "고객님"
-        function resolveAccurateCustomerName(orderData) {
-            // Check Firebase Auth currentUser displayName if present
+        // Single Source of Truth for Customer Name across Navbar, My Page, and EmailJS
+        window.getCurrentUserName = function(orderData = null) {
+            // 1. Check orderData shippingInfo name if explicitly provided
+            if (orderData && orderData.shippingInfo && orderData.shippingInfo.name) {
+                const sName = orderData.shippingInfo.name.trim();
+                if (sName && sName !== '구글' && sName !== '구글회원' && sName !== '유저' && !sName.includes('google_user')) {
+                    return sName;
+                }
+            }
+
+            // 2. Check Firebase Auth currentUser displayName if present
             try {
                 if (window.auth && window.auth.currentUser && window.auth.currentUser.displayName) {
                     const dn = window.auth.currentUser.displayName.trim();
@@ -660,44 +665,39 @@
                 }
             } catch(e) {}
 
-            // Check orderData shippingInfo name
-            if (orderData && orderData.shippingInfo && orderData.shippingInfo.name) {
-                const sName = orderData.shippingInfo.name.trim();
-                if (sName && sName !== '구글' && sName !== '구글회원' && sName !== '유저' && !sName.includes('google_user')) {
-                    return sName;
-                }
-            }
-
-            // Check localStorage logged in user profile
+            // 3. Check localStorage logged in user profile
             try {
                 const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
                 if (savedUser.name) {
                     const uName = savedUser.name.trim();
-                    if (uName && uName !== '유저' && uName !== '구글' && !uName.includes('google_user')) {
-                        return uName;
+                    // Strip trailing '님' if already included in userObj name to prevent '님님' duplication
+                    const cleanUName = uName.replace(/님+$/, '').trim();
+                    if (cleanUName && cleanUName !== '유저' && cleanUName !== '구글' && !cleanUName.includes('google_user')) {
+                        return cleanUName;
                     }
                 }
             } catch(e) {}
 
-            // Check stored shipping info in localStorage
+            // 4. Check stored shipping info in localStorage
             try {
                 const savedShip = JSON.parse(localStorage.getItem('heetsuki_shipping_info') || '{}');
                 if (savedShip.name) {
-                    const shName = savedShip.name.trim();
+                    const shName = savedShip.name.trim().replace(/님+$/, '').trim();
                     if (shName && shName !== '유저' && shName !== '구글' && !shName.includes('google_user')) {
                         return shName;
                     }
                 }
             } catch(e) {}
 
-            return '고객님';
-        }
+            return '고객';
+        };
 
         // ==========================================
-        // 2. 주문 완료 시 관리자 이메일 발송 함수 (상세 정보 포함)
+        // 2. 주문 완료 시 관리자 이메일 발송 함수 (통일된 이름 적용)
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
-            const customerName = resolveAccurateCustomerName(orderData);
+            const rawName = window.getCurrentUserName(orderData);
+            const customerName = rawName.replace(/님+$/, '').trim(); // Remove any duplicate '님'
             const customerPhone = orderData.shippingInfo && orderData.shippingInfo.phone ? orderData.shippingInfo.phone : '미입력';
             const customerAddress = orderData.shippingInfo && orderData.shippingInfo.address ? orderData.shippingInfo.address : '미입력';
             const customerMemo = orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음';
@@ -706,7 +706,6 @@
             const paymentMethod = orderData.payment || '신용/체크카드';
             const orderDate = orderData.date || new Date().toLocaleString();
 
-            // 구매 상품 목록을 깔끔한 영수증/목록 형태로 포맷팅
             let itemsText = "";
             if (orderData.items && orderData.items.length > 0) {
                 itemsText = orderData.items.map((item, idx) => 
@@ -757,7 +756,7 @@
         };
 
         // ==========================================
-        // 3. 주문 취소 요청 시 관리자 이메일 발송 함수
+        // 3. 주문 취소 요청 시 관리자 이메일 발송 함수 (통일된 이름 적용)
         // ==========================================
         window.requestOrderCancel = function(orderId, reason) {
             let orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
@@ -774,7 +773,8 @@
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            const customerName = resolveAccurateCustomerName(targetOrder);
+            const rawName = window.getCurrentUserName(targetOrder);
+            const customerName = rawName.replace(/님+$/, '').trim();
             const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
             const customerPhone = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.phone ? targetOrder.shippingInfo.phone : '미입력';
 
@@ -791,7 +791,6 @@
                 `• 상세 내용 : ${targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음'}\n\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
-            // EmailJS를 통해 관리자에게 취소 요청 메일 발송
             const templateParams = {
                 to_email: ADMIN_EMAIL,
                 title: `[HEETSUKI 취소요청] ${customerName}님으로부터 주문 취소 요청이 접수되었습니다. (${orderId})`,
@@ -808,30 +807,6 @@
                 });
 
             if (typeof render === 'function') render();
-        };
-
-        // Unified Admin Notification Dispatcher
-        window.sendAdminNotificationEmail = function(params) {
-            try {
-                const templateParams = {
-                    to_email: ADMIN_EMAIL,
-                    title: params.subject || "새로운 주문이 접수되었습니다.",
-                    name: params.customer_name || 'HEETSUKI 쇼핑몰 고객',
-                    time: new Date().toLocaleString(),
-                    message: params.message || `주문 번호: ${params.order_id}\n총 결제금액: ${params.order_total}원\n주문 상태: 결제완료`
-                };
-
-                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams).then(
-                    function(response) {
-                        console.log('SUCCESS! Admin notification email sent.', response.status, response.text);
-                    },
-                    function(error) {
-                        console.log('EmailJS dispatch notice:', error);
-                    }
-                );
-            } catch (err) {
-                console.log('EmailJS fallback simulated dispatch for heetsuki001@gmail.com:', params);
-            }
         };
     </script>
 
@@ -1005,8 +980,8 @@
         };
 
         window.handleGoogleAuth = function() {
-            // 수정: 구글 로그인 시 이름을 google_user 대신 깔끔하게 'HEETSUKI 고객님'으로 설정하여 배송지 입력 시 사용자가 직접 입력하도록 유도
-            const userObj = { name: 'HEETSUKI 고객님', type: 'Google', email: 'google_user@heetsuki.com' };
+            // 통일된 전역 유저 이름 로직 적용 (google_user 대신 깔끔하게 설정)
+            const userObj = { name: 'HEETSUKI 고객', type: 'Google', email: 'google_user@heetsuki.com' };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
@@ -1019,7 +994,7 @@
         };
 
         window.handleNaverAuth = function() {
-            const actualNaverName = '양대희'; // Real profile user name mapping for HEETSUKI
+            const actualNaverName = '양대희';
             const actualNaverEmail = 'heetsuki001@naver.com';
             const userObj = { name: actualNaverName, type: 'Naver', email: actualNaverEmail };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
@@ -1034,11 +1009,9 @@
         };
 
         function applyLoginState(userObj) {
-            // 만약 userObj.name에 google_user 등이 포함되어 있다면 깔끔하게 정돈
-            let displayName = userObj.name || '고객님';
-            if (displayName.includes('google_user') || displayName === '유저' || displayName === '회원') {
-                displayName = 'HEETSUKI 고객님';
-            }
+            // 무조건 전역 이름 함수를 통해 '님님'이나 임시 값이 없는 단일 성함/고객명 획득
+            const rawName = window.getCurrentUserName();
+            const displayName = rawName.replace(/님+$/, '').trim() || '고객';
 
             const authContainer = document.getElementById('auth-buttons-container');
             if (authContainer) {
@@ -2426,47 +2399,36 @@
 
         // My Page Modal Logic with dynamic textContent/innerHTML injection & detailed Order Modal
         window.openMyPageModal = async function() {
-            let userObj = { name: 'HEETSUKI 고객님', type: '일반 회원', email: 'user@heetsuki.com' };
+            let userObj = { name: '고객', type: '일반 회원', email: 'user@heetsuki.com' };
             try {
                 const saved = localStorage.getItem('heetsuki_logged_in_user');
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    if (parsed && parsed.name && parsed.name !== '유저' && !parsed.name.includes('google_user')) {
+                    if (parsed && parsed.name) {
                         userObj = parsed;
                     }
                 }
                 if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
-                    const email = window.auth.currentUser.email;
-                    const name = window.auth.currentUser.displayName || email.split('@')[0];
-                    if (!name.includes('google_user')) {
-                        userObj.name = name;
-                    }
-                    userObj.email = email;
+                    userObj.email = window.auth.currentUser.email;
                 }
             } catch (e) {}
 
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
             const wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
             
-            // 1. Retrieve shipping info from Firestore / local storage or fallback to the most recent order's shipping info
             let shippingInfo = {
-                name: (userObj.name && userObj.name !== '회원' && userObj.name !== '유저' && !userObj.name.includes('google_user')) ? userObj.name : '',
+                name: '',
                 phone: '',
                 zipcode: '',
                 address: '',
                 detail: ''
             };
 
-            // Check if there is a recent order with shipping info to auto-populate
             if (orders.length > 0 && orders[0].shippingInfo) {
                 const lastOrd = orders[0].shippingInfo;
-                if (lastOrd.name && lastOrd.name !== '구글' && !lastOrd.name.includes('google_user')) {
-                    shippingInfo.name = lastOrd.name;
-                }
+                if (lastOrd.name) shippingInfo.name = lastOrd.name.replace(/님+$/, '').trim();
                 if (lastOrd.phone) shippingInfo.phone = lastOrd.phone;
-                if (lastOrd.address) {
-                    shippingInfo.address = lastOrd.address;
-                }
+                if (lastOrd.address) shippingInfo.address = lastOrd.address;
             }
 
             try {
@@ -2479,7 +2441,7 @@
                         const cloudData = shipSnap.data();
                         if (cloudData && (cloudData.address || cloudData.phone)) {
                             shippingInfo = {
-                                name: (cloudData.name && !cloudData.name.includes('google_user')) ? cloudData.name : shippingInfo.name,
+                                name: cloudData.name ? cloudData.name.replace(/님+$/, '').trim() : shippingInfo.name,
                                 phone: cloudData.phone || shippingInfo.phone,
                                 zipcode: cloudData.zipcode || shippingInfo.zipcode,
                                 address: cloudData.address || shippingInfo.address,
@@ -2488,18 +2450,15 @@
                         }
                     }
                 }
-            } catch (err) {
-                console.warn('Cloud shipping info load fallback to local:', err);
-            }
+            } catch (err) {}
 
-            // Fallback to local storage if needed
             const localStored = localStorage.getItem('heetsuki_shipping_info');
             if (localStored) {
                 try {
                     const parsedLocal = JSON.parse(localStored);
                     if (parsedLocal && (parsedLocal.address || parsedLocal.phone)) {
                         shippingInfo = {
-                            name: (parsedLocal.name && !parsedLocal.name.includes('google_user')) ? parsedLocal.name : shippingInfo.name,
+                            name: parsedLocal.name ? parsedLocal.name.replace(/님+$/, '').trim() : shippingInfo.name,
                             phone: parsedLocal.phone || shippingInfo.phone,
                             zipcode: parsedLocal.zipcode || shippingInfo.zipcode,
                             address: parsedLocal.address || shippingInfo.address,
@@ -2509,18 +2468,8 @@
                 } catch(e) {}
             }
 
-            // 마이페이지 모달 상단에 노출될 이름을 상단바와 완벽히 동기화 (받는 분 성함 혹은 로그인한 유저 이름 우선순위 정돈)
-            let displayUserName = shippingInfo.name || userObj.name || 'HEETSUKI 고객님';
-            if (displayUserName.includes('google_user') || displayUserName === '회원' || displayUserName === '유저') {
-                displayUserName = 'HEETSUKI 고객님';
-            }
-            // 만약 상단바에 표시되는 이름(localStorage에 저장된 최신 계정 이름)이 있다면 해당 값으로 일치시킴
-            try {
-                const savedUsr = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
-                if (savedUsr.name && savedUsr.name !== '유저' && !savedUsr.name.includes('google_user')) {
-                    displayUserName = savedUsr.name;
-                }
-            } catch(e) {}
+            const rawUnifiedName = window.getCurrentUserName();
+            const displayUserName = (shippingInfo.name || rawUnifiedName || '고객').replace(/님+$/, '').trim();
 
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
