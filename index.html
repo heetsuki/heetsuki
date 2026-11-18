@@ -336,7 +336,7 @@
     </div>
 
     <!-- Product Size / Option Selection Modal -->
-    <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div id="product-modal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div class="bg-white border border-black/10 rounded-[28px] max-w-xl w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeProductModal()" class="absolute top-6 right-6 p-2 rounded-full text-grayText hover:bg-black/5 z-10"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
             
@@ -2425,7 +2425,8 @@
             if (!detailModal) {
                 detailModal = document.createElement('div');
                 detailModal.id = 'order-detail-modal';
-                detailModal.className = 'fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
+                // z-index 계층을 명확히 정리 (주문 상세 창은 z-[80])
+                detailModal.className = 'fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
                 document.body.appendChild(detailModal);
             }
 
@@ -2600,7 +2601,8 @@
             if (!cancelModal) {
                 cancelModal = document.createElement('div');
                 cancelModal.id = 'cancel-order-modal';
-                cancelModal.className = 'fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
+                // 주문 취소 모달은 가장 최상단 계층으로 배치 (z-[100])
+                cancelModal.className = 'fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
                 document.body.appendChild(cancelModal);
             }
 
