@@ -2417,6 +2417,8 @@
             const isBankTransfer = ord.payment === '무통장입금' && currentStatus === '입금 대기중';
             const isCancelled = currentStatus === '주문 취소됨';
             const canCancel = currentStatus === '입금 대기중' || currentStatus === '결제 완료';
+            // 주문 취소 상태이면서 환불 완료 처리된 건에만 '주문 내역 삭제' 버튼 노출
+            const canDelete = isCancelled && (ord.refundStatus === '환불 완료' || !ord.refundStatus);
 
             // Calculate fallback deposit deadline if missing on older orders (3 days / 72 hours)
             let displayDeadline = ord.depositDeadline;
@@ -2457,13 +2459,16 @@
                         <!-- Cancelled Notice Box if order was cancelled -->
                         ${isCancelled ? `
                             <div class="p-4 rounded-2xl bg-red-50 border border-red-200 space-y-1.5">
-                                <div class="flex items-center gap-2 text-red-700 font-bold text-xs">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>주문이 정상적으로 취소되었습니다</span>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2 text-red-700 font-bold text-xs">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <span>주문이 취소되었습니다 (환불 완료)</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">환불 완료</span>
                                 </div>
                                 ${ord.cancelReason ? `<p class="text-xs text-red-600">취소 사유: <strong>${ord.cancelReason}</strong></p>` : ''}
                                 ${ord.cancelDetail ? `<p class="text-[11px] text-red-500">상세 내용: ${ord.cancelDetail}</p>` : ''}
-                                ${ord.cancelledAt ? `<p class="text-[11px] text-grayText">취소 일시: ${ord.cancelledAt}</p>` : ''}
+                                ${ord.cancelledAt ? `<p class="text-[11px] text-grayText">취소 및 환불 일시: ${ord.cancelledAt}</p>` : ''}
                             </div>
                         ` : ''}
 
@@ -2556,7 +2561,7 @@
                                 <p class="text-xs font-bold ${isCancelled ? 'text-grayText line-through' : 'text-accentGreen'}">최종 금액: ${ord.total}</p>
                                 ${ord.payment === '무통장입금' ? `
                                     <p class="text-[11px] text-darkText">입금 계좌: <span class="font-semibold">국민은행 274101-04-343976</span></p>
-                                    <p class="text-[11px] text-darkText">예 금 주: <span class="font-semibold">양대희 (희츠키)</span></p>
+                                    <p class="text-[11px] font-bold text-darkText">예 금 주: 양대희 (희츠키)</p>
                                     <p class="text-[11px] font-bold ${isCancelled ? 'text-grayText line-through' : 'text-red-600'}">입금 기한: ${displayDeadline}</p>
                                 ` : ''}
                                 <p class="text-[11px] text-grayText">주문 일시: ${ord.date}</p>
@@ -2572,12 +2577,20 @@
                     </div>
 
                     <div class="pt-4 border-t border-black/10 flex items-center justify-between gap-3">
-                        ${canCancel ? `
-                            <button type="button" onclick="openCancelOrderModal(${orderIndex})" class="px-5 py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold transition-colors">
-                                주문 취소
-                            </button>
-                        ` : `<div></div>`}
-                        <button type="button" onclick="closeOrderDetailModal()" class="px-6 py-3 rounded-2xl bg-darkText text-white text-sm font-semibold hover:bg-black transition-colors ml-auto">
+                        <div class="flex items-center gap-2">
+                            ${canCancel ? `
+                                <button type="button" onclick="openCancelOrderModal(${orderIndex})" class="px-4 py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 text-xs sm:text-sm font-semibold transition-colors">
+                                    주문 취소
+                                </button>
+                            ` : ''}
+                            ${canDelete ? `
+                                <button type="button" onclick="deleteOrderHistory(${orderIndex})" class="px-4 py-3 rounded-2xl bg-gray-200 hover:bg-gray-300 text-darkText text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    <span>주문 내역 삭제</span>
+                                </button>
+                            ` : ''}
+                        </div>
+                        <button type="button" onclick="closeOrderDetailModal()" class="px-6 py-3 rounded-2xl bg-darkText text-white text-xs sm:text-sm font-semibold hover:bg-black transition-colors ml-auto">
                             확인
                         </button>
                     </div>
@@ -2593,6 +2606,41 @@
             if (modal) {
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
+            }
+        };
+
+        // 주문 내역 삭제 기능
+        window.deleteOrderHistory = async function(orderIndex) {
+            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            const ord = orders[orderIndex];
+            if (!ord) return;
+
+            if (!confirm('정말 주문 내역을 삭제하시겠습니까? 삭제된 내역은 복구할 수 없습니다.')) {
+                return;
+            }
+
+            const deletedOrderId = ord.id;
+            orders.splice(orderIndex, 1);
+            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
+
+            // Firestore 동기화 (로그인 상태인 경우 삭제 또는 숨김 처리)
+            try {
+                if (window.auth && window.auth.currentUser && window.db) {
+                    const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+                    const uid = window.auth.currentUser.uid;
+                    await deleteDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', deletedOrderId));
+                }
+            } catch (err) {
+                console.warn('Firestore order deletion sync fallback:', err);
+            }
+
+            closeOrderDetailModal();
+            showToast('주문 내역이 깔끔하게 삭제되었습니다.');
+
+            // 마이페이지 모달이 열려 있는 경우 즉시 재렌더링
+            const myPageModal = document.getElementById('mypage-modal');
+            if (myPageModal && !myPageModal.classList.contains('hidden')) {
+                openMyPageModal();
             }
         };
 
