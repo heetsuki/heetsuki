@@ -2633,9 +2633,11 @@
             if (!detailModal) {
                 detailModal = document.createElement('div');
                 detailModal.id = 'order-detail-modal';
-                // z-index 계층을 명확히 정리 (주문 상세 창은 z-[80])
-                detailModal.className = 'fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
+                // z-index 계층을 명확히 정리 (마이페이지 z-[120]보다 높은 z-[130]으로 설정)
+                detailModal.className = 'fixed inset-0 z-[130] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
                 document.body.appendChild(detailModal);
+            } else {
+                detailModal.style.zIndex = '130';
             }
 
             detailModal.innerHTML = `
@@ -2856,9 +2858,11 @@
             if (!cancelModal) {
                 cancelModal = document.createElement('div');
                 cancelModal.id = 'cancel-order-modal';
-                // 주문 취소 모달은 가장 최상단 계층으로 배치 (z-[100])
-                cancelModal.className = 'fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
+                // 주문 취소 모달은 주문 상세 창(z-[130])보다도 높은 최상단 계층으로 배치 (z-[140])
+                cancelModal.className = 'fixed inset-0 z-[140] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
                 document.body.appendChild(cancelModal);
+            } else {
+                cancelModal.style.zIndex = '140';
             }
 
             const cancelReasons = [
