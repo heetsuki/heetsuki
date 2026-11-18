@@ -630,31 +630,36 @@
     <!-- EmailJS SDK Integration for Client-Side Admin Notifications -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
-        // EmailJS Configuration & Initialization (Previously deleted/missing causing email failures)
-        const EMAIL_PUBLIC_KEY = "YOUR_PUBLIC_KEY"; // Fallback or existing service config
-        const EMAIL_SERVICE_ID = "service_heetsuki";
+        // EmailJS Configuration & Initialization (service_wevgw6t / template_w4lct8h)
+        const EMAIL_PUBLIC_KEY = "9-bO9uG0_a6r4qV9m";
+        const EMAIL_SERVICE_ID = "service_wevgw6t";
         const EMAIL_TEMPLATE_ID = "template_w4lct8h";
         const ADMIN_EMAIL = "heetsuki001@gmail.com";
 
-        try {
-            if (typeof emailjs !== 'undefined' && EMAIL_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
-                emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
+        (function initEmailJS() {
+            try {
+                if (typeof emailjs !== 'undefined') {
+                    emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
+                    console.log("[EmailJS] SDK 초기화 성공:", EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID);
+                } else {
+                    console.error("[EmailJS] SDK가 로드되지 않았습니다.");
+                }
+            } catch (e) {
+                console.error("[EmailJS] 초기화 예외 발생:", e);
             }
-        } catch (e) {
-            console.warn("EmailJS init notice:", e);
-        }
+        })();
 
         // Global helper to retrieve accurate customer name consistently across modules
         window.getCurrentUserName = function(targetOrder) {
             if (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name) {
-                return targetOrder.shippingInfo.name.replace(/님+$/, '').trim();
+                return String(targetOrder.shippingInfo.name).replace(/님+$/, '').trim() || '고객';
             }
             try {
                 const savedUser = localStorage.getItem('heetsuki_logged_in_user');
                 if (savedUser) {
                     const parsed = JSON.parse(savedUser);
                     if (parsed && parsed.name && parsed.name !== 'google_user' && parsed.name !== '고객' && parsed.name !== 'HEETSUKI 고객') {
-                        return parsed.name.replace(/님+$/, '').trim();
+                        return String(parsed.name).replace(/님+$/, '').trim() || '고객';
                     }
                 }
             } catch(e) {}
@@ -664,42 +669,50 @@
                 if (savedShip) {
                     const parsedShip = JSON.parse(savedShip);
                     if (parsedShip && parsedShip.name && parsedShip.name.trim()) {
-                        return parsedShip.name.replace(/님+$/, '').trim();
+                        return String(parsedShip.name).replace(/님+$/, '').trim() || '고객';
                     }
                 }
             } catch(e) {}
 
             const shipNameInput = document.getElementById('order-name');
             if (shipNameInput && shipNameInput.value.trim()) {
-                return shipNameInput.value.trim().replace(/님+$/, '');
+                return shipNameInput.value.trim().replace(/님+$/, '') || '고객';
             }
             
             return 'HEETSUKI 고객';
         };
 
         // ==========================================
-        // 1. 신규 주문 접수 시 관리자(heetsuki001@gmail.com) 이메일 발송 함수 복구
+        // 1. 신규 주문 접수 시 관리자(heetsuki001@gmail.com) 이메일 무조건 발송
         // ==========================================
         window.sendOrderNotificationToAdmin = function(order) {
-            if (!order) return;
-
-            const rawName = window.getCurrentUserName(order);
-            const customerName = rawName.replace(/님+$/, '').trim();
-            const customerPhone = (order.shippingInfo && order.shippingInfo.phone) ? order.shippingInfo.phone : '미입력';
-            const customerAddress = (order.shippingInfo && order.shippingInfo.address) ? order.shippingInfo.address : '미입력';
-            const customerMemo = (order.shippingInfo && order.shippingInfo.memo) ? order.shippingInfo.memo : '없음';
-            const orderTotal = order.total || (typeof order.rawTotal === 'number' ? `₩${order.rawTotal.toLocaleString()}` : '₩0');
-            const paymentMethod = order.payment || '신용/체크카드';
-            const orderDate = order.date || new Date().toLocaleString('ko-KR');
+            const safeOrder = order || {};
+            const orderId = safeOrder.id || ('ORD-' + Date.now());
+            const rawName = window.getCurrentUserName(safeOrder) || 'HEETSUKI 고객';
+            const customerName = String(rawName).replace(/님+$/, '').trim() || 'HEETSUKI 고객';
+            const ship = safeOrder.shippingInfo || {};
+            const customerPhone = ship.phone || '미입력';
+            const customerAddress = ship.address || '미입력';
+            const customerMemo = ship.memo || '없음';
+            const orderTotal = safeOrder.total || (typeof safeOrder.rawTotal === 'number' ? `₩${safeOrder.rawTotal.toLocaleString()}` : '₩0');
+            const paymentMethod = safeOrder.payment || '신용/체크카드';
+            const orderDate = safeOrder.date || new Date().toLocaleString('ko-KR');
+            const itemsList = Array.isArray(safeOrder.items) ? safeOrder.items : [];
 
             let itemsText = "";
-            if (order.items && order.items.length > 0) {
-                itemsText = order.items.map((item, idx) => 
-                    `  [${idx + 1}] ${item.name}\n` +
-                    `      • 옵션: ${item.option || '기본'}\n` +
-                    `      • 수량: ${item.qty}개\n` +
-                    `      • 금액: ${(item.price * item.qty).toLocaleString()}원`
-                ).join('\n\n');
+            if (itemsList.length > 0) {
+                itemsText = itemsList.map((item, idx) => {
+                    const iName = item.name || 'HEETSUKI 상품';
+                    const iOpt = item.option || '기본';
+                    const iQty = Number(item.qty) || 1;
+                    const iPrice = Number(item.price) || 0;
+                    return (
+                        `  [${idx + 1}] ${iName}\n` +
+                        `      • 옵션: ${iOpt}\n` +
+                        `      • 수량: ${iQty}개\n` +
+                        `      • 금액: ${(iPrice * iQty).toLocaleString()}원`
+                    );
+                }).join('\n\n');
             } else {
                 itemsText = "  • 주문 상품 정보 없음";
             }
@@ -709,12 +722,12 @@
                 ` [HEETSUKI] 🛍️ 신규 주문 접수 알림\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
                 `[주문 개요]\n` +
-                `• 주문 번호 : ${order.id}\n` +
+                `• 주문 번호 : ${orderId}\n` +
                 `• 주문 일시 : ${orderDate}\n` +
                 `• 결제 수단 : ${paymentMethod}\n` +
                 `• 결제 금액 : ${orderTotal}\n` +
-                `• 주문 상태 : 🟢 ${order.status || '결제 완료'}\n` +
-                (order.depositDeadline ? `• 입금 기한 : ${order.depositDeadline}\n` : '') +
+                `• 주문 상태 : 🟢 ${safeOrder.status || '결제 완료'}\n` +
+                (safeOrder.depositDeadline ? `• 입금 기한 : ${safeOrder.depositDeadline}\n` : '') +
                 `\n----------------------------------------\n` +
                 `[주문자 및 배송지 정보]\n` +
                 `• 받는 분   : ${customerName}\n` +
@@ -722,64 +735,91 @@
                 `• 배송 주소 : ${customerAddress}\n` +
                 `• 요청 사항 : ${customerMemo}\n\n` +
                 `----------------------------------------\n` +
-                `[주문 상품 목록 (${order.items ? order.items.length : 0}종)]\n\n` +
+                `[주문 상품 목록 (${itemsList.length}종)]\n\n` +
                 itemsText + `\n\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                 ` 본 메일은 HEETSUKI 공식 스토어에서 자동 발송되었습니다.`;
 
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                title: `[HEETSUKI 신규 주문] ${customerName}님의 주문이 접수되었습니다. (${order.id})`,
+                title: `[HEETSUKI 신규 주문] ${customerName}님의 주문이 접수되었습니다. (${orderId})`,
                 name: customerName,
+                order_id: orderId,
                 time: orderDate,
                 message: orderMessage
             };
 
-            if (typeof emailjs !== 'undefined') {
-                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+            console.log("[EmailJS 신규 주문 발송 시도]", {
+                service: 'service_wevgw6t',
+                template: 'template_w4lct8h',
+                params: templateParams
+            });
+
+            if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                emailjs.send('service_wevgw6t', 'template_w4lct8h', templateParams, EMAIL_PUBLIC_KEY)
                     .then(function(response) {
-                        console.log(`[관리자 주문 알림 전송 완료] ${ADMIN_EMAIL} 발송 성공:`, response.status);
-                    }, function(error) {
-                        console.warn("[관리자 주문 알림] EmailJS 발송 응답:", error);
+                        console.log("[EmailJS 신규 주문 발송 성공!]", response.status, response.text);
+                    })
+                    .catch(function(error) {
+                        console.error("[EmailJS 신규 주문 발송 실패!]", error);
                     });
+            } else {
+                console.error("[EmailJS 신규 주문 발송 실패] emailjs.send 함수를 찾을 수 없습니다.");
             }
         };
 
         // ==========================================
-        // 2. 주문 취소 요청 시 관리자 이메일 발송 함수
+        // 2. 주문 취소 요청 시 관리자 이메일 무조건 발송
         // ==========================================
         window.requestOrderCancel = function(orderId, reason) {
-            let orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            let targetOrder = orders.find(o => o.id === orderId || o.orderId === orderId);
+            const safeOrderId = orderId || 'UNKNOWN-ORDER';
+            const safeReason = reason || '고객 요청 취소';
+            let orders = [];
+            try {
+                orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            } catch (e) {
+                orders = [];
+            }
+            let targetOrder = orders.find(o => o.id === safeOrderId || o.orderId === safeOrderId) || {};
 
             orders = orders.map(order => {
-                if (order.id === orderId || order.orderId === orderId) {
+                if (order.id === safeOrderId || order.orderId === safeOrderId) {
                     order.status = "주문 취소됨";
-                    order.cancelReason = reason;
+                    order.cancelReason = safeReason;
                     order.cancelledAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                 }
                 return order;
             });
 
-            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
+            try {
+                localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
+            } catch (e) {}
 
-            const rawName = window.getCurrentUserName(targetOrder);
-            const customerName = rawName.replace(/님+$/, '').trim();
-            const customerPhone = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.phone ? targetOrder.shippingInfo.phone : '미입력';
-            const customerAddress = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.address ? targetOrder.shippingInfo.address : '미입력';
-            const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
-            const paymentMethod = targetOrder && targetOrder.payment ? targetOrder.payment : '신용/체크카드';
-            const cancelTime = targetOrder && targetOrder.cancelledAt ? targetOrder.cancelledAt : new Date().toLocaleString();
-            const cancelDetailText = targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음';
+            const rawName = window.getCurrentUserName(targetOrder) || 'HEETSUKI 고객';
+            const customerName = String(rawName).replace(/님+$/, '').trim() || 'HEETSUKI 고객';
+            const ship = targetOrder.shippingInfo || {};
+            const customerPhone = ship.phone || '미입력';
+            const customerAddress = ship.address || '미입력';
+            const orderTotal = targetOrder.total || (typeof targetOrder.rawTotal === 'number' ? `${targetOrder.rawTotal.toLocaleString()}원` : '0원');
+            const paymentMethod = targetOrder.payment || '신용/체크카드';
+            const cancelTime = targetOrder.cancelledAt || new Date().toLocaleString('ko-KR');
+            const cancelDetailText = targetOrder.cancelDetail || '없음';
+            const itemsList = Array.isArray(targetOrder.items) ? targetOrder.items : [];
 
             let itemsText = "";
-            if (targetOrder && targetOrder.items && targetOrder.items.length > 0) {
-                itemsText = targetOrder.items.map((item, idx) => 
-                    `  [${idx + 1}] ${item.name}\n` +
-                    `      • 옵션: ${item.option}\n` +
-                    `      • 수량: ${item.qty}개\n` +
-                    `      • 금액: ${(item.price * item.qty).toLocaleString()}원`
-                ).join('\n\n');
+            if (itemsList.length > 0) {
+                itemsText = itemsList.map((item, idx) => {
+                    const iName = item.name || 'HEETSUKI 상품';
+                    const iOpt = item.option || '기본';
+                    const iQty = Number(item.qty) || 1;
+                    const iPrice = Number(item.price) || 0;
+                    return (
+                        `  [${idx + 1}] ${iName}\n` +
+                        `      • 옵션: ${iOpt}\n` +
+                        `      • 수량: ${iQty}개\n` +
+                        `      • 금액: ${(iPrice * iQty).toLocaleString()}원`
+                    );
+                }).join('\n\n');
             } else {
                 itemsText = "  • 주문 상품 정보 없음";
             }
@@ -789,12 +829,12 @@
                 ` [HEETSUKI] 🚨 주문 취소 / 환불 요청서\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
                 `[주문 취소 개요]\n` +
-                `• 주문 번호 : ${orderId}\n` +
+                `• 주문 번호 : ${safeOrderId}\n` +
                 `• 취소 일시 : ${cancelTime}\n` +
                 `• 결제 수단 : ${paymentMethod}\n` +
-                `• 결제 금액 : ${typeof orderTotal === 'number' ? orderTotal.toLocaleString() : orderTotal}원\n` +
+                `• 결제 금액 : ${orderTotal}\n` +
                 `• 주문 상태 : 🔴 주문 취소됨 (환불 완료)\n` +
-                `• 취소 사유 : ${reason}\n` +
+                `• 취소 사유 : ${safeReason}\n` +
                 `• 상세 내용 : ${cancelDetailText}\n\n` +
                 `----------------------------------------\n` +
                 `[배송지 정보]\n` +
@@ -802,26 +842,36 @@
                 `• 연락처    : ${customerPhone}\n` +
                 `• 배송 주소 : ${customerAddress}\n\n` +
                 `----------------------------------------\n` +
-                `[취소된 상품 목록 (${targetOrder && targetOrder.items ? targetOrder.items.length : 0}종)]\n\n` +
+                `[취소된 상품 목록 (${itemsList.length}종)]\n\n` +
                 itemsText + `\n\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                 ` 본 메일은 HEETSUKI 쇼핑몰에서 자동 발송되었습니다.`;
 
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                title: `[HEETSUKI 주문 취소 알림] ${customerName}님으로부터 주문 취소 요청이 접수되었습니다. (${orderId})`,
+                title: `[HEETSUKI 주문 취소 알림] ${customerName}님으로부터 주문 취소 요청이 접수되었습니다. (${safeOrderId})`,
                 name: customerName,
-                time: new Date().toLocaleString(),
+                order_id: safeOrderId,
+                time: cancelTime,
                 message: cancelMessage
             };
 
-            if (typeof emailjs !== 'undefined') {
-                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+            console.log("[EmailJS 주문 취소 발송 시도]", {
+                service: 'service_wevgw6t',
+                template: 'template_w4lct8h',
+                params: templateParams
+            });
+
+            if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                emailjs.send('service_wevgw6t', 'template_w4lct8h', templateParams, EMAIL_PUBLIC_KEY)
                     .then(function(response) {
-                        console.log(`[관리자 알림 전송 완료] 주문 취소 상세 내역이 ${ADMIN_EMAIL}로 발송되었습니다.`);
-                    }, function(error) {
-                        console.warn("취소 요청 메일 전송 응답:", error);
+                        console.log("[EmailJS 주문 취소 발송 성공!]", response.status, response.text);
+                    })
+                    .catch(function(error) {
+                        console.error("[EmailJS 주문 취소 발송 실패!]", error);
                     });
+            } else {
+                console.error("[EmailJS 주문 취소 발송 실패] emailjs.send 함수를 찾을 수 없습니다.");
             }
         };
     </script>
@@ -2404,9 +2454,11 @@
             orders.unshift(newOrder);
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            // Trigger EmailJS notification to heetsuki001@gmail.com for new order
-            if (typeof window.sendOrderNotificationToAdmin === 'function') {
+            // 조건 없이 신규 주문 관리자 이메일 무조건 발송
+            try {
                 window.sendOrderNotificationToAdmin(newOrder);
+            } catch (mailErr) {
+                console.error("[신규 주문 메일 호출 에러]", mailErr);
             }
 
             // 배송정보 기억하기 체크박스 상태에 따라 로컬스토리지 및 DB 저장/삭제 처리
@@ -3119,9 +3171,11 @@
                 console.warn('Firestore order cancellation sync fallback:', err);
             }
 
-            // Trigger EmailJS notification to heetsuki001@gmail.com for order cancellation request
-            if (typeof window.requestOrderCancel === 'function') {
+            // 조건 없이 주문 취소 관리자 이메일 무조건 발송
+            try {
                 window.requestOrderCancel(ord.id, selectedReason);
+            } catch (cancelMailErr) {
+                console.error("[주문 취소 메일 호출 에러]", cancelMailErr);
             }
 
             closeCancelOrderModal();
