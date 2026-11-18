@@ -2477,20 +2477,64 @@
                             </div>
                         ` : ''}
 
-                        <!-- Ordered Items List -->
+                        <!-- Ordered Items List with Enhanced Thumbnails & Product Modal Link -->
                         <div class="space-y-2.5">
                             <h4 class="text-xs font-bold text-grayText uppercase tracking-wider">주문 상품 정보 (${ord.items ? ord.items.length : ord.itemsCount}종)</h4>
-                            <div class="space-y-2">
-                                ${ord.items && ord.items.length > 0 ? ord.items.map(item => `
-                                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#F5F5F7] border border-black/5">
-                                        <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-lg object-cover bg-white flex-shrink-0">
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-xs font-bold text-darkText truncate">${item.name}</p>
-                                            <p class="text-[11px] text-grayText">옵션: ${item.option} / 수량: ${item.qty}개</p>
+                            <div class="space-y-2.5">
+                                ${ord.items && ord.items.length > 0 ? ord.items.map(item => {
+                                    // 상품명에 따른 상세 정보 매핑 (상품 모달 바로가기 연동용)
+                                    let desc = '자연의 숨결을 담은 프리미엄 시그니처 아이템';
+                                    let options = [item.option || '표준 옵션'];
+                                    let images = [item.image || 'https://placehold.co/600x600/E8F0EC/00712D?text=HEETSUKI'];
+                                    
+                                    if (item.name.includes('티셔츠')) {
+                                        desc = '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠';
+                                        options = ['S', 'M', 'L', 'XL'];
+                                        images = [
+                                            item.image,
+                                            'https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI+Tee+Back',
+                                            'https://placehold.co/600x600/DCE3DF/00712D?text=HEETSUKI+Tee+Detail'
+                                        ];
+                                    } else if (item.name.includes('수초')) {
+                                        desc = '우아하게 물결치는 아름다운 레이아웃 수초';
+                                        options = ['표준 포트 (1포트)', '대형 풍성 포트 (2포트)'];
+                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Vallisneria+2'];
+                                    } else if (item.name.includes('입출수구')) {
+                                        desc = '고투명 유리로 제작된 프리미엄 입출수구 세트';
+                                        options = ['13mm (일반형)', '17mm (대형형)'];
+                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Glass+Pipe+2'];
+                                    } else if (item.name.includes('어항')) {
+                                        desc = '45도 미이터 컷 고투명 올디아망 어항';
+                                        options = ['30큐브 (30x30x30)', '45큐브 (45x45x45)', '60사이즈 (60x30x36)'];
+                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Tank+Miter+Cut'];
+                                    }
+
+                                    // 데이터 안전 이스케이프
+                                    const safeName = item.name.replace(/'/g, "\\'");
+                                    const safePrice = formatPrice(item.price);
+                                    const safeDesc = desc.replace(/'/g, "\\'");
+                                    const optionsJson = JSON.stringify(options).replace(/"/g, '&quot;');
+                                    const imagesJson = JSON.stringify(images).replace(/"/g, '&quot;');
+
+                                    return `
+                                        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 hover:border-black/20 transition-all group">
+                                            <div onclick="closeOrderDetailModal(); openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsJson}, ${imagesJson})" class="w-16 h-16 rounded-xl overflow-hidden bg-white border border-black/10 flex-shrink-0 cursor-pointer shadow-xs relative">
+                                                <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                                    <span class="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-white bg-black/70 px-1.5 py-0.5 rounded">보기</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 min-w-0 cursor-pointer" onclick="closeOrderDetailModal(); openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsJson}, ${imagesJson})">
+                                                <h5 class="text-xs font-bold text-darkText group-hover:text-accentGreen transition-colors truncate">${item.name}</h5>
+                                                <p class="text-[11px] text-grayText mt-0.5">선택 옵션: <strong class="text-darkText">${item.option}</strong></p>
+                                                <p class="text-[11px] text-grayText">수량: <strong class="text-darkText">${item.qty}개</strong> · 개당 ${formatPrice(item.price)}</p>
+                                            </div>
+                                            <div class="text-right flex-shrink-0">
+                                                <span class="text-xs sm:text-sm font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
+                                            </div>
                                         </div>
-                                        <span class="text-xs font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
-                                    </div>
-                                `).join('') : `<p class="text-xs text-grayText">주문 상품 데이터가 기록되었습니다.</p>`}
+                                    `;
+                                }).join('') : `<p class="text-xs text-grayText">주문 상품 데이터가 기록되었습니다.</p>`}
                             </div>
                         </div>
 
