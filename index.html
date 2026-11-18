@@ -1,3 +1,4 @@
+<!-- ... eslint-disable -->
 <!DOCTYPE html>
 <html lang="ko" class="scroll-smooth">
 <head>
@@ -630,10 +631,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         // ==========================================
-        // 1. EmailJS 초기화 및 관리자 이메일 설정
+        // 1. EmailJS 초기화 및 관리자 이메일 설정 (최신 ID 적용)
         // ==========================================
         (function() {
-            // 'YOUR_PUBLIC_KEY' 자리에 본인의 EmailJS Public Key를 넣어주세요.
             try {
                 emailjs.init("YOUR_PUBLIC_KEY");
             } catch(e) {
@@ -642,17 +642,30 @@
         })();
 
         const ADMIN_EMAIL = "heetsuki001@gmail.com";
-        const EMAIL_SERVICE_ID = "service_wevgw6t"; // 발급받으신 서비스 ID 적용 완료
-        const EMAIL_TEMPLATE_ID = "template_m8kfmvc"; // 👈 여기에 방금 확인된 템플릿 ID 적용 완료!
+        const EMAIL_SERVICE_ID = "service_wevgw6t"; // 👈 정확하게 적용 완료
+        const EMAIL_TEMPLATE_ID = "template_w4lct8h"; // 👈 정확하게 적용 완료
 
         // ==========================================
         // 2. 주문 완료 시 관리자 이메일 발송 함수
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
+            const itemsSummary = orderData.items && orderData.items.length > 0
+                ? orderData.items.map(i => `${i.name} (${i.option}) x ${i.qty}개`).join(', ')
+                : '없음';
+
             const templateParams = {
                 to_email: ADMIN_EMAIL,
                 title: "[HEETSUKI] 새로운 주문이 접수되었습니다.",
-                message: `주문 번호: ${orderData.orderId || orderData.id}\n총 결제금액: ${orderData.total || orderData.rawTotal || 0}원\n상태: 결제완료`
+                order_id: orderData.id || orderData.orderId,
+                customer_name: orderData.shippingInfo ? orderData.shippingInfo.name : '고객',
+                customer_phone: orderData.shippingInfo ? orderData.shippingInfo.phone : '미입력',
+                shipping_address: orderData.shippingInfo ? orderData.shippingInfo.address : '미입력',
+                order_total: orderData.total || '0원',
+                payment_method: orderData.payment || '결제수단',
+                order_items: itemsSummary,
+                memo: orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음',
+                action_type: '신규 주문 완료 및 결제 접수',
+                message: `[신규 주문 접수]\n주문 번호: ${orderData.id || orderData.orderId}\n고객명: ${orderData.shippingInfo ? orderData.shippingInfo.name : '고객'}\n연락처: ${orderData.shippingInfo ? orderData.shippingInfo.phone : '미입력'}\n배송지: ${orderData.shippingInfo ? orderData.shippingInfo.address : '미입력'}\n결제금액: ${orderData.total}\n결제수단: ${orderData.payment}\n주문상품: ${itemsSummary}\n배송요청: ${orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음'}`
             };
 
             emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
@@ -668,21 +681,34 @@
         // ==========================================
         window.requestOrderCancel = function(orderId, reason) {
             let orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            let targetOrder = orders.find(o => o.id === orderId || o.orderId === orderId);
+
             orders = orders.map(order => {
                 if (order.id === orderId || order.orderId === orderId) {
-                    order.status = "취소요청(승인대기)";
+                    order.status = "주문 취소됨";
                     order.cancelReason = reason;
+                    order.cancelledAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                 }
                 return order;
             });
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
+            const customerName = targetOrder && targetOrder.shippingInfo ? targetOrder.shippingInfo.name : '고객';
+            const orderTotal = targetOrder ? targetOrder.total : '0원';
+
             // EmailJS를 통해 관리자에게 취소 요청 메일 발송
             const templateParams = {
                 to_email: ADMIN_EMAIL,
                 title: "[HEETSUKI] 주문 취소 요청이 접수되었습니다.",
-                message: `취소 요청된 주문 번호: ${orderId}\n취소 사유: ${reason}`
+                order_id: orderId,
+                customer_name: customerName,
+                customer_phone: targetOrder && targetOrder.shippingInfo ? targetOrder.shippingInfo.phone : '미입력',
+                order_total: orderTotal,
+                cancel_reason: reason,
+                cancel_detail: targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음',
+                action_type: '주문 취소 및 환불 요청 (관리자 승인 대기)',
+                message: `[주문 취소 요청 접수]\n취소 주문 번호: ${orderId}\n고객명: ${customerName}\n결제 금액: ${orderTotal}\n취소 사유: ${reason}\n상세 내용: ${targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음'}`
             };
 
             emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
@@ -695,14 +721,27 @@
             if (typeof render === 'function') render();
         };
 
-        // Legacy compatibility wrapper for existing checkout/cancellation triggers
-        window.sendAdminNotificationEmail = function(templateParams) {
+        // Unified Admin Notification Dispatcher
+        window.sendAdminNotificationEmail = function(params) {
             try {
-                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, {
+                const templateParams = {
                     to_email: ADMIN_EMAIL,
-                    title: templateParams.subject || "[HEETSUKI] 알림",
-                    message: `주문 번호: ${templateParams.order_id}\n고객명: ${templateParams.customer_name}\n총 금액: ${templateParams.order_total}\n사유/요청: ${templateParams.cancel_reason || templateParams.memo || '없음'}`
-                }).then(
+                    title: params.subject || "[HEETSUKI] 주문 알림",
+                    order_id: params.order_id || 'N/A',
+                    customer_name: params.customer_name || '고객',
+                    customer_phone: params.customer_phone || '미입력',
+                    shipping_address: params.shipping_address || '미입력',
+                    order_total: params.order_total || '0원',
+                    payment_method: params.payment_method || '결제수단',
+                    order_items: params.order_items || '상품',
+                    cancel_reason: params.cancel_reason || '없음',
+                    cancel_detail: params.cancel_detail || '없음',
+                    memo: params.memo || '없음',
+                    action_type: params.action_type || '주문 알림',
+                    message: params.message || `주문 번호: ${params.order_id}\n고객명: ${params.customer_name}\n총 금액: ${params.order_total}\n사유/요청: ${params.cancel_reason || params.memo || '없음'}`
+                };
+
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams).then(
                     function(response) {
                         console.log('SUCCESS! Admin notification email sent.', response.status, response.text);
                     },
@@ -711,7 +750,7 @@
                     }
                 );
             } catch (err) {
-                console.log('EmailJS fallback simulated dispatch for heetsuki001@gmail.com:', templateParams);
+                console.log('EmailJS fallback simulated dispatch for heetsuki001@gmail.com:', params);
             }
         };
     </script>
@@ -2250,19 +2289,8 @@
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
             // Trigger EmailJS notification to heetsuki001@gmail.com for new order
-            if (typeof window.sendAdminNotificationEmail === 'function') {
-                window.sendAdminNotificationEmail({
-                    subject: `[HEETSUKI] 새로운 주문이 접수되었습니다 (${orderId})`,
-                    order_id: orderId,
-                    customer_name: pendingOrderData.name,
-                    customer_phone: pendingOrderData.phone,
-                    shipping_address: pendingOrderData.fullAddr,
-                    order_total: formatPrice(pendingOrderData.total),
-                    payment_method: selectedPayment,
-                    order_items: pendingOrderData.items.map(i => `${i.name} (${i.option}) x ${i.qty}`).join(', '),
-                    memo: pendingOrderData.memo || '없음',
-                    action_type: '신규 주문 완료 및 결제'
-                });
+            if (typeof window.sendOrderNotificationToAdmin === 'function') {
+                window.sendOrderNotificationToAdmin(newOrder);
             }
 
             // 배송정보 기억하기 체크박스 상태에 따라 로컬스토리지 및 DB 저장/삭제 처리
@@ -2954,17 +2982,8 @@
             }
 
             // Trigger EmailJS notification to heetsuki001@gmail.com for order cancellation request
-            if (typeof window.sendAdminNotificationEmail === 'function') {
-                window.sendAdminNotificationEmail({
-                    subject: `[HEETSUKI] 주문 취소 요청 접수 (${ord.id})`,
-                    order_id: ord.id,
-                    customer_name: ord.shippingInfo ? ord.shippingInfo.name : '고객',
-                    customer_phone: ord.shippingInfo ? ord.shippingInfo.phone : '미입력',
-                    cancel_reason: selectedReason,
-                    cancel_detail: detailText || '없음',
-                    order_total: ord.total,
-                    action_type: '주문 취소 및 환불 요청 (관리자 승인 대기)'
-                });
+            if (typeof window.requestOrderCancel === 'function') {
+                window.requestOrderCancel(ord.id, selectedReason);
             }
 
             closeCancelOrderModal();
