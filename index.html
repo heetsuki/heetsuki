@@ -33,14 +33,11 @@
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
             background-color: #F5F5F7;
-            /* 은은하고 고급스러운 한국 전통 닥나무 섬유 결 질감이 살아있는 한지 패턴 스타일링 */
-            background-image: 
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='dakHanji'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.45 0.95' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.95  0 0 0 0 0.95  0 0 0 0 0.93  0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23dakHanji)'/%3E%3C/svg%3E"),
-                radial-gradient(rgba(0, 113, 45, 0.015) 1px, transparent 0),
-                repeating-linear-gradient(22deg, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px, transparent 8px),
-                repeating-linear-gradient(112deg, rgba(0, 0, 0, 0.015) 0, rgba(0, 0, 0, 0.015) 1px, transparent 1px, transparent 12px);
-            background-repeat: repeat, repeat, repeat, repeat;
-            background-size: 300px 300px, 40px 40px, 20px 20px, 24px 24px;
+            /* 타일 반복 현상을 완전히 없애기 위해 SVG 기반의 단 하나의 거대한 비반복(non-repeating) 불규칙 닥나무 한지 섬유 결 배경 적용 */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1920 1080' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='nonRepeatingHanji'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.035 0.045' numOctaves='6' stitchTiles='noStitch' result='noise'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.96  0 0 0 0 0.96  0 0 0 0 0.94  0 0 0 0.12 0' result='coloredNoise'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23F5F5F7'/%3E%3Crect width='100%25' height='100%25' filter='url(%23nonRepeatingHanji)'/%3E%3Cg stroke='%23FFFFFF' stroke-linecap='round' fill='none'%3E%3Cpath d='M120,45 C250,80 340,20 480,90 C620,160 710,40 850,110 C990,180 1120,60 1280,130 C1440,200 1590,80 1780,150' stroke-width='2.2' stroke-opacity='0.65'/%3E%3Cpath d='M60,240 C190,190 320,310 460,220 C600,130 730,290 890,200 C1050,110 1190,260 1350,180 C1510,100 1670,250 1860,190' stroke-width='1.8' stroke-opacity='0.55'/%3E%3Cpath d='M220,410 C360,490 490,380 640,460 C790,540 920,390 1080,480 C1240,570 1390,420 1560,500 C1730,580 1840,440 1900,490' stroke-width='2.5' stroke-opacity='0.6'/%3E%3Cpath d='M80,620 C230,570 380,680 520,600 C660,520 810,660 960,580 C1110,500 1270,640 1420,560 C1570,480 1720,620 1880,550' stroke-width='2.0' stroke-opacity='0.5'/%3E%3Cpath d='M150,820 C290,750 440,890 590,810 C740,730 880,870 1030,790 C1180,710 1330,850 1480,770 C1630,690 1770,830 1910,760' stroke-width='1.6' stroke-opacity='0.58'/%3E%3Cpath d='M30,980 C180,1030 330,940 480,1000 C630,1060 780,950 930,1010 C1080,1070 1230,960 1380,1020 C1530,1080 1680,970 1850,1030' stroke-width='2.2' stroke-opacity='0.52'/%3E%3Cpath d='M400,10 C450,150 380,320 420,490 C460,660 390,830 440,1000' stroke-width='1.5' stroke-opacity='0.45'/%3E%3Cpath d='M950,50 C900,220 980,390 920,560 C960,730 900,900 950,1070' stroke-width='1.8' stroke-opacity='0.5'/%3E%3Cpath d='M1500,20 C1550,180 1480,350 1530,520 C1470,690 1540,860 1490,1050' stroke-width='2.0' stroke-opacity='0.48'/%3E%3C/g%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
             color: #1D1D1F;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
