@@ -855,6 +855,9 @@
                     </div>
                 `;
             }
+
+            // 관리자 권한 확인 후 '관리자 모드' 버튼 동적 렌더링 (heetsuki001@gmail.com 전용)
+            updateAdminFloatingButton(userObj.email);
         }
 
         function applyLogoutState() {
@@ -875,6 +878,28 @@
                 checkoutAuthContainer.innerHTML = `
                     <button onclick="openAuthModal('login')" class="text-xs font-medium text-grayText hover:text-darkText transition-colors">로그인 필요</button>
                 `;
+            }
+
+            // 비로그인 상태일 때는 관리자 버튼 철저히 숨김
+            updateAdminFloatingButton(null);
+        }
+
+        function updateAdminFloatingButton(email) {
+            const container = document.getElementById('admin-floating-btn-container');
+            if (!container) return;
+
+            const adminEmail = 'heetsuki001@gmail.com';
+            const isReallyAdmin = email && email.trim().toLowerCase() === adminEmail;
+
+            if (isReallyAdmin) {
+                container.innerHTML = `
+                    <button onclick="openAdminModal()" class="fixed bottom-6 left-6 z-40 px-4 py-3 rounded-full bg-darkText text-white text-xs font-bold shadow-2xl hover:bg-accentGreen transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span>관리자 모드</span>
+                    </button>
+                `;
+            } else {
+                container.innerHTML = '';
             }
         }
 
@@ -2863,6 +2888,25 @@
 
         // 관리자 모달 및 승인/반려 제어 함수
         window.openAdminModal = function() {
+            // 이중 보안 체크: 관리자 이메일이 아닌 경우 접근 원천 차단
+            let currentEmail = '';
+            try {
+                const saved = localStorage.getItem('heetsuki_logged_in_user');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    currentEmail = parsed.email || '';
+                }
+                if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
+                    currentEmail = window.auth.currentUser.email;
+                }
+            } catch(e) {}
+
+            if (!currentEmail || currentEmail.trim().toLowerCase() !== 'heetsuki001@gmail.com') {
+                showToast('접근 권한이 없습니다. 관리자 계정으로 로그인해주세요.');
+                closeAdminModal();
+                return;
+            }
+
             renderAdminPanel();
             const modal = document.getElementById('admin-modal');
             if (modal) {
