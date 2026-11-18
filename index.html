@@ -649,23 +649,16 @@
         // 2. 주문 완료 시 관리자 이메일 발송 함수
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
-            const itemsSummary = orderData.items && orderData.items.length > 0
-                ? orderData.items.map(i => `${i.name} (${i.option}) x ${i.qty}개`).join(', ')
-                : '없음';
-
-            const customerName = orderData.shippingInfo && orderData.shippingInfo.name ? orderData.shippingInfo.name : 'HEETSUKI 쇼핑몰 고객';
+            const customerName = orderData.shippingInfo && orderData.shippingInfo.name ? orderData.shippingInfo.name : '고객';
             const orderId = orderData.id || orderData.orderId || 'ORD-UNKNOWN';
             const totalPrice = orderData.rawTotal || orderData.total || '0원';
 
             const templateParams = {
-                to_email: ADMIN_EMAIL,
-                title: "새로운 주문이 접수되었습니다.",
-                name: customerName,
-                time: new Date().toLocaleString(),
-                message: `주문 번호: ${orderId}\n총 결제금액: ${totalPrice}원\n주문 상태: 결제완료\n수령인: ${customerName}\n연락처: ${orderData.shippingInfo ? orderData.shippingInfo.phone : '미입력'}\n배송주소: ${orderData.shippingInfo ? orderData.shippingInfo.address : '미입력'}\n결제수단: ${orderData.payment || '신용카드'}\n주문상품: ${itemsSummary}\n배송요청: ${orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음'}`
+                to_email: "heetsuki001@gmail.com",
+                message: "주문 번호: " + orderId + "\n총 결제금액: " + totalPrice + "원\n주문자 정보: " + customerName
             };
 
-            emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+            emailjs.send("service_wevgw6t", "template_w4lct8h", templateParams)
                 .then(function(response) {
                     console.log("관리자 주문 알림 메일 발송 성공!", response.status, response.text);
                 }, function(error) {
