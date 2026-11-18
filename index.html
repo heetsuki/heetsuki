@@ -642,8 +642,8 @@
         })();
 
         const ADMIN_EMAIL = "heetsuki001@gmail.com";
-        const EMAIL_SERVICE_ID = "service_wevgw6t"; // 👈 정확하게 적용 완료
-        const EMAIL_TEMPLATE_ID = "template_w4lct8h"; // 👈 정확하게 적용 완료
+        const EMAIL_SERVICE_ID = "service_wevgw6t"; // 👈 서비스 ID
+        const EMAIL_TEMPLATE_ID = "template_w4lct8h"; // 👈 템플릿 ID
 
         // ==========================================
         // 2. 주문 완료 시 관리자 이메일 발송 함수
@@ -653,19 +653,16 @@
                 ? orderData.items.map(i => `${i.name} (${i.option}) x ${i.qty}개`).join(', ')
                 : '없음';
 
+            const customerName = orderData.shippingInfo && orderData.shippingInfo.name ? orderData.shippingInfo.name : 'HEETSUKI 쇼핑몰 고객';
+            const orderId = orderData.id || orderData.orderId || 'ORD-UNKNOWN';
+            const totalPrice = orderData.rawTotal || orderData.total || '0원';
+
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                title: "[HEETSUKI] 새로운 주문이 접수되었습니다.",
-                order_id: orderData.id || orderData.orderId,
-                customer_name: orderData.shippingInfo ? orderData.shippingInfo.name : '고객',
-                customer_phone: orderData.shippingInfo ? orderData.shippingInfo.phone : '미입력',
-                shipping_address: orderData.shippingInfo ? orderData.shippingInfo.address : '미입력',
-                order_total: orderData.total || '0원',
-                payment_method: orderData.payment || '결제수단',
-                order_items: itemsSummary,
-                memo: orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음',
-                action_type: '신규 주문 완료 및 결제 접수',
-                message: `[신규 주문 접수]\n주문 번호: ${orderData.id || orderData.orderId}\n고객명: ${orderData.shippingInfo ? orderData.shippingInfo.name : '고객'}\n연락처: ${orderData.shippingInfo ? orderData.shippingInfo.phone : '미입력'}\n배송지: ${orderData.shippingInfo ? orderData.shippingInfo.address : '미입력'}\n결제금액: ${orderData.total}\n결제수단: ${orderData.payment}\n주문상품: ${itemsSummary}\n배송요청: ${orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음'}`
+                title: "새로운 주문이 접수되었습니다.",
+                name: customerName,
+                time: new Date().toLocaleString(),
+                message: `주문 번호: ${orderId}\n총 결제금액: ${totalPrice}원\n주문 상태: 결제완료\n수령인: ${customerName}\n연락처: ${orderData.shippingInfo ? orderData.shippingInfo.phone : '미입력'}\n배송주소: ${orderData.shippingInfo ? orderData.shippingInfo.address : '미입력'}\n결제수단: ${orderData.payment || '신용카드'}\n주문상품: ${itemsSummary}\n배송요청: ${orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음'}`
             };
 
             emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
@@ -694,21 +691,16 @@
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            const customerName = targetOrder && targetOrder.shippingInfo ? targetOrder.shippingInfo.name : '고객';
-            const orderTotal = targetOrder ? targetOrder.total : '0원';
+            const customerName = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name ? targetOrder.shippingInfo.name : 'HEETSUKI 쇼핑몰 고객';
+            const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
 
             // EmailJS를 통해 관리자에게 취소 요청 메일 발송
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                title: "[HEETSUKI] 주문 취소 요청이 접수되었습니다.",
-                order_id: orderId,
-                customer_name: customerName,
-                customer_phone: targetOrder && targetOrder.shippingInfo ? targetOrder.shippingInfo.phone : '미입력',
-                order_total: orderTotal,
-                cancel_reason: reason,
-                cancel_detail: targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음',
-                action_type: '주문 취소 및 환불 요청 (관리자 승인 대기)',
-                message: `[주문 취소 요청 접수]\n취소 주문 번호: ${orderId}\n고객명: ${customerName}\n결제 금액: ${orderTotal}\n취소 사유: ${reason}\n상세 내용: ${targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음'}`
+                title: "주문 취소 요청이 접수되었습니다.",
+                name: customerName,
+                time: new Date().toLocaleString(),
+                message: `취소 요청된 주문 번호: ${orderId}\n총 결제금액: ${orderTotal}원\n주문 상태: 취소요청(승인대기)\n취소 사유: ${reason}\n상세 내용: ${targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음'}`
             };
 
             emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
@@ -726,19 +718,10 @@
             try {
                 const templateParams = {
                     to_email: ADMIN_EMAIL,
-                    title: params.subject || "[HEETSUKI] 주문 알림",
-                    order_id: params.order_id || 'N/A',
-                    customer_name: params.customer_name || '고객',
-                    customer_phone: params.customer_phone || '미입력',
-                    shipping_address: params.shipping_address || '미입력',
-                    order_total: params.order_total || '0원',
-                    payment_method: params.payment_method || '결제수단',
-                    order_items: params.order_items || '상품',
-                    cancel_reason: params.cancel_reason || '없음',
-                    cancel_detail: params.cancel_detail || '없음',
-                    memo: params.memo || '없음',
-                    action_type: params.action_type || '주문 알림',
-                    message: params.message || `주문 번호: ${params.order_id}\n고객명: ${params.customer_name}\n총 금액: ${params.order_total}\n사유/요청: ${params.cancel_reason || params.memo || '없음'}`
+                    title: params.subject || "새로운 주문이 접수되었습니다.",
+                    name: params.customer_name || 'HEETSUKI 쇼핑몰 고객',
+                    time: new Date().toLocaleString(),
+                    message: params.message || `주문 번호: ${params.order_id}\n총 결제금액: ${params.order_total}원\n주문 상태: 결제완료`
                 };
 
                 emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams).then(
