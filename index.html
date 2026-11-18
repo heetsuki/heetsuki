@@ -649,10 +649,19 @@
         // 2. 주문 완료 시 관리자 이메일 발송 함수 (상세 정보 포함)
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
-            // 수정: 소셜 로그인 기본값이나 구글 계정 이름 대신, 사용자가 배송지 정보에 직접 입력한 수령인 성함을 정확하게 사용
-            const customerName = (orderData.shippingInfo && orderData.shippingInfo.name && orderData.shippingInfo.name.trim() !== '' && orderData.shippingInfo.name !== '구글' && orderData.shippingInfo.name !== '구글회원') 
+            // 수정: 소셜 로그인 기본값이나 구글 계정 이름(google_user) 대신, 사용자가 배송지 정보에 직접 입력한 수령인 성함을 정확하게 사용
+            const customerName = (orderData.shippingInfo && orderData.shippingInfo.name && orderData.shippingInfo.name.trim() !== '' && orderData.shippingInfo.name !== '구글' && orderData.shippingInfo.name !== '구글회원' && !orderData.shippingInfo.name.includes('google_user')) 
                 ? orderData.shippingInfo.name 
-                : '고객님';
+                : (function() {
+                    try {
+                        const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
+                        if (savedUser.name && savedUser.name !== '구글' && !savedUser.name.includes('google_user')) {
+                            return savedUser.name;
+                        }
+                    } catch(e) {}
+                    return 'HEETSUKI 고객님';
+                })();
+
             const customerPhone = orderData.shippingInfo && orderData.shippingInfo.phone ? orderData.shippingInfo.phone : '미입력';
             const customerAddress = orderData.shippingInfo && orderData.shippingInfo.address ? orderData.shippingInfo.address : '미입력';
             const customerMemo = orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음';
@@ -729,10 +738,19 @@
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            // 수정: 구글 계정 이름 대신 배송지 입력란에 입력된 고객 성함 우선 반영
-            const customerName = (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name && targetOrder.shippingInfo.name.trim() !== '' && targetOrder.shippingInfo.name !== '구글' && targetOrder.shippingInfo.name !== '구글회원') 
+            // 수정: 구글 계정 이름이나 google_user 대신 배송지 입력란에 입력된 고객 성함 우선 반영
+            const customerName = (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name && targetOrder.shippingInfo.name.trim() !== '' && targetOrder.shippingInfo.name !== '구글' && targetOrder.shippingInfo.name !== '구글회원' && !targetOrder.shippingInfo.name.includes('google_user')) 
                 ? targetOrder.shippingInfo.name 
-                : '고객님';
+                : (function() {
+                    try {
+                        const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{}');
+                        if (savedUser.name && savedUser.name !== '구글' && !savedUser.name.includes('google_user')) {
+                            return savedUser.name;
+                        }
+                    } catch(e) {}
+                    return 'HEETSUKI 고객님';
+                })();
+
             const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
             const customerPhone = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.phone ? targetOrder.shippingInfo.phone : '미입력';
 
@@ -963,9 +981,8 @@
         };
 
         window.handleGoogleAuth = function() {
-            const mockEmail = 'google_user@heetsuki.com';
-            // 수정: 구글 로그인 시 이름을 '구글'이 아닌 빈 값 또는 '고객님'으로 설정하여 배송지 입력 시 사용자가 직접 입력하도록 유도
-            const userObj = { name: '고객님', type: 'Google', email: mockEmail };
+            // 수정: 구글 로그인 시 이름을 google_user 대신 깔끔하게 'HEETSUKI 고객님'으로 설정하여 배송지 입력 시 사용자가 직접 입력하도록 유도
+            const userObj = { name: 'HEETSUKI 고객님', type: 'Google', email: 'google_user@heetsuki.com' };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
@@ -978,7 +995,6 @@
         };
 
         window.handleNaverAuth = function() {
-            // Updated to prompt or retrieve actual Naver profile display name & email or fallback gracefully
             const actualNaverName = '양대희'; // Real profile user name mapping for HEETSUKI
             const actualNaverEmail = 'heetsuki001@naver.com';
             const userObj = { name: actualNaverName, type: 'Naver', email: actualNaverEmail };
@@ -994,13 +1010,19 @@
         };
 
         function applyLoginState(userObj) {
+            // 만약 userObj.name에 google_user 등이 포함되어 있다면 깔끔하게 정돈
+            let displayName = userObj.name || '고객님';
+            if (displayName.includes('google_user') || displayName === '유저' || displayName === '회원') {
+                displayName = 'HEETSUKI 고객님';
+            }
+
             const authContainer = document.getElementById('auth-buttons-container');
             if (authContainer) {
                 authContainer.innerHTML = `
                     <div class="flex items-center gap-3">
                         <button onclick="openMyPageModal()" class="text-sm font-semibold text-darkText hover:text-accentGreen transition-colors flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
-                            <span>${userObj.name}님 반갑습니다</span>
+                            <span>${displayName}님 반갑습니다</span>
                         </button>
                         <button onclick="openMyPageModal()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
                             내 정보
@@ -1012,12 +1034,11 @@
                 `;
             }
 
-            // Also update checkout page header user auth state container
             const checkoutAuthContainer = document.getElementById('checkout-auth-container');
             if (checkoutAuthContainer) {
                 checkoutAuthContainer.innerHTML = `
                     <div class="flex items-center gap-2">
-                        <span class="font-semibold text-darkText hidden sm:inline">${userObj.name}님</span>
+                        <span class="font-semibold text-darkText hidden sm:inline">${displayName}님</span>
                         <button onclick="openMyPageModal()" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors">내 정보</button>
                         <button onclick="handleLogout()" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors">로그아웃</button>
                     </div>
@@ -2381,19 +2402,21 @@
 
         // My Page Modal Logic with dynamic textContent/innerHTML injection & detailed Order Modal
         window.openMyPageModal = async function() {
-            let userObj = { name: '회원', type: '일반 회원', email: 'user@heetsuki.com' };
+            let userObj = { name: 'HEETSUKI 고객님', type: '일반 회원', email: 'user@heetsuki.com' };
             try {
                 const saved = localStorage.getItem('heetsuki_logged_in_user');
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    if (parsed && parsed.name && parsed.name !== '유저') {
+                    if (parsed && parsed.name && parsed.name !== '유저' && !parsed.name.includes('google_user')) {
                         userObj = parsed;
                     }
                 }
                 if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
                     const email = window.auth.currentUser.email;
                     const name = window.auth.currentUser.displayName || email.split('@')[0];
-                    userObj.name = name;
+                    if (!name.includes('google_user')) {
+                        userObj.name = name;
+                    }
                     userObj.email = email;
                 }
             } catch (e) {}
@@ -2403,7 +2426,7 @@
             
             // 1. Retrieve shipping info from Firestore / local storage or fallback to the most recent order's shipping info
             let shippingInfo = {
-                name: userObj.name && userObj.name !== '회원' && userObj.name !== '유저' ? userObj.name : '',
+                name: (userObj.name && userObj.name !== '회원' && userObj.name !== '유저' && !userObj.name.includes('google_user')) ? userObj.name : '',
                 phone: '',
                 zipcode: '',
                 address: '',
@@ -2413,12 +2436,12 @@
             // Check if there is a recent order with shipping info to auto-populate
             if (orders.length > 0 && orders[0].shippingInfo) {
                 const lastOrd = orders[0].shippingInfo;
-                if (lastOrd.name) shippingInfo.name = lastOrd.name;
+                if (lastOrd.name && lastOrd.name !== '구글' && !lastOrd.name.includes('google_user')) {
+                    shippingInfo.name = lastOrd.name;
+                }
                 if (lastOrd.phone) shippingInfo.phone = lastOrd.phone;
                 if (lastOrd.address) {
-                    // Parse address into main road address and detail if possible
-                    const fullAddr = lastOrd.address;
-                    shippingInfo.address = fullAddr;
+                    shippingInfo.address = lastOrd.address;
                 }
             }
 
@@ -2432,7 +2455,7 @@
                         const cloudData = shipSnap.data();
                         if (cloudData && (cloudData.address || cloudData.phone)) {
                             shippingInfo = {
-                                name: cloudData.name || shippingInfo.name,
+                                name: (cloudData.name && !cloudData.name.includes('google_user')) ? cloudData.name : shippingInfo.name,
                                 phone: cloudData.phone || shippingInfo.phone,
                                 zipcode: cloudData.zipcode || shippingInfo.zipcode,
                                 address: cloudData.address || shippingInfo.address,
@@ -2452,7 +2475,7 @@
                     const parsedLocal = JSON.parse(localStored);
                     if (parsedLocal && (parsedLocal.address || parsedLocal.phone)) {
                         shippingInfo = {
-                            name: parsedLocal.name || shippingInfo.name,
+                            name: (parsedLocal.name && !parsedLocal.name.includes('google_user')) ? parsedLocal.name : shippingInfo.name,
                             phone: parsedLocal.phone || shippingInfo.phone,
                             zipcode: parsedLocal.zipcode || shippingInfo.zipcode,
                             address: parsedLocal.address || shippingInfo.address,
@@ -2460,6 +2483,12 @@
                         };
                     }
                 } catch(e) {}
+            }
+
+            // 마이페이지 모달 상단에 노출될 이름이 google_user 또는 임시값일 경우 배송지 관리의 이름으로 보정
+            let displayUserName = shippingInfo.name || userObj.name || 'HEETSUKI 고객님';
+            if (displayUserName.includes('google_user') || displayUserName === '회원' || displayUserName === '유저') {
+                displayUserName = 'HEETSUKI 고객님';
             }
 
             let modal = document.getElementById('mypage-modal');
@@ -2478,10 +2507,10 @@
                     
                     <div class="flex items-center gap-4 pb-6 border-b border-black/10">
                         <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center" id="mypage-avatar-initial">
-                            ${(userObj.name || '회원').charAt(0)}
+                            ${displayUserName.charAt(0)}
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-darkText" id="mypage-user-name">${userObj.name || '회원'}님</h3>
+                            <h3 class="text-2xl font-bold text-darkText" id="mypage-user-name">${displayUserName}님</h3>
                             <p class="text-sm text-grayText mt-0.5" id="mypage-user-email">${userObj.email || 'user@heetsuki.com'} (${userObj.type || '일반회원'} 연동계정)</p>
                         </div>
                     </div>
