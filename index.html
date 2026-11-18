@@ -656,37 +656,45 @@
             const orderId = orderData.id || orderData.orderId || 'ORD-UNKNOWN';
             const totalPrice = orderData.rawTotal || orderData.total || '0원';
             const paymentMethod = orderData.payment || '신용/체크카드';
+            const orderDate = orderData.date || new Date().toLocaleString();
 
-            // 구매 상품 목록 포맷팅
+            // 구매 상품 목록을 깔끔한 영수증/목록 형태로 포맷팅
             let itemsText = "";
             if (orderData.items && orderData.items.length > 0) {
                 itemsText = orderData.items.map((item, idx) => 
-                    `  [${idx + 1}] ${item.name} (${item.option}) - 수량: ${item.qty}개 / 금액: ${(item.price * item.qty).toLocaleString()}원`
-                ).join('\n');
+                    `  [${idx + 1}] ${item.name}\n` +
+                    `      • 옵션: ${item.option}\n` +
+                    `      • 수량: ${item.qty}개\n` +
+                    `      • 금액: ${(item.price * item.qty).toLocaleString()}원`
+                ).join('\n\n');
             } else {
-                itemsText = "  상품 정보 없음";
+                itemsText = "  • 주문 상품 정보 없음";
             }
 
             const detailedMessage = 
-                `[새로운 주문 접수 알림]\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                ` [HEETSUKI] 신규 주문서 영수증\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                `[주문 개요]\n` +
+                `• 주문 번호 : ${orderId}\n` +
+                `• 주문 일시 : ${orderDate}\n` +
+                `• 결제 수단 : ${paymentMethod}\n` +
+                `• 최종 금액 : ${typeof totalPrice === 'number' ? totalPrice.toLocaleString() : totalPrice}원\n\n` +
                 `----------------------------------------\n` +
-                `• 주문 번호: ${orderId}\n` +
-                `• 결제 수단: ${paymentMethod}\n` +
-                `• 총 결제금액: ${typeof totalPrice === 'number' ? totalPrice.toLocaleString() : totalPrice}원\n` +
+                `[배송지 정보]\n` +
+                `• 수령인    : ${customerName}\n` +
+                `• 연락처    : ${customerPhone}\n` +
+                `• 배송 주소 : ${customerAddress}\n` +
+                `• 요청사항  : ${customerMemo}\n\n` +
                 `----------------------------------------\n` +
-                `[주문자 및 배송지 정보]\n` +
-                `• 수령인: ${customerName}\n` +
-                `• 연락처: ${customerPhone}\n` +
-                `• 배송 주소: ${customerAddress}\n` +
-                `• 배송 요청사항: ${customerMemo}\n` +
-                `----------------------------------------\n` +
-                `[구매 상품 목록 (${orderData.items ? orderData.items.length : 0}종)]\n` +
-                itemsText + `\n` +
-                `----------------------------------------`;
+                `[구매 상품 목록 (${orderData.items ? orderData.items.length : 0}종)]\n\n` +
+                itemsText + `\n\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                ` 본 메일은 HEETSUKI 쇼핑몰에서 자동 발송되었습니다.`;
 
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                title: "[HEETSUKI] 새로운 주문이 접수되었습니다.",
+                title: `[HEETSUKI 주문접수] ${customerName}님의 새로운 주문이 완료되었습니다. (${orderId})`,
                 name: customerName,
                 time: new Date().toLocaleString(),
                 message: detailedMessage
@@ -718,16 +726,30 @@
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            const customerName = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name ? targetOrder.shippingInfo.name : 'HEETSUKI 쇼핑몰 고객';
+            const customerName = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name ? targetOrder.shippingInfo.name : 'HEETSUKI 고객';
             const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
+            const customerPhone = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.phone ? targetOrder.shippingInfo.phone : '미입력';
+
+            const cancelMessage =
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                ` [HEETSUKI] 주문 취소/환불 요청서\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                `• 주문 번호 : ${orderId}\n` +
+                `• 주문자명  : ${customerName}\n` +
+                `• 연락처    : ${customerPhone}\n` +
+                `• 결제 금액 : ${orderTotal}\n` +
+                `• 주문 상태 : 취소요청(환불 완료)\n` +
+                `• 취소 사유 : ${reason}\n` +
+                `• 상세 내용 : ${targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음'}\n\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
             // EmailJS를 통해 관리자에게 취소 요청 메일 발송
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                title: "주문 취소 요청이 접수되었습니다.",
+                title: `[HEETSUKI 취소요청] ${customerName}님으로부터 주문 취소 요청이 접수되었습니다. (${orderId})`,
                 name: customerName,
                 time: new Date().toLocaleString(),
-                message: `취소 요청된 주문 번호: ${orderId}\n총 결제금액: ${orderTotal}원\n주문 상태: 취소요청(승인대기)\n취소 사유: ${reason}\n상세 내용: ${targetOrder && targetOrder.cancelDetail ? targetOrder.cancelDetail : '없음'}`
+                message: cancelMessage
             };
 
             emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
