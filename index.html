@@ -1990,9 +1990,9 @@
                 badgeEl.textContent = 'BANK TRANSFER';
                 titleEl.textContent = '무통장 입금 안내';
                 
-                const deadlineDate = new Date();
-                deadlineDate.setDate(deadlineDate.getDate() + 3);
-                const deadlineStr = `${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 23:59까지`;
+                const deadlineDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+                const pad2 = (n) => String(n).padStart(2, '0');
+                const deadlineStr = `3일 후 ${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 ${pad2(deadlineDate.getHours())}시 ${pad2(deadlineDate.getMinutes())}분까지 (72시간 이내)`;
 
                 contentEl.innerHTML = `
                     <div class="space-y-4 py-2">
@@ -2003,9 +2003,9 @@
                         <div class="p-4 rounded-2xl bg-white border border-black/10 space-y-2 text-xs">
                             <div class="flex justify-between"><span class="text-grayText">입금 은행</span><strong class="text-darkText">국민은행 274101-04-343976</strong></div>
                             <div class="flex justify-between"><span class="text-grayText">예 금 주</span><strong class="text-darkText">양대희 (희츠키)</strong></div>
-                            <div class="flex justify-between"><span class="text-grayText">입금 기한</span><strong class="text-red-600">${deadlineStr}</strong></div>
+                            <div class="flex justify-between items-start gap-2"><span class="text-grayText flex-shrink-0">입금 기한</span><strong class="text-red-600 text-right">${deadlineStr}</strong></div>
                         </div>
-                        <p class="text-[11px] text-grayText text-center">기한 내 미입금 시 자동 취소될 수 있습니다.</p>
+                        <p class="text-[11px] text-grayText text-center">기한(3일/72시간) 내 미입금 시 자동 취소될 수 있습니다.</p>
                     </div>
                 `;
                 
@@ -2099,10 +2099,10 @@
             const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
             
             const now = new Date();
-            const deadlineDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            const deadlineDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
             const pad2 = (n) => String(n).padStart(2, '0');
             const depositDeadlineStr = isBankTransfer 
-                ? `${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 ${pad2(deadlineDate.getHours())}시 ${pad2(deadlineDate.getMinutes())}분까지 (주문 후 24시간 이내)`
+                ? `3일 후 ${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 ${pad2(deadlineDate.getHours())}시 ${pad2(deadlineDate.getMinutes())}분까지 (주문 후 3일/72시간 이내)`
                 : null;
 
             const newOrder = {
@@ -2409,12 +2409,12 @@
             const isCancelled = currentStatus === '주문 취소됨';
             const canCancel = currentStatus === '입금 대기중' || currentStatus === '결제 완료';
 
-            // Calculate fallback deposit deadline if missing on older orders
+            // Calculate fallback deposit deadline if missing on older orders (3 days / 72 hours)
             let displayDeadline = ord.depositDeadline;
             if (ord.payment === '무통장입금' && !displayDeadline) {
-                const fallbackDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
+                const fallbackDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
                 const pad2 = (n) => String(n).padStart(2, '0');
-                displayDeadline = `${fallbackDate.getFullYear()}년 ${fallbackDate.getMonth() + 1}월 ${fallbackDate.getDate()}일 ${pad2(fallbackDate.getHours())}시 ${pad2(fallbackDate.getMinutes())}분까지`;
+                displayDeadline = `3일 후 ${fallbackDate.getFullYear()}년 ${fallbackDate.getMonth() + 1}월 ${fallbackDate.getDate()}일 ${pad2(fallbackDate.getHours())}시 ${pad2(fallbackDate.getMinutes())}분까지 (주문 후 3일/72시간 이내)`;
             }
 
             const statusBadgeClass = isCancelled
