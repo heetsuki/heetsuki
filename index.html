@@ -646,23 +646,57 @@
         const EMAIL_TEMPLATE_ID = "template_w4lct8h"; // 👈 템플릿 ID
 
         // ==========================================
-        // 2. 주문 완료 시 관리자 이메일 발송 함수
+        // 2. 주문 완료 시 관리자 이메일 발송 함수 (상세 정보 포함)
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
             const customerName = orderData.shippingInfo && orderData.shippingInfo.name ? orderData.shippingInfo.name : '고객';
+            const customerPhone = orderData.shippingInfo && orderData.shippingInfo.phone ? orderData.shippingInfo.phone : '미입력';
+            const customerAddress = orderData.shippingInfo && orderData.shippingInfo.address ? orderData.shippingInfo.address : '미입력';
+            const customerMemo = orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음';
             const orderId = orderData.id || orderData.orderId || 'ORD-UNKNOWN';
             const totalPrice = orderData.rawTotal || orderData.total || '0원';
+            const paymentMethod = orderData.payment || '신용/체크카드';
+
+            // 구매 상품 목록 포맷팅
+            let itemsText = "";
+            if (orderData.items && orderData.items.length > 0) {
+                itemsText = orderData.items.map((item, idx) => 
+                    `  [${idx + 1}] ${item.name} (${item.option}) - 수량: ${item.qty}개 / 금액: ${(item.price * item.qty).toLocaleString()}원`
+                ).join('\n');
+            } else {
+                itemsText = "  상품 정보 없음";
+            }
+
+            const detailedMessage = 
+                `[새로운 주문 접수 알림]\n` +
+                `----------------------------------------\n` +
+                `• 주문 번호: ${orderId}\n` +
+                `• 결제 수단: ${paymentMethod}\n` +
+                `• 총 결제금액: ${typeof totalPrice === 'number' ? totalPrice.toLocaleString() : totalPrice}원\n` +
+                `----------------------------------------\n` +
+                `[주문자 및 배송지 정보]\n` +
+                `• 수령인: ${customerName}\n` +
+                `• 연락처: ${customerPhone}\n` +
+                `• 배송 주소: ${customerAddress}\n` +
+                `• 배송 요청사항: ${customerMemo}\n` +
+                `----------------------------------------\n` +
+                `[구매 상품 목록 (${orderData.items ? orderData.items.length : 0}종)]\n` +
+                itemsText + `\n` +
+                `----------------------------------------`;
 
             const templateParams = {
-                to_email: "heetsuki001@gmail.com",
-                message: "주문 번호: " + orderId + "\n총 결제금액: " + totalPrice + "원\n주문자 정보: " + customerName
+                to_email: ADMIN_EMAIL,
+                title: "[HEETSUKI] 새로운 주문이 접수되었습니다.",
+                name: customerName,
+                time: new Date().toLocaleString(),
+                message: detailedMessage
             };
 
-            emailjs.send("service_wevgw6t", "template_w4lct8h", templateParams)
+            emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
                 .then(function(response) {
-                    console.log("관리자 주문 알림 메일 발송 성공!", response.status, response.text);
+                    console.log("관리자 상세 주문 알림 메일 발송 성공!", response.status, response.text);
                 }, function(error) {
-                    console.error("관리자 주문 알림 메일 발송 실패:", error);
+                    console.error("관리자 상세 주문 알림 메일 발송 실패:", error);
                 });
         };
 
