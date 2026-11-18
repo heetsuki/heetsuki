@@ -649,7 +649,10 @@
         // 2. 주문 완료 시 관리자 이메일 발송 함수 (상세 정보 포함)
         // ==========================================
         window.sendOrderNotificationToAdmin = function(orderData) {
-            const customerName = orderData.shippingInfo && orderData.shippingInfo.name ? orderData.shippingInfo.name : '고객';
+            // 수정: 소셜 로그인 기본값이나 구글 계정 이름 대신, 사용자가 배송지 정보에 직접 입력한 수령인 성함을 정확하게 사용
+            const customerName = (orderData.shippingInfo && orderData.shippingInfo.name && orderData.shippingInfo.name.trim() !== '' && orderData.shippingInfo.name !== '구글' && orderData.shippingInfo.name !== '구글회원') 
+                ? orderData.shippingInfo.name 
+                : '고객님';
             const customerPhone = orderData.shippingInfo && orderData.shippingInfo.phone ? orderData.shippingInfo.phone : '미입력';
             const customerAddress = orderData.shippingInfo && orderData.shippingInfo.address ? orderData.shippingInfo.address : '미입력';
             const customerMemo = orderData.shippingInfo && orderData.shippingInfo.memo ? orderData.shippingInfo.memo : '없음';
@@ -726,7 +729,10 @@
 
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            const customerName = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name ? targetOrder.shippingInfo.name : 'HEETSUKI 고객';
+            // 수정: 구글 계정 이름 대신 배송지 입력란에 입력된 고객 성함 우선 반영
+            const customerName = (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name && targetOrder.shippingInfo.name.trim() !== '' && targetOrder.shippingInfo.name !== '구글' && targetOrder.shippingInfo.name !== '구글회원') 
+                ? targetOrder.shippingInfo.name 
+                : '고객님';
             const orderTotal = targetOrder ? targetOrder.rawTotal || targetOrder.total : '0원';
             const customerPhone = targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.phone ? targetOrder.shippingInfo.phone : '미입력';
 
@@ -958,7 +964,8 @@
 
         window.handleGoogleAuth = function() {
             const mockEmail = 'google_user@heetsuki.com';
-            const userObj = { name: '구글회원', type: 'Google', email: mockEmail };
+            // 수정: 구글 로그인 시 이름을 '구글'이 아닌 빈 값 또는 '고객님'으로 설정하여 배송지 입력 시 사용자가 직접 입력하도록 유도
+            const userObj = { name: '고객님', type: 'Google', email: mockEmail };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
