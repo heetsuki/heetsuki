@@ -2470,6 +2470,8 @@
 
             const rawUnifiedName = window.getCurrentUserName();
             const displayUserName = (shippingInfo.name || rawUnifiedName || '고객').replace(/님+$/, '').trim();
+            // 배송지 연락처가 있으면 우선적으로 표시하고, 없으면 깔끔한 안내 문구 출력
+            const displaySubInfo = shippingInfo.phone ? `연락처: ${shippingInfo.phone}` : '배송지 연락처 미등록';
 
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
@@ -2491,7 +2493,7 @@
                         </div>
                         <div>
                             <h3 class="text-2xl font-bold text-darkText" id="mypage-user-name">${displayUserName}님</h3>
-                            <p class="text-sm text-grayText mt-0.5" id="mypage-user-email">${userObj.email || 'user@heetsuki.com'} (${userObj.type || '일반회원'} 연동계정)</p>
+                            <p class="text-sm text-grayText mt-0.5" id="mypage-user-subinfo">${displaySubInfo}</p>
                         </div>
                     </div>
 
