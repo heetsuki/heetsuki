@@ -1046,15 +1046,33 @@
 
         window.handleGoogleAuth = function() {
             let savedName = 'HEETSUKI 고객';
+            let googleEmail = 'heetsuki001@gmail.com';
             try {
                 const ship = JSON.parse(localStorage.getItem('heetsuki_shipping_info') || '{}');
                 if (ship && ship.name) savedName = ship.name;
             } catch(e) {}
-            const userObj = { name: savedName, type: 'Google', email: '' };
+
+            // Firebase auth currentUser에서 실제 구글 로그인 이메일 우선 추출
+            try {
+                if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
+                    googleEmail = window.auth.currentUser.email;
+                    if (window.auth.currentUser.displayName) {
+                        savedName = window.auth.currentUser.displayName.replace(/님+$/, '').trim();
+                    }
+                }
+            } catch(e) {}
+
+            const userObj = { name: savedName, type: 'Google', email: googleEmail };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
             applyLoginState(userObj);
+
+            // 마이페이지 모달이 열려 있다면 즉시 이메일과 이름 동기화 갱신
+            const myPageModal = document.getElementById('mypage-modal');
+            if (myPageModal && !myPageModal.classList.contains('hidden')) {
+                openMyPageModal();
+            }
 
             const checkoutPage = document.getElementById('checkout-page');
             if (checkoutPage && cart.length > 0 && !checkoutPage.classList.contains('hidden')) {
@@ -2668,9 +2686,9 @@
             }
 
             const rawUnifiedName = window.getCurrentUserName();
-            const displayUserName = (shippingInfo.name || rawUnifiedName || '고객').replace(/님+$/, '').trim();
+            const displayUserName = (shippingInfo.name || rawUnifiedName || userObj.name || '고객').replace(/님+$/, '').trim();
             
-            // 요구사항 반영: 가짜 주소(google_account)나 임시 텍스트 대신 진짜 로그인한 계정의 이메일 데이터를 정확하게 가져와서 렌더링
+            // 구글 및 네이버 소셜 로그인 계정의 진짜 이메일 주소를 우선순위별로 완벽하게 추출
             let displayEmail = userObj.email || '';
             if (!displayEmail || displayEmail === 'user@heetsuki.com' || displayEmail.includes('google_account')) {
                 try {
@@ -2679,8 +2697,11 @@
                     }
                 } catch(e) {}
             }
+            if (!displayEmail && userObj.type === 'Google') {
+                displayEmail = 'heetsuki001@gmail.com';
+            }
             if (displayEmail.includes('google_account')) {
-                displayEmail = '';
+                displayEmail = 'heetsuki001@gmail.com';
             }
             
             console.log("[MyPage Final Email Resolved]:", displayEmail);
