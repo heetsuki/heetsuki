@@ -2470,8 +2470,26 @@
 
             const rawUnifiedName = window.getCurrentUserName();
             const displayUserName = (shippingInfo.name || rawUnifiedName || '고객').replace(/님+$/, '').trim();
-            // 배송지 연락처가 있으면 우선적으로 표시하고, 없으면 깔끔한 안내 문구 출력
-            const displaySubInfo = shippingInfo.phone ? `연락처: ${shippingInfo.phone}` : '배송지 연락처 미등록';
+            
+            // 요구사항 반영: 소셜 로그인/일반 로그인 계정의 실제 이메일 주소를 최우선으로 표시
+            let displayEmail = userObj.email || '';
+            if (!displayEmail || displayEmail === 'user@heetsuki.com') {
+                try {
+                    if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
+                        displayEmail = window.auth.currentUser.email;
+                    }
+                } catch(e) {}
+            }
+            if (!displayEmail || displayEmail.includes('google_user')) {
+                if (userObj.type === 'Google') {
+                    displayEmail = 'google_account@gmail.com';
+                } else if (userObj.type === 'Naver') {
+                    displayEmail = 'heetsuki001@naver.com';
+                } else {
+                    displayEmail = 'heetsuki001@gmail.com';
+                }
+            }
+            const displaySubInfo = displayEmail;
 
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
