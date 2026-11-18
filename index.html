@@ -770,7 +770,7 @@
             console.warn("Firebase initialization notice:", err.message);
         }
 
-        // Global robust auth state synchronization
+        // Global robust auth state synchronization with immediate UI rendering fix
         if (auth) {
             onAuthStateChanged(auth, (user) => {
                 if (user && !user.isAnonymous) {
@@ -870,7 +870,6 @@
                 showToast(`환영합니다! 성공적으로 로그인되었습니다.`);
                 applyLoginState(userObj);
 
-                // If checkout page was open or waiting for auth, return to checkout instead of forcing main page
                 const checkoutPage = document.getElementById('checkout-page');
                 if (checkoutPage && cart.length > 0) {
                     checkoutPage.classList.remove('hidden');
@@ -881,8 +880,7 @@
         };
 
         window.handleGoogleAuth = function() {
-            // 통일된 전역 유저 이름 로직 적용 (google_user 대신 깔끔하게 설정)
-            const userObj = { name: 'HEETSUKI 고객', type: 'Google', email: 'google_user@heetsuki.com' };
+            const userObj = { name: 'HEETSUKI 고객', type: 'Google', email: 'google_account@gmail.com' };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
@@ -910,8 +908,7 @@
         };
 
         function applyLoginState(userObj) {
-            // 무조건 전역 이름 함수를 통해 '님님'이나 임시 값이 없는 단일 성함/고객명 획득
-            const rawName = window.getCurrentUserName();
+            const rawName = userObj && userObj.name ? userObj.name : '고객';
             const displayName = rawName.replace(/님+$/, '').trim() || '고객';
 
             const authContainer = document.getElementById('auth-buttons-container');
