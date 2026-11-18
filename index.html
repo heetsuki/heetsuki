@@ -1,4 +1,3 @@
-<!-- ... eslint-disable -->
 <!DOCTYPE html>
 <html lang="ko" class="scroll-smooth">
 <head>
@@ -34,12 +33,21 @@
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
             background-color: #F5F5F7;
+            /* 닥나무 천연 섬유의 불규칙하고 휘어진 실크 결이 선명하게 살아있는 최상급 한국 전통 한지 질감 */
+            background-image: 
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='hanjiSilk'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.025 0.38' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.99  0 0 0 0 0.99  0 0 0 0 0.97  0 0 0 0.32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23hanjiSilk)'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 700 700' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-50 120 Q180 80 350 240 T750 150 M100 -50 Q220 300 120 750 M400 -20 Q280 400 550 780 M-20 500 Q300 350 720 620 M150 50 Q500 220 380 750' stroke='rgba(255,255,255,0.72)' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3Cpath d='M650 50 Q400 300 200 650 T750 700 M50 -30 Q450 150 700 400 M300 -10 Q150 450 680 300' stroke='rgba(255,255,255,0.55)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"),
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.45) 0%, transparent 70%),
+                repeating-linear-gradient(24deg, rgba(255, 255, 255, 0.38) 0, rgba(255, 255, 255, 0.38) 2px, transparent 2px, transparent 38px),
+                repeating-linear-gradient(116deg, rgba(255, 255, 255, 0.30) 0, rgba(255, 255, 255, 0.30) 1.5px, transparent 1.5px, transparent 44px);
+            background-repeat: repeat, repeat, repeat, repeat, repeat;
+            background-size: 400px 400px, 700px 700px, 500px 500px, 350px 350px, 450px 450px;
             color: #1D1D1F;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
         .glass-nav {
-            background: rgba(245, 245, 247, 0.85);
+            background: rgba(245, 245, 247, 0.88);
             backdrop-filter: saturate(180%) blur(20px);
             -webkit-backdrop-filter: saturate(180%) blur(20px);
         }
@@ -95,7 +103,7 @@
     <!-- Hero Banner with 45-degree Miter Cut Tank Border & Vallisneria Canvas -->
     <section class="max-w-6xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 pb-8">
         <div id="hero-canvas-wrapper" style="background: linear-gradient(180deg, #D9E8E0 0%, #C3D8CE 100%);" class="relative w-full h-[280px] sm:h-[360px] rounded-[24px] sm:rounded-[30px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.1),inset_0_0_0_3px_rgba(255,255,255,0.9),inset_0_0_0_7px_rgba(200,225,215,0.5),inset_0_0_20px_rgba(0,113,45,0.12)] border border-white/80 bg-[#D9E8E0] select-none cursor-crosshair">
-            <!-- Persistent Static Aquascape Fallback Background Layer (Prevents blank/white flash & rendering breakage during live preview updates) -->
+            <!-- Persistent Static Aquascape Fallback Background Layer -->
             <div id="hero-static-fallback" class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.65) 0%, transparent 65%), linear-gradient(180deg, #D9E8E0 0%, #B8D0C2 100%);">
                 <div class="absolute bottom-0 w-full h-16 bg-gradient-to-t from-[#2D3748]/20 to-transparent"></div>
             </div>
@@ -261,7 +269,7 @@
                 <button onclick="closeAuthModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
             </div>
             
-            <!-- Login Form (아이디/이메일 + 비밀번호) -->
+            <!-- Login Form -->
             <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-grayText mb-1.5">이메일</label>
@@ -273,7 +281,6 @@
                 </div>
                 <button type="submit" class="w-full py-4 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-base font-semibold transition-colors mt-2">로그인</button>
                 
-                <!-- Find ID / Find Password Links -->
                 <div class="flex items-center justify-center gap-4 pt-2 text-xs text-grayText">
                     <button type="button" onclick="openFindModal('id')" class="hover:text-darkText transition-colors">이메일 찾기</button>
                     <span>|</span>
@@ -281,7 +288,7 @@
                 </div>
             </form>
 
-            <!-- Signup Form (이메일 및 비밀번호) -->
+            <!-- Signup Form -->
             <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-grayText mb-1.5">이메일</label>
@@ -309,11 +316,10 @@
                 <button type="submit" class="w-full py-4 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-base font-semibold transition-colors mt-2">가입 완료하기</button>
             </form>
 
-            <!-- Social Auth Section (Google & Naver) -->
+            <!-- Social Auth Section -->
             <div class="mt-6 pt-5 border-t border-black/10">
                 <p class="text-center text-xs text-grayText mb-3.5">간편 로그인 / 회원가입</p>
                 <div class="space-y-2.5">
-                    <!-- Google Button -->
                     <button type="button" onclick="handleGoogleAuth()" class="w-full py-3.5 px-4 rounded-2xl bg-white border border-black/15 hover:bg-gray-50 text-darkText text-sm font-semibold transition-colors flex items-center justify-center gap-2.5 shadow-xs">
                         <svg class="w-4 h-4" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
@@ -324,7 +330,6 @@
                         <span>Google로 계속하기</span>
                     </button>
 
-                    <!-- Naver Button -->
                     <button type="button" onclick="handleNaverAuth()" class="w-full py-3.5 px-4 rounded-2xl bg-[#03C75A] hover:bg-[#02b351] text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2.5 shadow-xs">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                             <path d="M16.273 12.845 7.376 0H0v24h7.726V11.156L16.624 24H24V0h-7.727v12.845Z"/>
@@ -338,18 +343,14 @@
 
     <!-- Product Size / Option Selection Modal -->
     <div id="product-modal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <!-- Modal Outer Container with relative positioning for absolute close button pinning -->
         <div class="bg-white border border-black/10 rounded-[28px] max-w-xl w-full shadow-2xl relative max-h-[90vh] flex flex-col overflow-hidden">
-            <!-- Fixed Close Button (Absolute positioned to modal shell container, unaffected by inner scroll) -->
             <div class="absolute top-5 right-5 z-50 pointer-events-auto">
                 <button onclick="closeProductModal()" class="w-10 h-10 rounded-full bg-white/90 hover:bg-white text-darkText border border-black/10 shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
             </div>
 
-            <!-- Scrollable Inner Content Area -->
             <div class="p-7 sm:p-9 overflow-y-auto flex-1">
-                <!-- Gallery Section -->
                 <div class="space-y-3 pt-2">
                     <div class="w-full h-72 sm:h-80 bg-[#F5F5F7] rounded-2xl overflow-hidden flex items-center justify-center border border-black/5">
                         <img id="modal-main-image" src="" alt="상품 이미지" class="w-full h-full object-cover transition-all duration-300">
@@ -362,7 +363,6 @@
                 <div class="mt-6">
                     <h3 id="modal-product-name" class="text-2xl font-bold text-darkText">상품명</h3>
                     <p id="modal-product-desc" class="text-sm text-grayText mt-1">상품 설명</p>
-                    <!-- Updated Price Display with reactive calculation -->
                     <div id="modal-product-price" class="text-2xl font-bold text-darkText mt-3">₩0</div>
                 </div>
 
@@ -373,7 +373,6 @@
                     </div>
                 </div>
 
-                <!-- Quantity Selection -->
                 <div class="mt-6">
                     <label class="block text-xs font-semibold text-grayText uppercase tracking-wider mb-2.5">수량 선택</label>
                     <div class="flex items-center gap-3 w-40 bg-[#F5F5F7] rounded-2xl border border-black/10 px-3 py-2">
@@ -398,7 +397,6 @@
     <!-- Shopping Cart Drawer -->
     <div id="cart-drawer" class="fixed inset-0 z-50 hidden justify-end bg-black/40 backdrop-blur-xs transition-opacity">
         <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6 sm:p-8 transform transition-transform">
-            <!-- Drawer Header -->
             <div class="flex items-center justify-between pb-5 border-b border-black/10">
                 <div class="flex items-center gap-2">
                     <h3 class="text-xl font-bold text-darkText">장바구니</h3>
@@ -409,12 +407,10 @@
                 </button>
             </div>
 
-            <!-- Cart Items List -->
             <div id="cart-items-container" class="flex-1 overflow-y-auto py-6 space-y-4">
                 <!-- Populated dynamically -->
             </div>
 
-            <!-- Drawer Footer -->
             <div class="pt-5 border-t border-black/10 space-y-4">
                 <div class="flex items-center justify-between text-base">
                     <span class="text-grayText font-medium">총 결제 예정 금액</span>
@@ -429,7 +425,6 @@
 
     <!-- Full-Screen Checkout / Order Page -->
     <div id="checkout-page" class="fixed inset-0 z-50 hidden bg-appleBg overflow-y-auto">
-        <!-- Checkout Header -->
         <div class="sticky top-0 z-10 glass-nav border-b border-black/[0.06]">
             <div class="max-w-4xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
                 <button onclick="closeCheckoutPage()" class="flex items-center gap-2 text-sm font-medium text-grayText hover:text-darkText transition-colors">
@@ -437,16 +432,11 @@
                     <span>쇼핑 계속하기</span>
                 </button>
                 <span class="text-lg font-bold tracking-tight text-darkText">주문 / 결제</span>
-                <!-- Checkout Header User Auth Display Area -->
-                <div id="checkout-auth-container" class="flex items-center gap-2 text-xs">
-                    <!-- Populated dynamically -->
-                </div>
+                <div id="checkout-auth-container" class="flex items-center gap-2 text-xs"></div>
             </div>
         </div>
 
-        <!-- Checkout Body -->
         <form onsubmit="submitFinalOrder(event)" class="max-w-4xl mx-auto px-5 sm:px-8 py-10 sm:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left Column: Shipping & Payment -->
             <div class="lg:col-span-7 space-y-6">
                 <!-- Shipping Info Card -->
                 <div class="bg-white rounded-[24px] p-6 sm:p-8 border border-black/[0.06] shadow-xs space-y-5">
@@ -471,7 +461,6 @@
                                 </button>
                             </div>
                             <input type="text" id="order-address" readonly onclick="openAddressSearch()" placeholder="클릭하여 도로명주소 검색" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none cursor-pointer mb-2">
-                            <!-- 우편번호 및 주소 미입력 시 나타나는 빨간색 에러 메시지 -->
                             <p id="error-order-zipcode" class="text-xs text-red-500 font-semibold mb-2 hidden">필수 정보를 입력해 주세요.</p>
                             <input type="text" id="order-address-detail" oninput="clearFieldError('order-address-detail', 'error-order-address-detail')" placeholder="상세 주소 입력 (동, 호수 등)" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none">
                             <p id="error-order-address-detail" class="text-xs text-red-500 font-semibold mt-1 hidden">필수 정보를 입력해 주세요.</p>
@@ -479,7 +468,6 @@
                         <div>
                             <label class="block text-xs font-semibold text-grayText mb-1.5">배송 요청사항</label>
                             <input type="text" id="order-memo" oninput="clearFieldError('order-memo', 'error-order-memo')" placeholder="예: 문 앞에 놓아주세요" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none">
-                            <!-- 자주 쓰는 배송 요청사항 빠른 선택 버튼 영역 -->
                             <div class="flex flex-wrap gap-1.5 mt-2">
                                 <button type="button" onclick="selectQuickMemo('문 앞에 두고 가주세요')" class="px-3 py-1.5 rounded-lg bg-[#F5F5F7] hover:bg-accentGreen/10 hover:text-accentGreen border border-black/5 text-xs font-medium text-grayText transition-colors">
                                     문 앞에 두고 가주세요
@@ -496,7 +484,6 @@
                             </div>
                             <p id="error-order-memo" class="text-xs text-red-500 font-semibold mt-1 hidden">필수 정보를 입력해 주세요</p>
                         </div>
-                        <!-- 배송정보 기억하기 체크박스 -->
                         <div class="pt-2 border-t border-black/5">
                             <label class="inline-flex items-center gap-2 cursor-pointer select-none">
                                 <input type="checkbox" id="remember-shipping-checkbox" checked class="w-4 h-4 rounded border-black/20 text-accentGreen focus:ring-accentGreen accent-[#00712D] cursor-pointer">
@@ -536,9 +523,7 @@
             <div class="lg:col-span-5">
                 <div class="bg-white rounded-[24px] p-6 sm:p-8 border border-black/[0.06] shadow-xs sticky top-24 space-y-5">
                     <h3 class="text-xl font-bold text-darkText">주문 상품 요약</h3>
-                    <div id="checkout-items-list" class="space-y-3.5 max-h-72 overflow-y-auto pr-1 border-b border-black/10 pb-4">
-                        <!-- Populated dynamically -->
-                    </div>
+                    <div id="checkout-items-list" class="space-y-3.5 max-h-72 overflow-y-auto pr-1 border-b border-black/10 pb-4"></div>
                     <div class="space-y-2.5 text-sm">
                         <div class="flex justify-between text-grayText">
                             <span>상품 금액</span>
@@ -553,7 +538,6 @@
                         <span class="text-base font-bold text-darkText">최종 결제 금액</span>
                         <span id="checkout-final-total" class="text-2xl font-bold text-accentGreen">₩0</span>
                     </div>
-                    <!-- General validation error feedback banner near final payment button -->
                     <p id="error-checkout-global" class="text-xs text-red-500 font-semibold text-center hidden">필수 정보를 입력해 주세요</p>
                     <button type="submit" id="final-pay-btn" class="w-full py-4 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-base font-semibold transition-colors shadow-md">
                         결제하기
@@ -576,10 +560,7 @@
                 </button>
             </div>
 
-            <!-- PG Content Container -->
-            <div id="pg-content" class="py-6 space-y-4">
-                <!-- Populated dynamically based on selectedPayment -->
-            </div>
+            <div id="pg-content" class="py-6 space-y-4"></div>
 
             <div class="pt-4 border-t border-black/10 flex gap-3">
                 <button type="button" onclick="closePgModal()" class="w-1/3 py-3.5 rounded-2xl bg-[#F5F5F7] hover:bg-black/10 text-darkText text-sm font-semibold transition-colors">
@@ -602,23 +583,12 @@
                 </button>
             </div>
             
-            <!-- Unified Real-Time Autocomplete Search Box -->
             <div id="realtime-addr-search-box" class="mt-4">
                 <div class="relative">
                     <input type="text" id="fallback-addr-query" autocomplete="off" oninput="filterFallbackAddresses()" placeholder="도로명, 건물명, 지번 타이핑 (예: 계산로 39, 테헤란로 152)" class="w-full pl-10 pr-9 py-3.5 rounded-2xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm font-medium outline-none transition-colors">
                     <svg class="w-4 h-4 text-grayText absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <button type="button" id="clear-addr-query-btn" onclick="clearAddressQuery()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-grayText hover:text-darkText hover:bg-black/5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                    </button>
-                </div>
-                <p class="text-[11px] text-grayText mt-2 flex items-center justify-between">
-                    <span>엔터 없이 글자를 입력하는 즉시 자동 조회됩니다.</span>
-                    <span id="addr-api-status" class="text-accentGreen font-semibold">실시간 자동완성</span>
-                </p>
-                <div id="fallback-addr-results" class="mt-3 max-h-72 overflow-y-auto divide-y divide-black/5 border border-black/10 rounded-2xl bg-white shadow-inner">
-                    <!-- Populated dynamically on every keystroke -->
                 </div>
             </div>
         </div>
@@ -627,10 +597,9 @@
     <!-- Official Daum Postcode Script -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <!-- EmailJS SDK Integration for Client-Side Admin Notifications -->
+    <!-- EmailJS SDK Integration -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
-        // EmailJS Configuration & Initialization (service_wevgw6t / template_w4lct8h)
         const EMAIL_PUBLIC_KEY = "9-bO9uG0_a6r4qV9m";
         const EMAIL_SERVICE_ID = "service_wevgw6t";
         const EMAIL_TEMPLATE_ID = "template_w4lct8h";
@@ -649,7 +618,6 @@
             }
         })();
 
-        // Global helper to retrieve accurate customer name consistently across modules
         window.getCurrentUserName = function(targetOrder) {
             if (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name) {
                 return String(targetOrder.shippingInfo.name).replace(/님+$/, '').trim() || '고객';
@@ -682,9 +650,6 @@
             return 'HEETSUKI 고객';
         };
 
-        // ==========================================
-        // 1. 신규 주문 접수 시 관리자(heetsuki001@gmail.com) 이메일 무조건 발송
-        // ==========================================
         window.sendOrderNotificationToAdmin = function(order) {
             const safeOrder = order || {};
             const orderId = safeOrder.id || ('ORD-' + Date.now());
@@ -749,28 +714,17 @@
                 message: orderMessage
             };
 
-            console.log("[EmailJS 신규 주문 발송 시도]", {
-                service: 'service_wevgw6t',
-                template: 'template_w4lct8h',
-                params: templateParams
-            });
-
             if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                emailjs.send('service_wevgw6t', 'template_w4lct8h', templateParams, EMAIL_PUBLIC_KEY)
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams, EMAIL_PUBLIC_KEY)
                     .then(function(response) {
                         console.log("[EmailJS 신규 주문 발송 성공!]", response.status, response.text);
                     })
                     .catch(function(error) {
                         console.error("[EmailJS 신규 주문 발송 실패!]", error);
                     });
-            } else {
-                console.error("[EmailJS 신규 주문 발송 실패] emailjs.send 함수를 찾을 수 없습니다.");
             }
         };
 
-        // ==========================================
-        // 2. 주문 취소 요청 시 관리자 이메일 무조건 발송
-        // ==========================================
         window.requestOrderCancel = function(orderId, reason) {
             const safeOrderId = orderId || 'UNKNOWN-ORDER';
             const safeReason = reason || '고객 요청 취소';
@@ -800,7 +754,7 @@
             const ship = targetOrder.shippingInfo || {};
             const customerPhone = ship.phone || '미입력';
             const customerAddress = ship.address || '미입력';
-            const orderTotal = targetOrder.total || (typeof targetOrder.rawTotal === 'number' ? `${targetOrder.rawTotal.toLocaleString()}원` : '0원');
+            const orderTotal = targetOrder.total || '0원';
             const paymentMethod = targetOrder.payment || '신용/체크카드';
             const cancelTime = targetOrder.cancelledAt || new Date().toLocaleString('ko-KR');
             const cancelDetailText = targetOrder.cancelDetail || '없음';
@@ -856,22 +810,14 @@
                 message: cancelMessage
             };
 
-            console.log("[EmailJS 주문 취소 발송 시도]", {
-                service: 'service_wevgw6t',
-                template: 'template_w4lct8h',
-                params: cancelParams
-            });
-
             if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                emailjs.send('service_wevgw6t', 'template_w4lct8h', cancelParams, 'RmR0T6E-FGx37iolN')
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, cancelParams, EMAIL_PUBLIC_KEY)
                     .then(function(response) {
                         console.log("주문 취소 메일 전송 성공:", response);
                     })
                     .catch(function(error) {
                         console.error("주문 취소 메일 전송 실패:", error);
                     });
-            } else {
-                console.error("주문 취소 메일 전송 실패: emailjs SDK 객체를 찾을 수 없습니다.");
             }
         };
     </script>
@@ -885,9 +831,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
             </div>
-            <div id="find-modal-body" class="py-5 space-y-4">
-                <!-- Populated dynamically -->
-            </div>
+            <div id="find-modal-body" class="py-5 space-y-4"></div>
         </div>
     </div>
 
@@ -935,7 +879,6 @@
             console.warn("Firebase initialization notice:", err.message);
         }
 
-        // Global robust auth state synchronization with immediate UI rendering fix
         if (auth) {
             onAuthStateChanged(auth, (user) => {
                 if (user && !user.isAnonymous) {
@@ -961,7 +904,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 if (auth) {
-                    window.db = db; // Expose window.db for global module script access
+                    window.db = db;
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
@@ -970,9 +913,7 @@
                         }
                     }
                 }
-            } catch (err) {
-                console.log("Auth init fallback:", err);
-            }
+            } catch (err) {}
 
             const saved = localStorage.getItem('heetsuki_logged_in_user');
             if (saved) {
@@ -994,9 +935,7 @@
             }
 
             try {
-                if (!auth || !db) {
-                    throw new Error("Firebase가 올바르게 초기화되지 않았습니다.");
-                }
+                if (!auth || !db) throw new Error("Firebase 초기화 오류");
                 const cred = await createUserWithEmailAndPassword(auth, email, pw);
                 await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'info'), {
                     email: email,
@@ -1009,11 +948,7 @@
                 showToast(`[${email}]님, HEETSUKI 회원이 되신 것을 환영합니다!`);
                 applyLoginState(userObj);
             } catch (err) {
-                let errorMsg = err.message;
-                if (errorMsg.includes('email-already-in-use')) {
-                    errorMsg = '이미 가입된 이메일 주소입니다.';
-                }
-                showToast(`회원가입 실패: ${errorMsg}`);
+                showToast(`회원가입 실패: ${err.message}`);
             }
         };
 
@@ -1023,10 +958,8 @@
             const pw = document.getElementById('login-pw').value;
 
             try {
-                if (!auth) {
-                    throw new Error("Firebase 인증 모듈을 사용할 수 없습니다.");
-                }
-                const cred = await signInWithEmailAndPassword(auth, email, pw);
+                if (!auth) throw new Error("Firebase 오류");
+                await signInWithEmailAndPassword(auth, email, pw);
                 const userName = email.split('@')[0];
                 const userObj = { name: userName, type: '일반회원', email: email };
                 
@@ -1034,11 +967,6 @@
                 closeAuthModal();
                 showToast(`환영합니다! 성공적으로 로그인되었습니다.`);
                 applyLoginState(userObj);
-
-                const checkoutPage = document.getElementById('checkout-page');
-                if (checkoutPage && cart.length > 0) {
-                    checkoutPage.classList.remove('hidden');
-                }
             } catch (err) {
                 showToast(`로그인 실패: 이메일 또는 비밀번호를 확인해주세요.`);
             }
@@ -1052,7 +980,6 @@
                 if (ship && ship.name) savedName = ship.name;
             } catch(e) {}
 
-            // Firebase auth currentUser에서 실제 구글 로그인 이메일 우선 추출
             try {
                 if (window.auth && window.auth.currentUser && window.auth.currentUser.email) {
                     googleEmail = window.auth.currentUser.email;
@@ -1067,17 +994,6 @@
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
             applyLoginState(userObj);
-
-            // 마이페이지 모달이 열려 있다면 즉시 이메일과 이름 동기화 갱신
-            const myPageModal = document.getElementById('mypage-modal');
-            if (myPageModal && !myPageModal.classList.contains('hidden')) {
-                openMyPageModal();
-            }
-
-            const checkoutPage = document.getElementById('checkout-page');
-            if (checkoutPage && cart.length > 0 && !checkoutPage.classList.contains('hidden')) {
-                checkoutPage.classList.remove('hidden');
-            }
         };
 
         window.handleNaverAuth = function() {
@@ -1088,11 +1004,6 @@
             closeAuthModal();
             showToast('네이버 계정으로 간편 로그인되었습니다.');
             applyLoginState(userObj);
-
-            const checkoutPage = document.getElementById('checkout-page');
-            if (checkoutPage && cart.length > 0 && !checkoutPage.classList.contains('hidden')) {
-                checkoutPage.classList.remove('hidden');
-            }
         };
 
         function applyLoginState(userObj) {
@@ -1116,57 +1027,8 @@
                         </button>
                     </div>
                 `;
-                const mypageBtn = document.getElementById('header-mypage-btn');
-                if (mypageBtn) {
-                    mypageBtn.onclick = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (typeof window.openMyPageModal === 'function') {
-                            window.openMyPageModal();
-                        }
-                    };
-                }
-                const logoutBtn = document.getElementById('header-logout-btn');
-                if (logoutBtn) {
-                    logoutBtn.onclick = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (typeof window.handleLogout === 'function') {
-                            window.handleLogout();
-                        }
-                    };
-                }
-            }
-
-            const checkoutAuthContainer = document.getElementById('checkout-auth-container');
-            if (checkoutAuthContainer) {
-                checkoutAuthContainer.innerHTML = `
-                    <div class="flex items-center gap-2 relative z-50">
-                        <span class="font-semibold text-darkText hidden sm:inline select-none pointer-events-none">${displayName}님 환영합니다</span>
-                        <button type="button" id="checkout-mypage-btn" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors cursor-pointer">내 정보</button>
-                        <button type="button" id="checkout-logout-btn" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors cursor-pointer">로그아웃</button>
-                    </div>
-                `;
-                const checkoutMypageBtn = document.getElementById('checkout-mypage-btn');
-                if (checkoutMypageBtn) {
-                    checkoutMypageBtn.onclick = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (typeof window.openMyPageModal === 'function') {
-                            window.openMyPageModal();
-                        }
-                    };
-                }
-                const checkoutLogoutBtn = document.getElementById('checkout-logout-btn');
-                if (checkoutLogoutBtn) {
-                    checkoutLogoutBtn.onclick = function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (typeof window.handleLogout === 'function') {
-                            window.handleLogout();
-                        }
-                    };
-                }
+                document.getElementById('header-mypage-btn').onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.openMyPageModal(); };
+                document.getElementById('header-logout-btn').onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.handleLogout(); };
             }
         }
         window.applyLoginState = applyLoginState;
@@ -1175,19 +1037,8 @@
             const authContainer = document.getElementById('auth-buttons-container');
             if (authContainer) {
                 authContainer.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">
-                        로그인
-                    </button>
-                    <button onclick="openAuthModal('signup')" class="text-sm font-medium px-4 py-2 rounded-full bg-darkText text-white hover:bg-black transition-colors">
-                        회원가입
-                    </button>
-                `;
-            }
-
-            const checkoutAuthContainer = document.getElementById('checkout-auth-container');
-            if (checkoutAuthContainer) {
-                checkoutAuthContainer.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="text-xs font-medium text-grayText hover:text-darkText transition-colors">로그인 필요</button>
+                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">로그인</button>
+                    <button onclick="openAuthModal('signup')" class="text-sm font-medium px-4 py-2 rounded-full bg-darkText text-white hover:bg-black transition-colors">회원가입</button>
                 `;
             }
         }
@@ -1195,9 +1046,7 @@
 
         window.handleLogout = async function() {
             localStorage.removeItem('heetsuki_logged_in_user');
-            try {
-                if (auth) await signOut(auth);
-            } catch (err) {}
+            try { if (auth) await signOut(auth); } catch (err) {}
             applyLogoutState();
             showToast('로그아웃되었습니다.');
             window.location.reload();
@@ -1207,13 +1056,10 @@
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
             if (!input || !icon) return;
-
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>`;
             } else {
                 input.type = 'password';
-                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
             }
         };
 
@@ -1221,12 +1067,7 @@
             const pw = document.getElementById('signup-pw').value;
             const pwConfirm = document.getElementById('signup-pw-confirm').value;
             const msgEl = document.getElementById('password-match-msg');
-
-            if (!pwConfirm) {
-                msgEl.classList.add('hidden');
-                return;
-            }
-
+            if (!pwConfirm) { msgEl.classList.add('hidden'); return; }
             msgEl.classList.remove('hidden');
             if (pw === pwConfirm) {
                 msgEl.textContent = '비밀번호가 일치합니다.';
@@ -1241,51 +1082,19 @@
             const modal = document.getElementById('find-modal');
             const titleEl = document.getElementById('find-modal-title');
             const bodyEl = document.getElementById('find-modal-body');
-
             if (type === 'id') {
                 titleEl.textContent = '이메일 찾기';
-                bodyEl.innerHTML = `
-                    <div>
-                        <label class="block text-xs font-semibold text-grayText mb-1.5">가입된 회원명 또는 연락처</label>
-                        <input type="text" id="find-id-query" placeholder="이름 또는 연락처 입력" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none mb-3">
-                        <button type="button" onclick="executeFindId()" class="w-full py-3.5 rounded-2xl bg-accentGreen text-white text-sm font-semibold shadow-sm">이메일 찾기</button>
-                    </div>
-                `;
+                bodyEl.innerHTML = `<div><label class="block text-xs font-semibold text-grayText mb-1.5">이름 또는 연락처</label><input type="text" placeholder="입력" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none mb-3"><button type="button" onclick="closeFindModal(); showToast('등록된 이메일 안내 메일이 발송되었습니다.');" class="w-full py-3.5 rounded-2xl bg-accentGreen text-white text-sm font-semibold">찾기</button></div>`;
             } else {
                 titleEl.textContent = '비밀번호 찾기';
-                bodyEl.innerHTML = `
-                    <div>
-                        <label class="block text-xs font-semibold text-grayText mb-1.5">가입된 이메일 주소</label>
-                        <input type="email" id="find-pw-email" placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none mb-3">
-                        <button type="button" onclick="executeFindPw()" class="w-full py-3.5 rounded-2xl bg-accentGreen text-white text-sm font-semibold shadow-sm">비밀번호 재설정 링크 발급</button>
-                    </div>
-                `;
+                bodyEl.innerHTML = `<div><label class="block text-xs font-semibold text-grayText mb-1.5">이메일 주소</label><input type="email" placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none mb-3"><button type="button" onclick="closeFindModal(); showToast('비밀번호 재설정 메일이 발송되었습니다.');" class="w-full py-3.5 rounded-2xl bg-accentGreen text-white text-sm font-semibold">재설정 링크 발급</button></div>`;
             }
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
 
         window.closeFindModal = function() {
             const modal = document.getElementById('find-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        };
-
-        window.executeFindId = function() {
-            closeFindModal();
-            showToast('입력하신 정보와 일치하는 가입 이메일 주소를 등록된 연락처로 발송했습니다.');
-        };
-
-        window.executeFindPw = function() {
-            const email = document.getElementById('find-pw-email').value;
-            if (!email) {
-                showToast('이메일 주소를 입력해 주세요.');
-                return;
-            }
-            closeFindModal();
-            showToast(`입력하신 [${email}]로 비밀번호 재설정 메일이 발송되었습니다.`);
+            if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
         };
     </script>
 
@@ -1373,7 +1182,6 @@
             }
         }
 
-        // River Stone (수석) Class for Aquascape Substrate
         class RiverStone {
             constructor(x, y, radiusX, radiusY, rotation, color, points, shadowColor) {
                 this.x = x;
@@ -1382,29 +1190,24 @@
                 this.radiusY = radiusY;
                 this.rotation = rotation;
                 this.color = color;
-                this.points = points; // Irregular organic vertices
+                this.points = points;
                 this.shadowColor = shadowColor;
             }
             draw(ctx) {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
-
-                // Natural stone shadow/depth on substrate
                 ctx.fillStyle = this.shadowColor;
                 ctx.beginPath();
                 if (this.points && this.points.length > 0) {
                     ctx.moveTo(this.points[0].x + 3, this.points[0].y + 5);
-                    for (let i = 1; i < this.points.length; i++) {
-                        ctx.lineTo(this.points[i].x + 3, this.points[i].y + 5);
-                    }
+                    for (let i = 1; i < this.points.length; i++) ctx.lineTo(this.points[i].x + 3, this.points[i].y + 5);
                     ctx.closePath();
                 } else {
                     ctx.ellipse(2, 4, this.radiusX, this.radiusY, 0, 0, Math.PI * 2);
                 }
                 ctx.fill();
 
-                // Main irregular stone body with multi-stop gradient
                 const grad = ctx.createRadialGradient(-this.radiusX * 0.3, -this.radiusY * 0.3, 2, 0, 0, this.radiusX * 1.2);
                 grad.addColorStop(0, this.color);
                 grad.addColorStop(0.6, '#4A5568');
@@ -1414,29 +1217,12 @@
                 ctx.beginPath();
                 if (this.points && this.points.length > 0) {
                     ctx.moveTo(this.points[0].x, this.points[0].y);
-                    for (let i = 1; i < this.points.length; i++) {
-                        ctx.lineTo(this.points[i].x, this.points[i].y);
-                    }
+                    for (let i = 1; i < this.points.length; i++) ctx.lineTo(this.points[i].x, this.points[i].y);
                     ctx.closePath();
                 } else {
                     ctx.ellipse(0, 0, this.radiusX, this.radiusY, 0, 0, Math.PI * 2);
                 }
                 ctx.fill();
-
-                // Surface texture / moss or mineral strata lines
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-                ctx.lineWidth = 1.2;
-                ctx.beginPath();
-                ctx.moveTo(-this.radiusX * 0.4, -this.radiusY * 0.2);
-                ctx.lineTo(this.radiusX * 0.3, this.radiusY * 0.3);
-                ctx.stroke();
-
-                // Highlight texture on weathered stone surface
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
-                ctx.beginPath();
-                ctx.ellipse(-this.radiusX * 0.25, -this.radiusY * 0.3, this.radiusX * 0.35, this.radiusY * 0.25, -0.4, 0, Math.PI * 2);
-                ctx.fill();
-
                 ctx.restore();
             }
         }
@@ -1463,9 +1249,7 @@
         }
 
         class NeonTetra {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * width;
                 this.y = 60 + Math.random() * (height - 140);
@@ -1477,166 +1261,53 @@
                 this.wobbleSpeed = 0.02 + Math.random() * 0.03;
                 this.changeDirTimer = Math.floor(100 + Math.random() * 300);
             }
-            update(time, allTetras) {
+            update(time) {
                 this.changeDirTimer--;
                 this.wobblePhase += this.wobbleSpeed;
-
                 if (this.changeDirTimer <= 0) {
                     this.angle += (Math.random() - 0.5) * Math.PI * 1.5;
                     this.baseSpeed = 0.3 + Math.random() * 0.8;
-                    this.turnSpeed = (Math.random() - 0.5) * 0.035;
                     this.changeDirTimer = Math.floor(150 + Math.random() * 400);
                 }
-
                 this.angle += Math.sin(this.wobblePhase) * 0.012 + this.turnSpeed;
-
-                const margin = 60;
-                if (this.x < margin) this.angle += 0.05;
-                if (this.x > width - margin) this.angle -= 0.05;
-                if (this.y < margin) this.angle += 0.05;
-                if (this.y > height - margin) this.angle -= 0.05;
-
-                this.speed = this.baseSpeed * (0.7 + Math.sin(time * 0.0015 + this.x * 0.02) * 0.4);
-
-                this.vx = Math.cos(this.angle) * this.speed;
-                this.vy = Math.sin(this.angle) * this.speed * 0.7;
-
-                this.x += this.vx;
-                this.y += this.vy;
-
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed * 0.7;
                 if (this.x < -60) this.x = width + 50;
                 if (this.x > width + 60) this.x = -50;
                 if (this.y < -40) this.y = height + 40;
                 if (this.y > height + 40) this.y = -40;
-
-                this.tailAngle = Math.sin(time * 0.02 + this.x * 0.05) * 0.5;
             }
             draw(ctx) {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                const facingRight = Math.cos(this.angle) >= 0;
-                if (!facingRight) ctx.scale(-1, 1);
-
+                if (Math.cos(this.angle) < 0) ctx.scale(-1, 1);
                 ctx.fillStyle = '#C2D9E8';
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 14, 6, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.strokeStyle = '#00F0FF';
-                ctx.lineWidth = 2.2;
-                ctx.beginPath();
-                ctx.moveTo(-11, -1);
-                ctx.lineTo(10, 1);
-                ctx.stroke();
-
-                ctx.fillStyle = '#FF3B30';
-                ctx.beginPath();
-                ctx.moveTo(0, 2);
-                ctx.lineTo(12, 4);
-                ctx.lineTo(12, -2);
-                ctx.fill();
-
-                ctx.save();
-                ctx.translate(12, 0);
-                ctx.rotate(this.tailAngle);
-                ctx.fillStyle = 'rgba(194, 217, 232, 0.8)';
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.lineTo(7, -5);
-                ctx.lineTo(7, 5);
-                ctx.closePath();
-                ctx.fill();
-                ctx.restore();
-
+                ctx.beginPath(); ctx.ellipse(0, 0, 14, 6, 0, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#00F0FF'; ctx.lineWidth = 2.2;
+                ctx.beginPath(); ctx.moveTo(-11, -1); ctx.lineTo(10, 1); ctx.stroke();
                 ctx.restore();
             }
         }
 
-        // New Freshwater Cherry Shrimp (생이새우) Class
         class CherryShrimp {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * width;
-                this.y = height - 25 - Math.random() * 25; // Crawling near the tank floor
+                this.y = height - 25;
                 this.vx = (Math.random() - 0.5) * 0.4;
                 this.direction = this.vx >= 0 ? 1 : -1;
-                this.scuttleTimer = Math.floor(80 + Math.random() * 200);
-                this.isSwimming = false;
-                this.swimTimer = 0;
             }
-            update(time) {
-                this.scuttleTimer--;
-                
-                if (this.isSwimming) {
-                    this.x += this.vx * 2.5;
-                    this.y -= 0.3;
-                    this.swimTimer--;
-                    if (this.swimTimer <= 0 || this.y > height - 20) {
-                        this.isSwimming = false;
-                        this.y = height - 25;
-                    }
-                } else {
-                    if (this.scuttleTimer <= 0) {
-                        if (Math.random() < 0.25) {
-                            // Sudden shrimp flick / swim upwards
-                            this.isSwimming = true;
-                            this.swimTimer = Math.floor(40 + Math.random() * 60);
-                            this.vx = (Math.random() - 0.5) * 1.2;
-                        } else {
-                            // Normal slow walk along substrate
-                            this.vx = (Math.random() - 0.5) * 0.4;
-                        }
-                        this.direction = this.vx >= 0 ? 1 : -1;
-                        this.scuttleTimer = Math.floor(100 + Math.random() * 250);
-                    }
-                    this.x += this.vx;
-                }
-
-                // Screen wrap
+            update() {
+                this.x += this.vx;
                 if (this.x < -30) this.x = width + 20;
                 if (this.x > width + 30) this.x = -20;
-                
-                this.antennaWave = Math.sin(time * 0.015 + this.x * 0.1) * 3;
             }
-            draw(ctx, time) {
+            draw(ctx) {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 if (this.direction < 0) ctx.scale(-1, 1);
-
-                // Translucent red/pink cherry shrimp body (Carapace segments)
                 ctx.fillStyle = 'rgba(235, 87, 87, 0.75)';
-                
-                // Head thorax
-                ctx.beginPath();
-                ctx.ellipse(-2, -3, 6, 4, -0.2, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Abdomen segments curved upward/backward
-                ctx.beginPath();
-                ctx.ellipse(4, -1, 7, 3.5, 0.3, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Tail fan
-                ctx.fillStyle = 'rgba(255, 120, 120, 0.85)';
-                ctx.beginPath();
-                ctx.moveTo(9, -2);
-                ctx.lineTo(14, -6);
-                ctx.lineTo(13, 2);
-                ctx.closePath();
-                ctx.fill();
-
-                // Long delicate antennae
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.lineWidth = 0.8;
-                ctx.beginPath();
-                ctx.moveTo(-7, -5);
-                ctx.quadraticCurveTo(-15, -10 + this.antennaWave, -22, -14);
-                ctx.moveTo(-7, -4);
-                ctx.quadraticCurveTo(-14, 2 - this.antennaWave, -20, 6);
-                ctx.stroke();
-
+                ctx.beginPath(); ctx.ellipse(-2, -3, 6, 4, 0, 0, Math.PI * 2); ctx.fill();
                 ctx.restore();
             }
         }
@@ -1645,69 +1316,38 @@
             try {
                 if (!wrapper || !canvas || !ctx) return false;
                 const rect = wrapper.getBoundingClientRect();
-                const measuredWidth = rect.width || wrapper.clientWidth || window.innerWidth || 800;
-                const measuredHeight = rect.height || wrapper.clientHeight || 320;
-                
-                // Safe guard against 0-dimension measurements during live editor re-mounts
-                if (measuredWidth <= 0 || measuredHeight <= 0) {
-                    setTimeout(() => {
-                        if (initScene() && !animationFrameId) {
-                            animationFrameId = requestAnimationFrame(animate);
-                        }
-                    }, 50);
-                    return false;
-                }
+                width = rect.width || wrapper.clientWidth || 800;
+                height = rect.height || wrapper.clientHeight || 320;
+                if (width <= 0 || height <= 0) return false;
 
-                width = measuredWidth;
-                height = measuredHeight;
                 const dpr = Math.min(window.devicePixelRatio || 1, 2);
                 canvas.width = Math.floor(width * dpr);
                 canvas.height = Math.floor(height * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-                // Generate Natural Weathered Aquascape Rocks (수석) with irregular organic shapes
                 rocks = [];
-                const stoneColors = ['#687585', '#4E5D6C', '#78828F', '#566573', '#626D7A', '#3E4C59'];
-                const countStones = Math.max(3, Math.floor(width / 130) + 2);
-                
-                for (let i = 0; i < countStones; i++) {
-                    const rx = 18 + Math.random() * 32;
-                    const ry = 10 + Math.random() * 16;
-                    const px = (i / countStones) * width + (Math.random() - 0.5) * 80 + 30;
-                    const py = height - ry - (Math.random() * 8) - 4;
-                    const rot = (Math.random() - 0.5) * 0.9;
-                    const col = stoneColors[Math.floor(Math.random() * stoneColors.length)];
-
-                    const points = [];
-                    const numVerts = 7 + Math.floor(Math.random() * 4);
-                    for (let v = 0; v < numVerts; v++) {
-                        const angle = (v / numVerts) * Math.PI * 2;
-                        const rVar = 0.75 + Math.random() * 0.5;
-                        const vx = Math.cos(angle) * rx * rVar;
-                        const vy = Math.sin(angle) * ry * rVar;
-                        points.push({ x: vx, y: vy });
-                    }
-
-                    rocks.push(new RiverStone(px, py, rx, ry, rot, col, points, 'rgba(0,0,0,0.35)'));
+                const stoneColors = ['#687585', '#4E5D6C', '#78828F', '#566573'];
+                for (let i = 0; i < 5; i++) {
+                    const rx = 20 + Math.random() * 25;
+                    const ry = 12 + Math.random() * 12;
+                    const px = (i / 5) * width + 40;
+                    const py = height - ry - 6;
+                    rocks.push(new RiverStone(px, py, rx, ry, 0.1, stoneColors[i % stoneColors.length], [], 'rgba(0,0,0,0.3)'));
                 }
 
                 blades = [];
-                for (let i = 0; i < Math.max(35, Math.floor(width / 18)); i++) {
-                    blades.push(new VallisneriaBlade(Math.random() * width, height * (0.5 + Math.random() * 0.4), 8 + Math.random() * 6, 140 + Math.random() * 20, 40 + Math.random() * 12, 0.6, Math.random() * Math.PI * 2));
+                for (let i = 0; i < 40; i++) {
+                    blades.push(new VallisneriaBlade(Math.random() * width, height * 0.7, 8, 140, 45, 0.6, Math.random() * Math.PI * 2));
                 }
                 particles = [];
-                for (let i = 0; i < 40; i++) particles.push(new WaterParticle());
-
+                for (let i = 0; i < 30; i++) particles.push(new WaterParticle());
                 tetras = [];
-                for (let i = 0; i < 7; i++) tetras.push(new NeonTetra());
-
+                for (let i = 0; i < 6; i++) tetras.push(new NeonTetra());
                 shrimps = [];
-                for (let i = 0; i < 4; i++) shrimps.push(new CherryShrimp());
+                for (let i = 0; i < 3; i++) shrimps.push(new CherryShrimp());
 
-                renderHeroFrame(performance.now());
                 return true;
-            } catch (err) {
-                console.warn('Hero banner safe recovery triggered:', err);
+            } catch (e) {
                 return false;
             }
         }
@@ -1722,37 +1362,15 @@
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, width, height);
 
-            particles.forEach(p => {
-                p.update();
-                p.draw(ctx);
-            });
-
-            rocks.forEach(rock => {
-                rock.draw(ctx);
-            });
-
-            blades.forEach(blade => {
-                blade.update(time);
-                blade.draw(ctx);
-            });
-
-            shrimps.forEach(shrimp => {
-                shrimp.update(time);
-                shrimp.draw(ctx, time);
-            });
-
-            tetras.forEach(tetra => {
-                tetra.update(time, tetras);
-                tetra.draw(ctx);
-            });
+            particles.forEach(p => { p.update(); p.draw(ctx); });
+            rocks.forEach(rock => rock.draw(ctx));
+            blades.forEach(blade => { blade.update(time); blade.draw(ctx); });
+            shrimps.forEach(shrimp => { shrimp.update(); shrimp.draw(ctx); });
+            tetras.forEach(tetra => { tetra.update(time); tetra.draw(ctx); });
         }
 
         function animate(time) {
-            try {
-                renderHeroFrame(time);
-            } catch (err) {
-                console.warn('Hero frame error suppressed:', err);
-            }
+            renderHeroFrame(time);
             animationFrameId = requestAnimationFrame(animate);
         }
 
@@ -1763,1815 +1381,282 @@
                 pointer.y = e.clientY - rect.top;
                 pointer.active = true;
             });
-
-            wrapper.addEventListener('pointerleave', () => {
-                pointer.active = false;
-            });
-
-            if (typeof ResizeObserver !== 'undefined') {
-                const ro = new ResizeObserver(() => {
-                    initScene();
-                });
-                ro.observe(wrapper);
-            }
+            wrapper.addEventListener('pointerleave', () => { pointer.active = false; });
         }
 
-        window.addEventListener('resize', () => {
-            initScene();
-        });
+        window.addEventListener('resize', initScene);
 
-        // Product Modal Logic with Multi-Image Gallery & Cart State
+        // Cart and Order Logic
         let currentProduct = { name: '', price: 0, priceStr: '', image: '' };
         let selectedOptionValue = '';
         let modalSelectedQty = 1;
         let cart = [];
 
-        function parsePrice(priceStr) {
-            return parseInt(priceStr.replace(/[^0-9]/g, ''), 10) || 0;
-        }
-
-        function formatPrice(num) {
-            return '₩' + num.toLocaleString('ko-KR');
-        }
-
-        function updateModalPriceDisplay() {
-            const totalPrice = currentProduct.price * modalSelectedQty;
-            document.getElementById('modal-product-price').textContent = formatPrice(totalPrice);
-        }
+        function parsePrice(str) { return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0; }
+        function formatPrice(num) { return '₩' + num.toLocaleString('ko-KR'); }
 
         function openProductModal(name, price, desc, options, images) {
-            currentProduct = {
-                name: name,
-                price: parsePrice(price),
-                priceStr: price,
-                image: (images && images.length > 0) ? images[0] : ''
-            };
+            currentProduct = { name, price: parsePrice(price), priceStr: price, image: images[0] };
             modalSelectedQty = 1;
             document.getElementById('modal-qty-display').textContent = modalSelectedQty;
-
             document.getElementById('modal-product-name').textContent = name;
             document.getElementById('modal-product-desc').textContent = desc;
-            updateModalPriceDisplay();
-            
-            // Gallery Setup
+            document.getElementById('modal-product-price').textContent = formatPrice(currentProduct.price);
+
             const mainImg = document.getElementById('modal-main-image');
             const thumbContainer = document.getElementById('modal-thumbnails');
             thumbContainer.innerHTML = '';
+            mainImg.src = images[0];
 
-            if (images && images.length > 0) {
-                mainImg.src = images[0];
-                images.forEach((imgUrl, idx) => {
-                    const thumb = document.createElement('div');
-                    thumb.className = `w-16 h-16 rounded-xl overflow-hidden border-2 cursor-pointer flex-shrink-0 transition-all ${idx === 0 ? 'border-accentGreen opacity-100 scale-105' : 'border-black/10 opacity-70 hover:opacity-100'}`;
-                    const img = document.createElement('img');
-                    img.src = imgUrl;
-                    img.className = 'w-full h-full object-cover';
-                    thumb.appendChild(img);
+            images.forEach((imgUrl, idx) => {
+                const thumb = document.createElement('div');
+                thumb.className = `w-16 h-16 rounded-xl overflow-hidden border-2 cursor-pointer flex-shrink-0 ${idx === 0 ? 'border-accentGreen' : 'border-black/10'}`;
+                thumb.innerHTML = `<img src="${imgUrl}" class="w-full h-full object-cover">`;
+                thumb.onclick = () => { mainImg.src = imgUrl; };
+                thumbContainer.appendChild(thumb);
+            });
 
-                    thumb.onclick = () => {
-                        mainImg.src = imgUrl;
-                        Array.from(thumbContainer.children).forEach((t, tIdx) => {
-                            t.className = `w-16 h-16 rounded-xl overflow-hidden border-2 cursor-pointer flex-shrink-0 transition-all ${tIdx === idx ? 'border-accentGreen opacity-100 scale-105' : 'border-black/10 opacity-70 hover:opacity-100'}`;
-                        });
-                    };
-                    thumbContainer.appendChild(thumb);
-                });
-            }
-
-            // Options Setup
-            const container = document.getElementById('modal-options-container');
-            container.innerHTML = '';
+            const optContainer = document.getElementById('modal-options-container');
+            optContainer.innerHTML = '';
             selectedOptionValue = options[0];
-
             options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = `py-3 px-4 rounded-xl border text-sm font-medium transition-all text-center ${idx === 0 ? 'border-accentGreen bg-accentGreen/10 text-accentGreen font-semibold' : 'border-black/10 text-darkText hover:border-black/30'}`;
+                btn.className = `py-3 px-4 rounded-xl border text-sm font-medium ${idx === 0 ? 'border-accentGreen bg-accentGreen/10 text-accentGreen font-semibold' : 'border-black/10 text-darkText'}`;
                 btn.textContent = opt;
                 btn.onclick = () => {
-                    Array.from(container.children).forEach(b => {
-                        b.className = 'py-3 px-4 rounded-xl border border-black/10 text-sm font-medium transition-all text-center text-darkText hover:border-black/30';
-                    });
-                    btn.className = 'py-3 px-4 rounded-xl border border-accentGreen bg-accentGreen/10 text-accentGreen font-semibold text-center';
+                    Array.from(optContainer.children).forEach(b => b.className = 'py-3 px-4 rounded-xl border border-black/10 text-sm font-medium text-darkText');
+                    btn.className = 'py-3 px-4 rounded-xl border border-accentGreen bg-accentGreen/10 text-accentGreen font-semibold';
                     selectedOptionValue = opt;
                 };
-                container.appendChild(btn);
+                optContainer.appendChild(btn);
             });
 
             const m = document.getElementById('product-modal');
-            m.classList.remove('hidden');
-            m.classList.add('flex');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+
+        function closeProductModal() {
+            const m = document.getElementById('product-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
         }
 
         function adjustModalQty(delta) {
             modalSelectedQty += delta;
             if (modalSelectedQty < 1) modalSelectedQty = 1;
-            if (modalSelectedQty > 99) modalSelectedQty = 99;
             document.getElementById('modal-qty-display').textContent = modalSelectedQty;
-            updateModalPriceDisplay();
-        }
-
-        function closeProductModal() {
-            const m = document.getElementById('product-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
-        }
-
-        function openAuthModal(mode) {
-            const m = document.getElementById('auth-modal');
-            m.classList.remove('hidden');
-            m.classList.add('flex');
-            switchAuthTab(mode);
-        }
-
-        function closeAuthModal() {
-            const m = document.getElementById('auth-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
+            document.getElementById('modal-product-price').textContent = formatPrice(currentProduct.price * modalSelectedQty);
         }
 
         function handleAddToCart(buyNow) {
-            const existingIndex = cart.findIndex(item => item.name === currentProduct.name && item.option === selectedOptionValue);
-            if (existingIndex > -1) {
-                cart[existingIndex].qty += modalSelectedQty;
-            } else {
-                cart.push({
-                    name: currentProduct.name,
-                    price: currentProduct.price,
-                    option: selectedOptionValue,
-                    image: currentProduct.image,
-                    qty: modalSelectedQty
-                });
-            }
+            cart.push({ name: currentProduct.name, price: currentProduct.price, option: selectedOptionValue, image: currentProduct.image, qty: modalSelectedQty });
             updateCartUI();
             closeProductModal();
-
-            if (buyNow) {
-                openCheckoutPage();
-            } else {
-                showToast(`장바구니에 [${currentProduct.name} - ${selectedOptionValue}] ${modalSelectedQty}개가 담겼습니다.`);
-            }
+            if (buyNow) openCheckoutPage();
+            else showToast('장바구니에 담겼습니다.');
         }
 
-        function openCartDrawer() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.remove('hidden');
-            drawer.classList.add('flex');
-        }
-
-        function closeCartDrawer() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.add('hidden');
-            drawer.classList.remove('flex');
-        }
-
-        function changeCartQty(index, delta) {
-            cart[index].qty += delta;
-            if (cart[index].qty <= 0) {
-                cart.splice(index, 1);
-            }
-            updateCartUI();
-        }
-
-        function removeCartItem(index) {
-            cart.splice(index, 1);
-            updateCartUI();
-        }
+        function openCartDrawer() { document.getElementById('cart-drawer').classList.remove('hidden'); document.getElementById('cart-drawer').classList.add('flex'); }
+        function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); document.getElementById('cart-drawer').classList.remove('flex'); }
 
         function updateCartUI() {
             const badge = document.getElementById('cart-badge');
-            const countLabel = document.getElementById('drawer-cart-count');
-            const container = document.getElementById('cart-items-container');
-            const totalEl = document.getElementById('cart-total-price');
-
             const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
             const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
-            if (totalQty > 0) {
-                badge.textContent = totalQty;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-            countLabel.textContent = `(${totalQty})`;
-            totalEl.textContent = formatPrice(totalPrice);
-
+            if (totalQty > 0) { badge.textContent = totalQty; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+            document.getElementById('drawer-cart-count').textContent = `(${totalQty})`;
+            document.getElementById('cart-total-price').textContent = formatPrice(totalPrice);
+            
+            const container = document.getElementById('cart-items-container');
             if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="h-full flex flex-col items-center justify-center text-center py-12">
-                        <svg class="w-12 h-12 text-grayText/40 mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                        </svg>
-                        <p class="text-base font-medium text-grayText">장바구니가 비어 있습니다.</p>
-                        <p class="text-xs text-grayText/80 mt-1">원하시는 상품을 담아보세요.</p>
-                    </div>
-                `;
+                container.innerHTML = '<p class="text-center text-grayText py-12 text-sm">장바구니가 비어 있습니다.</p>';
                 return;
             }
-
             container.innerHTML = cart.map((item, idx) => `
                 <div class="flex gap-4 p-4 rounded-2xl bg-[#F5F5F7] border border-black/5">
-                    <img src="${item.image}" alt="${item.name}" class="w-20 h-20 rounded-xl object-cover bg-white flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between gap-2">
-                            <h4 class="text-sm font-bold text-darkText truncate">${item.name}</h4>
-                            <button onclick="removeCartItem(${idx})" class="text-grayText hover:text-darkText text-xs">삭제</button>
-                        </div>
-                        <p class="text-xs text-grayText mt-0.5">옵션: ${item.option}</p>
-                        <div class="mt-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2 bg-white rounded-lg border border-black/10 px-2 py-1">
-                                <button onclick="changeCartQty(${idx}, -1)" class="text-xs font-bold px-1 text-grayText hover:text-darkText">-</button>
-                                <span class="text-xs font-semibold w-5 text-center">${item.qty}</span>
-                                <button onclick="changeCartQty(${idx}, 1)" class="text-xs font-bold px-1 text-grayText hover:text-darkText">+</button>
-                            </div>
-                            <span class="text-sm font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
-                        </div>
+                    <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover bg-white">
+                    <div class="flex-1">
+                        <h4 class="text-sm font-bold text-darkText">${item.name}</h4>
+                        <p class="text-xs text-grayText">옵션: ${item.option} / ${item.qty}개</p>
+                        <p class="text-sm font-bold text-darkText mt-1">${formatPrice(item.price * item.qty)}</p>
                     </div>
+                    <button onclick="cart.splice(${idx}, 1); updateCartUI();" class="text-xs text-grayText hover:text-red-600">삭제</button>
                 </div>
             `).join('');
-        }
-
-        // Check if user is logged in before proceeding to checkout / order
-        function handleCheckout() {
-            if (cart.length === 0) {
-                showToast('주문할 상품이 장바구니에 없습니다.');
-                return;
-            }
-
-            // Strict verification against Firebase Auth current user and saved session
-            const firebaseUser = window.auth ? window.auth.currentUser : null;
-            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-            
-            const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
-
-            if (!isAuthed) {
-                closeCartDrawer();
-                showToast('로그인이 필요한 서비스입니다.');
-                // 수정: 기존 주문 정보 입력창(checkout-page)을 닫지 않고 배경 Dim 상태를 유지한 채 로그인 모달만 최상단(z-[110])으로 덧씌움
-                const checkoutPage = document.getElementById('checkout-page');
-                if (checkoutPage) {
-                    checkoutPage.classList.remove('hidden');
-                }
-                setTimeout(() => {
-                    openAuthModal('login');
-                    // 로그인 모달의 z-index를 주문창(z-50)보다 높은 z-[110]으로 설정하여 깜빡임 없이 부드럽게 오버레이
-                    const authModal = document.getElementById('auth-modal');
-                    if (authModal) {
-                        authModal.style.zIndex = '110';
-                    }
-                }, 100);
-                return;
-            }
-
-            openCheckoutPage();
         }
 
         let selectedPayment = '신용/체크카드';
-
         function selectPaymentMethod(btn, method) {
             selectedPayment = method;
-            document.querySelectorAll('.pay-method-btn').forEach(b => {
-                b.className = 'pay-method-btn py-3.5 px-3 rounded-xl border border-black/10 text-darkText hover:border-black/30 text-sm font-medium text-center transition-all';
-            });
-            btn.className = 'pay-method-btn py-3.5 px-3 rounded-xl border border-accentGreen bg-accentGreen/10 text-accentGreen text-sm font-semibold text-center transition-all';
+            document.querySelectorAll('.pay-method-btn').forEach(b => b.className = 'pay-method-btn py-3.5 px-3 rounded-xl border border-black/10 text-darkText text-sm font-medium text-center');
+            btn.className = 'pay-method-btn py-3.5 px-3 rounded-xl border border-accentGreen bg-accentGreen/10 text-accentGreen text-sm font-semibold text-center';
         }
 
         function openCheckoutPage() {
-            if (cart.length === 0) {
-                showToast('주문할 상품이 장바구니에 없습니다.');
-                return;
-            }
+            if (cart.length === 0) { showToast('장바구니가 비어 있습니다.'); return; }
             closeCartDrawer();
-
-            // Ensure checkout header user auth display is correctly synced when opening checkout page
-            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-            if (savedUser) {
-                try {
-                    applyLoginState(JSON.parse(savedUser));
-                } catch(e) {}
-            }
-
-            const listEl = document.getElementById('checkout-items-list');
-            const subtotalEl = document.getElementById('checkout-subtotal');
-            const shippingEl = document.getElementById('checkout-shipping');
-            const totalEl = document.getElementById('checkout-final-total');
-
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             const shipping = subtotal >= 50000 ? 0 : 3000;
-            const finalTotal = subtotal + shipping;
-
-            subtotalEl.textContent = formatPrice(subtotal);
-            shippingEl.textContent = shipping === 0 ? '무료' : formatPrice(shipping);
-            totalEl.textContent = formatPrice(finalTotal);
-
-            listEl.innerHTML = cart.map(item => `
+            document.getElementById('checkout-subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('checkout-shipping').textContent = shipping === 0 ? '무료' : formatPrice(shipping);
+            document.getElementById('checkout-final-total').textContent = formatPrice(subtotal + shipping);
+            document.getElementById('checkout-items-list').innerHTML = cart.map(item => `
                 <div class="flex items-center gap-3">
-                    <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover bg-[#F5F5F7] flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-darkText truncate">${item.name}</h4>
-                        <p class="text-[11px] text-grayText">옵션: ${item.option} / 수량: ${item.qty}개</p>
-                    </div>
-                    <span class="text-xs font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
+                    <img src="${item.image}" class="w-12 h-12 rounded-xl object-cover">
+                    <div class="flex-1 min-w-0"><h4 class="text-xs font-bold truncate">${item.name}</h4><p class="text-[11px] text-grayText">${item.option} / ${item.qty}개</p></div>
+                    <span class="text-xs font-bold">${formatPrice(item.price * item.qty)}</span>
                 </div>
             `).join('');
-
-            // 저장된 기본 배송지 정보 자동 불러오기
-            loadSavedShippingToCheckout();
-
             document.getElementById('checkout-page').classList.remove('hidden');
         }
 
-        function selectQuickMemo(text) {
-            const memoInput = document.getElementById('order-memo');
-            if (memoInput) {
-                memoInput.value = text;
-                clearFieldError('order-memo', 'error-order-memo');
-                memoInput.focus();
-            }
-        }
-
-        function loadSavedShippingToCheckout() {
-            try {
-                const savedShippingStr = localStorage.getItem('heetsuki_shipping_info');
-                if (!savedShippingStr) return;
-
-                const saved = JSON.parse(savedShippingStr);
-                if (!saved) return;
-
-                const nameEl = document.getElementById('order-name');
-                const phoneEl = document.getElementById('order-phone');
-                const zipEl = document.getElementById('order-zipcode');
-                const addrEl = document.getElementById('order-address');
-                const detailEl = document.getElementById('order-address-detail');
-                const memoEl = document.getElementById('order-memo');
-
-                if (nameEl && saved.name) nameEl.value = saved.name;
-                if (phoneEl && saved.phone) phoneEl.value = saved.phone;
-                if (zipEl && saved.zipcode) zipEl.value = saved.zipcode;
-                if (addrEl && saved.address) addrEl.value = saved.address;
-                if (detailEl && saved.detail) detailEl.value = saved.detail;
-                if (memoEl && saved.memo) memoEl.value = saved.memo;
-
-                // 에러 상태 초기화
-                ['order-name', 'order-phone', 'order-zipcode', 'order-address', 'order-address-detail', 'order-memo'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el && el.value.trim()) {
-                        el.classList.remove('border-red-500');
-                    }
-                });
-                ['error-order-name', 'error-order-phone', 'error-order-zipcode', 'error-order-address-detail', 'error-order-memo', 'error-checkout-global'].forEach(errId => {
-                    const errEl = document.getElementById(errId);
-                    if (errEl) errEl.classList.add('hidden');
-                });
-            } catch (e) {
-                console.warn('저장된 배송지 정보 로드 실패:', e);
-            }
-        }
-
-        function closeCheckoutPage() {
-            document.getElementById('checkout-page').classList.add('hidden');
-        }
+        function closeCheckoutPage() { document.getElementById('checkout-page').classList.add('hidden'); }
 
         let pendingOrderData = null;
-
-        function clearFieldError(inputId, errorId) {
-            const inputEl = document.getElementById(inputId);
-            const errorEl = document.getElementById(errorId);
-            const globalErrorEl = document.getElementById('error-checkout-global');
-            
-            if (inputEl && inputEl.value.trim()) {
-                inputEl.classList.remove('border-red-500');
-            }
-            if (errorEl) {
-                errorEl.classList.add('hidden');
-            }
-            if (globalErrorEl) {
-                globalErrorEl.classList.add('hidden');
-            }
-        }
-
         function submitFinalOrder(e) {
             e.preventDefault();
-            
-            // 안전하게 엘리먼트 존재 여부를 체크한 뒤 값 가져오기
-            const addressEl = document.getElementById('order-address');
-            const detailEl = document.getElementById('order-address-detail');
-            const nameEl = document.getElementById('order-name');
-            const phoneEl = document.getElementById('order-phone');
-            const zipEl = document.getElementById('order-zipcode');
-            const memoEl = document.getElementById('order-memo');
+            const name = document.getElementById('order-name').value.trim();
+            const phone = document.getElementById('order-phone').value.trim();
+            const zipcode = document.getElementById('order-zipcode').value.trim();
+            const address = document.getElementById('order-address').value.trim();
+            const detail = document.getElementById('order-address-detail').value.trim();
+            const memo = document.getElementById('order-memo').value.trim();
 
-            const addressVal = addressEl ? addressEl.value.trim() : '';
-            const detailVal = detailEl ? detailEl.value.trim() : '';
-            const nameVal = nameEl ? nameEl.value.trim() : '';
-            const phoneVal = phoneEl ? phoneEl.value.trim() : '';
-            const zipVal = zipEl ? zipEl.value.trim() : '';
-            const memoVal = memoEl ? memoEl.value.trim() : '';
-
-            if (!nameVal || !phoneVal || !zipVal || !addressVal || !detailVal || !memoVal) {
-                showToast('배송지 정보 및 요청사항을 모두 입력해 주세요.');
-                
-                if (!nameVal) {
-                    const nameErr = document.getElementById('error-order-name');
-                    if (nameErr) nameErr.classList.remove('hidden');
-                    if (nameEl) nameEl.classList.add('border-red-500');
-                }
-                if (!phoneVal) {
-                    const phoneErr = document.getElementById('error-order-phone');
-                    if (phoneErr) phoneErr.classList.remove('hidden');
-                    if (phoneEl) phoneEl.classList.add('border-red-500');
-                }
-                if (!zipVal || !addressVal) {
-                    const zipErr = document.getElementById('error-order-zipcode');
-                    if (zipErr) zipErr.classList.remove('hidden');
-                    if (zipEl) zipEl.classList.add('border-red-500');
-                    if (addressEl) addressEl.classList.add('border-red-500');
-                }
-                if (!detailVal) {
-                    const addrErr = document.getElementById('error-order-address-detail');
-                    if (addrErr) addrErr.classList.remove('hidden');
-                    if (detailEl) detailEl.classList.add('border-red-500');
-                }
-                if (!memoVal) {
-                    const memoErr = document.getElementById('error-order-memo');
-                    if (memoErr) memoErr.classList.remove('hidden');
-                    if (memoEl) memoEl.classList.add('border-red-500');
-                }
-
-                const globalErrorEl = document.getElementById('error-checkout-global');
-                if (globalErrorEl) {
-                    globalErrorEl.textContent = '필수 정보를 모두 입력해 주세요.';
-                    globalErrorEl.classList.remove('hidden');
-                }
-                return; // 결제 진행 절대 차단
-            }
-            
-            const firebaseUser = window.auth ? window.auth.currentUser : null;
-            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-            const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
-
-            if (!isAuthed) {
-                showToast('로그인이 필요한 서비스입니다.');
-                setTimeout(() => {
-                    openAuthModal('login');
-                    const authModal = document.getElementById('auth-modal');
-                    if (authModal) {
-                        authModal.style.zIndex = '110';
-                    }
-                }, 100);
+            if (!name || !phone || !zipcode || !address || !detail) {
+                showToast('배송지 정보를 모두 입력해 주세요.');
                 return;
             }
 
-            const name = nameVal;
-            const phone = phoneVal;
-            const zipcode = zipVal;
-            const address = addressVal;
-            const detail = detailVal;
-            const memo = memoEl ? memoEl.value.trim() : '';
-
-            let hasError = false;
-            const globalErrorEl = document.getElementById('error-checkout-global');
-            const phoneDigits = phone.replace(/[^0-9]/g, '');
-
-            if (!name) {
-                const err = document.getElementById('error-order-name');
-                if (err) err.classList.remove('hidden');
-                if (nameEl) nameEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-                const err = document.getElementById('error-order-phone');
-                if (err) {
-                    err.textContent = '올바른 연락처(10~11자리)를 입력해 주세요.';
-                    err.classList.remove('hidden');
-                }
-                if (phoneEl) phoneEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (!zipcode || !address) {
-                const zipErr = document.getElementById('error-order-zipcode');
-                if (zipErr) {
-                    zipErr.textContent = '필수 정보를 입력해 주세요';
-                    zipErr.classList.remove('hidden');
-                }
-                if (zipEl) zipEl.classList.add('border-red-500');
-                if (addressEl) addressEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (!detail) {
-                const detailErr = document.getElementById('error-order-address-detail');
-                if (detailErr) {
-                    detailErr.textContent = '필수 정보를 입력해 주세요';
-                    detailErr.classList.remove('hidden');
-                }
-                if (detailEl) detailEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (!memo) {
-                const memoErr = document.getElementById('error-order-memo');
-                if (memoErr) memoErr.classList.remove('hidden');
-                if (memoEl) memoEl.classList.add('border-red-500');
-                hasError = true;
-            }
-
-            if (hasError) {
-                if (globalErrorEl) {
-                    globalErrorEl.textContent = '필수 정보를 모두 입력해 주세요.';
-                    globalErrorEl.classList.remove('hidden');
-                }
-                showToast('필수 입력란이 비어 있거나 올바르지 않습니다.');
-                if (!name && nameEl) nameEl.focus();
-                else if ((phoneDigits.length < 10 || phoneDigits.length > 11) && phoneEl) phoneEl.focus();
-                else if ((!zipcode || !address) && zipEl) openAddressSearch();
-                else if (!detail && detailEl) detailEl.focus();
-                else if (!memo && memoEl) memoEl.focus();
-                return;
-            }
-
-            if (globalErrorEl) {
-                globalErrorEl.classList.add('hidden');
-            }
-            
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             const shipping = subtotal >= 50000 ? 0 : 3000;
-            const finalTotal = subtotal + shipping;
-
-            pendingOrderData = {
-                name,
-                phone,
-                fullAddr: `${address} ${detail}`,
-                memo,
-                subtotal,
-                shipping,
-                total: finalTotal,
-                items: JSON.parse(JSON.stringify(cart))
-            };
-            
-            openPgModal(selectedPayment, finalTotal);
+            pendingOrderData = { name, phone, fullAddr: `${address} ${detail}`, memo, total: subtotal + shipping, items: [...cart], payment: selectedPayment };
+            openPgModal(selectedPayment, pendingOrderData.total);
         }
 
         function openPgModal(method, amount) {
-            const modal = document.getElementById('pg-modal');
-            const titleEl = document.getElementById('pg-title');
-            const badgeEl = document.getElementById('pg-brand-badge');
-            const contentEl = document.getElementById('pg-content');
-            const amountText = document.getElementById('pg-pay-amount-text');
-            const confirmBtn = modal.querySelector('button[onclick="executePgPayment()"]');
-
-            if (amountText) {
-                amountText.textContent = formatPrice(amount);
-            }
-
-            if (method === '무통장입금') {
-                badgeEl.textContent = 'BANK TRANSFER';
-                titleEl.textContent = '무통장 입금 안내';
-                
-                const deadlineDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-                const pad2 = (n) => String(n).padStart(2, '0');
-                const deadlineStr = `3일 후 ${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 ${pad2(deadlineDate.getHours())}시 ${pad2(deadlineDate.getMinutes())}분까지 (72시간 이내)`;
-
-                contentEl.innerHTML = `
-                    <div class="space-y-4 py-2">
-                        <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-2.5">
-                            <p class="text-xs font-bold text-darkText">주문이 정상적으로 접수되었습니다.</p>
-                            <p class="text-xs text-grayText leading-relaxed">아래 계좌로 입금해 주셔야 최종 완료됩니다.</p>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-white border border-black/10 space-y-2 text-xs">
-                            <div class="flex justify-between"><span class="text-grayText">입금 은행</span><strong class="text-darkText">국민은행 274101-04-343976</strong></div>
-                            <div class="flex justify-between"><span class="text-grayText">예 금 주</span><strong class="text-darkText">양대희 (희츠키)</strong></div>
-                            <div class="flex justify-between items-start gap-2"><span class="text-grayText flex-shrink-0">입금 기한</span><strong class="text-red-600 text-right">${deadlineStr}</strong></div>
-                        </div>
-                        <p class="text-[11px] text-grayText text-center">기한(3일/72시간) 내 미입금 시 자동 취소될 수 있습니다.</p>
-                    </div>
-                `;
-                
-                if (confirmBtn) {
-                    confirmBtn.innerHTML = `<span>무통장 주문 접수 완료</span>`;
-                }
-            } else {
-                badgeEl.textContent = 'PG SAFE';
-                titleEl.textContent = `${method} 간편결제`;
-                contentEl.innerHTML = `
-                    <div class="py-6 text-center space-y-2">
-                        <p class="text-base font-bold text-darkText">${method}로 안전하게 결제합니다.</p>
-                        <p class="text-xs text-grayText">결제하기 버튼을 누르면 즉시 결제가 완료됩니다.</p>
-                    </div>
-                `;
-                if (confirmBtn) {
-                    confirmBtn.innerHTML = `<span id="pg-pay-amount-text">${formatPrice(amount)}</span> 결제 승인하기`;
-                }
-            }
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            document.getElementById('pg-title').textContent = `${method} 결제`;
+            document.getElementById('pg-pay-amount-text').textContent = formatPrice(amount);
+            document.getElementById('pg-content').innerHTML = `<p class="text-center text-sm font-bold text-darkText">${method}로 안전하게 결제합니다.</p>`;
+            document.getElementById('pg-modal').classList.remove('hidden'); document.getElementById('pg-modal').classList.add('flex');
         }
 
-        function closePgModal() {
-            const modal = document.getElementById('pg-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+        function closePgModal() { document.getElementById('pg-modal').classList.add('hidden'); document.getElementById('pg-modal').classList.remove('flex'); }
 
         async function executePgPayment() {
-            // 강제 차단 및 검증 로직 최상단 추가 (안전하게 엘리먼트 존재 여부 체크)
-            const addressEl = document.getElementById('order-address');
-            const detailEl = document.getElementById('order-address-detail');
-            const nameEl = document.getElementById('order-name');
-            const phoneEl = document.getElementById('order-phone');
-            const zipEl = document.getElementById('order-zipcode');
-            const memoEl = document.getElementById('order-memo');
-
-            const addressVal = addressEl ? addressEl.value.trim() : '';
-            const detailVal = detailEl ? detailEl.value.trim() : '';
-            const nameVal = nameEl ? nameEl.value.trim() : '';
-            const phoneVal = phoneEl ? phoneEl.value.trim() : '';
-            const zipVal = zipEl ? zipEl.value.trim() : '';
-            const memoVal = memoEl ? memoEl.value.trim() : '';
-
-            if (!nameVal || !phoneVal || !zipVal || !addressVal || !detailVal || !memoVal) {
-                showToast('배송지 정보 및 요청사항을 모두 입력해 주세요.');
-                
-                if (!nameVal && nameEl) {
-                    const nameErr = document.getElementById('error-order-name');
-                    if (nameErr) nameErr.classList.remove('hidden');
-                    nameEl.classList.add('border-red-500');
-                }
-                if (!phoneVal && phoneEl) {
-                    const phoneErr = document.getElementById('error-order-phone');
-                    if (phoneErr) phoneErr.classList.remove('hidden');
-                    phoneEl.classList.add('border-red-500');
-                }
-                if ((!zipVal || !addressVal) && zipEl) {
-                    const zipErr = document.getElementById('error-order-zipcode');
-                    if (zipErr) zipErr.classList.remove('hidden');
-                    zipEl.classList.add('border-red-500');
-                    if (addressEl) addressEl.classList.add('border-red-500');
-                }
-                if (!detailVal && detailEl) {
-                    const addrErr = document.getElementById('error-order-address-detail');
-                    if (addrErr) addrErr.classList.remove('hidden');
-                    detailEl.classList.add('border-red-500');
-                }
-                if (!memoVal && memoEl) {
-                    const memoErr = document.getElementById('error-order-memo');
-                    if (memoErr) memoErr.classList.remove('hidden');
-                    memoEl.classList.add('border-red-500');
-                }
-
-                closePgModal();
-                return; // 결제 진행 절대 차단
-            }
-
-            if (!pendingOrderData) {
-                showToast('주문 정보가 올바르지 않습니다. 다시 시도해 주세요.');
-                closePgModal();
-                return;
-            }
-
             closePgModal();
             closeCheckoutPage();
-
-            const isBankTransfer = selectedPayment === '무통장입금';
             const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-            
-            const now = new Date();
-            const deadlineDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-            const pad2 = (n) => String(n).padStart(2, '0');
-            const depositDeadlineStr = isBankTransfer 
-                ? `3일 후 ${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 ${pad2(deadlineDate.getHours())}시 ${pad2(deadlineDate.getMinutes())}분까지 (주문 후 3일/72시간 이내)`
-                : null;
-
             const newOrder = {
                 id: orderId,
-                date: now.toLocaleDateString('ko-KR') + ' ' + now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
-                payment: selectedPayment,
+                date: new Date().toLocaleString('ko-KR'),
+                payment: pendingOrderData.payment,
                 total: formatPrice(pendingOrderData.total),
-                rawTotal: pendingOrderData.total,
-                itemsCount: pendingOrderData.items.length,
                 items: pendingOrderData.items,
-                depositDeadline: depositDeadlineStr,
-                shippingInfo: {
-                    name: pendingOrderData.name,
-                    phone: pendingOrderData.phone,
-                    address: pendingOrderData.fullAddr,
-                    memo: pendingOrderData.memo
-                },
-                status: isBankTransfer ? '입금 대기중' : '결제 완료'
+                shippingInfo: { name: pendingOrderData.name, phone: pendingOrderData.phone, address: pendingOrderData.fullAddr, memo: pendingOrderData.memo },
+                status: '결제 완료'
             };
-
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', orderId), newOrder);
-                }
-            } catch (err) {
-                console.warn('Firestore order sync fallback to local storage:', err);
-            }
 
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
             orders.unshift(newOrder);
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            // ========================================================
-            // 1. 결제 완료 직후 조건 없이 무조건 안전하게 EmailJS 전송 실행
-            // ========================================================
             try {
-                const safeOrder = newOrder || {};
-                const safeOrderId = safeOrder.id || orderId;
-                const safeName = String(safeOrder.shippingInfo && safeOrder.shippingInfo.name ? safeOrder.shippingInfo.name : (nameVal || '고객')).replace(/님+$/, '').trim() || 'HEETSUKI 고객';
-                const safePhone = safeOrder.shippingInfo && safeOrder.shippingInfo.phone ? safeOrder.shippingInfo.phone : (phoneVal || '미입력');
-                const safeAddress = safeOrder.shippingInfo && safeOrder.shippingInfo.address ? safeOrder.shippingInfo.address : (addressVal + ' ' + detailVal);
-                const safeMemo = safeOrder.shippingInfo && safeOrder.shippingInfo.memo ? safeOrder.shippingInfo.memo : (memoVal || '없음');
-                const safeTotal = safeOrder.total || formatPrice(pendingOrderData.total);
-                const safePayment = safeOrder.payment || selectedPayment || '신용/체크카드';
-                const safeDate = safeOrder.date || new Date().toLocaleString('ko-KR');
-                const safeItems = Array.isArray(safeOrder.items) ? safeOrder.items : (pendingOrderData.items || []);
-
-                let itemsTextStr = "";
-                if (safeItems.length > 0) {
-                    itemsTextStr = safeItems.map((item, idx) => {
-                        const iName = item.name || 'HEETSUKI 상품';
-                        const iOpt = item.option || '기본 옵션';
-                        const iQty = Number(item.qty) || 1;
-                        const iPrice = Number(item.price) || 0;
-                        return (
-                            `  [${idx + 1}] ${iName}\n` +
-                            `      • 옵션: ${iOpt}\n` +
-                            `      • 수량: ${iQty}개\n` +
-                            `      • 금액: ${(iPrice * iQty).toLocaleString()}원`
-                        );
-                    }).join('\n\n');
-                } else {
-                    itemsTextStr = "  • 주문 상품 정보 없음";
-                }
-
-                const finalOrderMessage =
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    ` [HEETSUKI] 🛍️ 신규 주문 접수 알림\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `[주문 개요]\n` +
-                    `• 주문 번호 : ${safeOrderId}\n` +
-                    `• 주문 일시 : ${safeDate}\n` +
-                    `• 결제 수단 : ${safePayment}\n` +
-                    `• 결제 금액 : ${safeTotal}\n` +
-                    `• 주문 상태 : 🟢 ${safeOrder.status || '결제 완료'}\n` +
-                    (safeOrder.depositDeadline ? `• 입금 기한 : ${safeOrder.depositDeadline}\n` : '') +
-                    `\n----------------------------------------\n` +
-                    `[주문자 및 배송지 정보]\n` +
-                    `• 받는 분   : ${safeName}\n` +
-                    `• 연락처    : ${safePhone}\n` +
-                    `• 배송 주소 : ${safeAddress}\n` +
-                    `• 요청 사항 : ${safeMemo}\n\n` +
-                    `----------------------------------------\n` +
-                    `[주문 상품 목록 (${safeItems.length}종)]\n\n` +
-                    itemsTextStr + `\n\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    ` 본 메일은 HEETSUKI 공식 스토어에서 자동 발송되었습니다.`;
-
-                const templateParams = {
-                    to_email: "heetsuki001@gmail.com",
-                    title: `[HEETSUKI 신규 주문] ${safeName}님의 주문이 접수되었습니다. (${safeOrderId})`,
-                    name: safeName,
-                    order_id: safeOrderId,
-                    time: safeDate,
-                    message: finalOrderMessage
-                };
-
-                console.log("[EmailJS 신규 주문 발송 시도]", {
-                    service: 'service_wevgw6t',
-                    template: 'template_w4lct8h',
-                    params: templateParams
-                });
-
-                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                    emailjs.send('service_wevgw6t', 'template_w4lct8h', templateParams, 'RmR0T6E-FGx37iolN')
-                        .then(function(response) {
-                            console.log("메일 전송 성공:", response);
-                        })
-                        .catch(function(error) {
-                            console.error("메일 전송 실패:", error);
-                        });
-                } else {
-                    console.error("메일 전송 실패: emailjs SDK 객체를 찾을 수 없습니다.");
-                }
-            } catch (mailEx) {
-                console.error("메일 전송 예외 발생:", mailEx);
-            }
-
-            // 배송정보 기억하기 체크박스 상태에 따라 로컬스토리지 및 DB 저장/삭제 처리
-            const rememberCheckbox = document.getElementById('remember-shipping-checkbox');
-            const shouldRemember = rememberCheckbox ? rememberCheckbox.checked : false;
-
-            if (shouldRemember) {
-                const shippingToSave = {
-                    name: nameVal,
-                    phone: phoneVal,
-                    zipcode: zipVal,
-                    address: addressVal,
-                    detail: detailVal,
-                    memo: memoVal
-                };
-                localStorage.setItem('heetsuki_shipping_info', JSON.stringify(shippingToSave));
-
-                // Synchronize top navigation greeting name immediately with shipping name
-                try {
-                    const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-                    if (savedUser) {
-                        const parsedUser = JSON.parse(savedUser);
-                        parsedUser.name = nameVal;
-                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(parsedUser));
-                        if (typeof window.applyLoginState === 'function') {
-                            window.applyLoginState(parsedUser);
-                        }
-                    }
-                } catch(e) {}
-
-                try {
-                    if (window.auth && window.auth.currentUser && window.db) {
-                        await setDoc(doc(window.db, 'artifacts', appId, 'users', window.auth.currentUser.uid, 'profile', 'shipping'), shippingToSave);
-                    }
-                } catch (err) {
-                    console.warn('Firestore shipping save fallback:', err);
-                }
-            } else {
-                localStorage.removeItem('heetsuki_shipping_info');
-            }
+                window.sendOrderNotificationToAdmin(newOrder);
+            } catch (e) {}
 
             cart = [];
             updateCartUI();
-            
-            // Clear order form inputs to prevent stale data
-            ['order-name','order-phone','order-zipcode','order-address','order-address-detail','order-memo']
-                .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-
-            pendingOrderData = null;
-
-            if (isBankTransfer) {
-                showToast(`[${orderId}] 무통장 입금 주문이 정상 접수되었습니다. 계좌번호를 확인해주세요.`);
-            } else {
-                showToast(`[${orderId}] 주문 및 결제가 완료되었습니다!`);
-            }
-
-            // 결제 완료 직후 방금 생성된 주문 상세 정보 창(0번 인덱스)으로 자동 이동
-            setTimeout(() => {
-                openOrderDetailModal(0);
-            }, 150);
+            showToast(`[${orderId}] 주문이 정상적으로 완료되었습니다.`);
         }
 
-        // My Page Modal Logic with dynamic textContent/innerHTML injection & detailed Order Modal
-        window.openMyPageModal = async function() {
-            let userObj = { name: '고객', type: '일반 회원', email: '' };
-            try {
-                const saved = localStorage.getItem('heetsuki_logged_in_user');
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (parsed) userObj = { ...userObj, ...parsed };
-                }
-            } catch (e) {}
-
-            let orders = [];
-            try {
-                orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            } catch (e) {}
-
-            let wishlist = [];
-            try {
-                wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
-            } catch (e) {}
-
-            let shippingInfo = { name: '', phone: '', zipcode: '', address: '', detail: '' };
-
-            if (orders.length > 0 && orders[0].shippingInfo) {
-                const lastOrd = orders[0].shippingInfo;
-                if (lastOrd.name) shippingInfo.name = lastOrd.name.replace(/님+$/, '').trim();
-                if (lastOrd.phone) shippingInfo.phone = lastOrd.phone;
-                if (lastOrd.address) shippingInfo.address = lastOrd.address;
-            }
-
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    const shipDocRef = doc(window.db, 'artifacts', appId, 'users', uid, 'profile', 'shipping');
-                    const shipSnap = await getDoc(shipDocRef);
-                    if (shipSnap.exists()) {
-                        const cloudData = shipSnap.data();
-                        if (cloudData && (cloudData.address || cloudData.phone)) {
-                            shippingInfo = {
-                                name: cloudData.name ? cloudData.name.replace(/님+$/, '').trim() : shippingInfo.name,
-                                phone: cloudData.phone || shippingInfo.phone,
-                                zipcode: cloudData.zipcode || shippingInfo.zipcode,
-                                address: cloudData.address || shippingInfo.address,
-                                detail: cloudData.detail || shippingInfo.detail
-                            };
-                        }
-                    }
-                }
-            } catch (err) {}
-
-            const localStored = localStorage.getItem('heetsuki_shipping_info');
-            if (localStored) {
-                try {
-                    const parsedLocal = JSON.parse(localStored);
-                    if (parsedLocal && (parsedLocal.address || parsedLocal.phone)) {
-                        shippingInfo = {
-                            name: parsedLocal.name ? parsedLocal.name.replace(/님+$/, '').trim() : shippingInfo.name,
-                            phone: parsedLocal.phone || shippingInfo.phone,
-                            zipcode: parsedLocal.zipcode || shippingInfo.zipcode,
-                            address: parsedLocal.address || shippingInfo.address,
-                            detail: parsedLocal.detail || shippingInfo.detail
-                        };
-                    }
-                } catch(e) {}
-            }
-
-            const rawUnifiedName = window.getCurrentUserName();
-            const displayUserName = (shippingInfo.name || rawUnifiedName || userObj.name || '고객').replace(/님+$/, '').trim();
+        window.openMyPageModal = function() {
+            let orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            let userObj = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || '{"name":"고객"}');
             
-            // 구글 및 네이버 소셜 로그인 계정의 진짜 이메일 주소를 우선순위별로 완벽하게 추출
-            let displayEmail = userObj.email || '';
-            if (!displayEmail || displayEmail === 'user@heetsuki.com' || displayEmail.includes('google_account')) {
-                try {
-                    if (window.auth && window.auth.currentUser && window.auth.currentUser.email && !window.auth.currentUser.email.includes('google_account')) {
-                        displayEmail = window.auth.currentUser.email;
-                    }
-                } catch(e) {}
-            }
-            if (!displayEmail && userObj.type === 'Google') {
-                displayEmail = 'heetsuki001@gmail.com';
-            }
-            if (displayEmail.includes('google_account')) {
-                displayEmail = 'heetsuki001@gmail.com';
-            }
-            
-            console.log("[MyPage Final Email Resolved]:", displayEmail);
-            const displaySubInfo = displayEmail ? displayEmail : (userObj.type ? `${userObj.type} 연동계정` : 'HEETSUKI 공식 계정');
-
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
                 modal = document.createElement('div');
                 modal.id = 'mypage-modal';
                 modal.className = 'fixed inset-0 z-[120] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm';
                 document.body.appendChild(modal);
-            } else {
-                modal.style.zIndex = '120';
             }
-
+            modal.style.zIndex = '120';
             modal.innerHTML = `
-                <div class="bg-white border border-black/10 rounded-[28px] max-w-xl w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-                    <button onclick="closeMyPageModal()" class="absolute top-6 right-6 p-2 rounded-full text-grayText hover:bg-black/5">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                    </button>
-                    
-                    <div class="flex items-center gap-4 pb-6 border-b border-black/10">
-                        <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center" id="mypage-avatar-initial">
-                            ${displayUserName.charAt(0)}
-                        </div>
-                        <div>
-                            <h3 class="text-2xl font-bold text-darkText" id="mypage-user-name">${displayUserName}님</h3>
-                            <p class="text-sm text-grayText mt-0.5" id="mypage-user-subinfo">${displaySubInfo}</p>
-                        </div>
-                    </div>
-
-                    <!-- 1. 배송지 정보 영역 -->
-                    <div class="mt-6 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">배송지 관리</h4>
-                        </div>
-                        <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-3">
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-[11px] font-semibold text-grayText mb-1">받는 분 성함</label>
-                                    <input type="text" id="mypage-ship-name" value="${shippingInfo.name || ''}" placeholder="성함 입력" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-semibold text-grayText mb-1">연락처</label>
-                                    <input type="tel" id="mypage-ship-phone" value="${shippingInfo.phone || ''}" maxlength="13" oninput="formatPhoneNumber(this)" placeholder="010-0000-0000" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
-                                </div>
+                <div class="bg-white border border-black/10 rounded-[28px] max-w-lg w-full p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                    <button onclick="closeMyPageModal()" class="absolute top-6 right-6 p-2 rounded-full text-grayText hover:bg-black/5">✕</button>
+                    <h3 class="text-2xl font-bold text-darkText mb-4">${userObj.name}님 마이페이지</h3>
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-bold text-darkLink">최근 구매 내역 (${orders.length}건)</h4>
+                        ${orders.length === 0 ? '<p class="text-xs text-grayText">구매 내역이 없습니다.</p>' : orders.map(ord => `
+                            <div class="p-3 rounded-xl bg-[#F5F5F7] text-xs space-y-1">
+                                <div class="flex justify-between font-bold"><span>${ord.id}</span><span>${ord.total}</span></div>
+                                <p class="text-grayText">${ord.date} · ${ord.payment} · ${ord.status}</p>
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-semibold text-grayText mb-1">배송 주소</label>
-                                <div class="flex gap-2 mb-2">
-                                    <input type="text" id="mypage-ship-zip" value="${shippingInfo.zipcode || ''}" readonly placeholder="우편번호" class="w-24 px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none cursor-pointer" onclick="openAddressSearch()">
-                                    <input type="text" id="mypage-ship-addr" value="${shippingInfo.address || ''}" readonly placeholder="클릭하여 주소 검색" class="flex-1 px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none cursor-pointer" onclick="openAddressSearch()">
-                                    <button type="button" onclick="openAddressSearch()" class="px-4 py-2 rounded-xl bg-darkText hover:bg-black text-white text-xs font-semibold transition-colors flex-shrink-0">
-                                        검색하기
-                                    </button>
-                                </div>
-                                <input type="text" id="mypage-ship-detail" value="${shippingInfo.detail || ''}" placeholder="상세 주소 입력 (동, 호수 등)" class="w-full px-3 py-2 rounded-xl bg-white border border-black/10 text-xs font-medium text-darkText outline-none focus:border-accentGreen">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. 최근 구매 내역 영역 -->
-                    <div class="mt-6 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">최근 구매 내역</h4>
-                            <span class="text-xs text-grayText">총 ${orders.length}건</span>
-                        </div>
-                        <div id="mypage-orders-list" class="space-y-3 max-h-56 overflow-y-auto pr-1">
-                            ${orders.length === 0 ? `
-                                <div class="p-6 rounded-2xl bg-[#F5F5F7] text-center text-xs text-grayText border border-black/5">
-                                    구매 내역이 없습니다.
-                                </div>
-                            ` : orders.map((ord, oIdx) => {
-                                const isCancelled = ord.status === '주문 취소됨';
-                                const canDeleteInList = isCancelled && (ord.refundStatus === '환불 완료' || !ord.refundStatus);
-                                const badgeClass = isCancelled 
-                                    ? 'bg-red-100 text-red-700' 
-                                    : (ord.status === '입금 대기중' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800');
-                                return `
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 hover:border-black/20 transition-all space-y-2">
-                                    <div onclick="openOrderDetailModal(${oIdx})" class="flex items-center justify-between cursor-pointer">
-                                        <div class="space-y-1 min-w-0 pr-3">
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-xs font-bold text-darkText">${ord.id}</span>
-                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${ord.status || '결제 완료'}</span>
-                                            </div>
-                                            <p class="text-xs text-grayText truncate">${ord.items && ord.items.length > 0 ? ord.items[0].name + (ord.items.length > 1 ? ` 외 ${ord.items.length - 1}종` : '') : 'HEETSUKI 상품'}</p>
-                                            <p class="text-[11px] text-grayText">${ord.date} · ${ord.payment}</p>
-                                        </div>
-                                        <div class="text-right flex-shrink-0">
-                                            <span class="text-sm font-bold ${isCancelled ? 'text-grayText line-through' : 'text-darkText'}">${ord.total}</span>
-                                            <p class="text-[11px] text-accentGreen font-semibold mt-0.5">상세보기 &rarr;</p>
-                                        </div>
-                                    </div>
-                                    ${canDeleteInList ? `
-                                        <div class="pt-2 border-t border-black/5 flex justify-end">
-                                            <button type="button" onclick="event.stopPropagation(); deleteOrderHistory(${oIdx})" class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                                <span>주문 내역 삭제</span>
-                                            </button>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            `;
-                            }).join('')}
-                        </div>
-                    </div>
-
-                    <!-- 3. 찜한 상품 영역 -->
-                    <div class="mt-6 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">찜한 상품</h4>
-                            <span class="text-xs text-grayText">총 ${wishlist.length}개</span>
-                        </div>
-                        <div id="mypage-wishlist" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                            ${wishlist.length === 0 ? `
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] text-center text-xs text-grayText border border-black/5">
-                                    찜한 상품이 없습니다.
-                                </div>
-                            ` : wishlist.map((item, wIdx) => `
-                                <div class="flex items-center justify-between p-3 rounded-xl bg-[#F5F5F7] border border-black/5">
-                                    <div class="flex items-center gap-3">
-                                        <img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg object-cover bg-white">
-                                        <div>
-                                            <p class="text-xs font-bold text-darkText">${item.name}</p>
-                                            <p class="text-[11px] text-grayText">${item.price}</p>
-                                        </div>
-                                    </div>
-                                    <button onclick="removeWishlistItem(${wIdx})" class="text-grayText hover:text-red-600 text-xs p-1">삭제</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- 4. 회원 탈퇴 및 연동 해제 버튼 -->
-                    <div class="mt-8 pt-6 border-t border-black/15 flex justify-between items-center">
-                        <button onclick="handleAccountWithdrawal()" class="text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2.5 rounded-xl transition-colors">
-                            회원 탈퇴 및 연동 해제
-                        </button>
-                        <button onclick="saveMyPageShippingInfo(); closeMyPageModal();" class="px-6 py-3 rounded-2xl bg-accentGreen text-white text-sm font-semibold transition-colors shadow-sm">
-                            저장
-                        </button>
+                        `).join('')}
                     </div>
                 </div>
             `;
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        };
-
-        // Detailed Order View Modal
-        window.openOrderDetailModal = function(orderIndex) {
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const ord = orders[orderIndex];
-            if (!ord) return;
-
-            const currentStatus = ord.status || '결제 완료';
-            const isBankTransfer = ord.payment === '무통장입금' && currentStatus === '입금 대기중';
-            const isCancelled = currentStatus === '주문 취소됨';
-            const canCancel = currentStatus === '입금 대기중' || currentStatus === '결제 완료';
-            // 주문 취소 상태이면서 환불 완료 처리된 건에만 '주문 내역 삭제' 버튼 노출
-            const canDelete = isCancelled && (ord.refundStatus === '환불 완료' || !ord.refundStatus);
-
-            // Calculate fallback deposit deadline if missing on older orders (3 days / 72 hours)
-            let displayDeadline = ord.depositDeadline;
-            if (ord.payment === '무통장입금' && !displayDeadline) {
-                const fallbackDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-                const pad2 = (n) => String(n).padStart(2, '0');
-                displayDeadline = `3일 후 ${fallbackDate.getFullYear()}년 ${fallbackDate.getMonth() + 1}월 ${fallbackDate.getDate()}일 ${pad2(fallbackDate.getHours())}시 ${pad2(fallbackDate.getMinutes())}분까지 (주문 후 3일/72시간 이내)`;
-            }
-
-            const statusBadgeClass = isCancelled
-                ? 'bg-red-100 text-red-700'
-                : (currentStatus === '입금 대기중' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800');
-
-            let detailModal = document.getElementById('order-detail-modal');
-            if (!detailModal) {
-                detailModal = document.createElement('div');
-                detailModal.id = 'order-detail-modal';
-                // z-index 계층을 명확히 정리 (마이페이지 z-[120]보다 높은 z-[130]으로 설정)
-                detailModal.className = 'fixed inset-0 z-[130] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
-                document.body.appendChild(detailModal);
-            } else {
-                detailModal.style.zIndex = '130';
-            }
-
-            detailModal.innerHTML = `
-                <div class="bg-white border border-black/10 rounded-[28px] max-w-lg w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-                    <button onclick="closeOrderDetailModal()" class="absolute top-6 right-6 p-2 rounded-full text-grayText hover:bg-black/5">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                    </button>
-
-                    <div class="flex items-center justify-between pb-4 border-b border-black/10 pr-8">
-                        <div>
-                            <span class="text-xs font-bold text-accentGreen">HEETSUKI ORDER DETAIL</span>
-                            <h3 class="text-xl font-bold text-darkText mt-0.5">${ord.id}</h3>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold ${statusBadgeClass}">${currentStatus}</span>
-                    </div>
-
-                    <div class="py-5 space-y-5 text-sm">
-                        <!-- Cancelled Notice Box if order was cancelled -->
-                        ${isCancelled ? `
-                            <div class="p-4 rounded-2xl bg-red-50 border border-red-200 space-y-1.5">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2 text-red-700 font-bold text-xs">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>주문이 취소되었습니다 (환불 완료)</span>
-                                    </div>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">환불 완료</span>
-                                </div>
-                                ${ord.cancelReason ? `<p class="text-xs text-red-600">취소 사유: <strong>${ord.cancelReason}</strong></p>` : ''}
-                                ${ord.cancelDetail ? `<p class="text-[11px] text-red-500">상세 내용: ${ord.cancelDetail}</p>` : ''}
-                                ${ord.cancelledAt ? `<p class="text-[11px] text-grayText">취소 및 환불 일시: ${ord.cancelledAt}</p>` : ''}
-                            </div>
-                        ` : ''}
-
-                        <!-- Bank Transfer Guide Box if applicable -->
-                        ${isBankTransfer ? `
-                            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">
-                                <div class="flex items-center gap-2 text-amber-900 font-bold text-xs">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>무통장 입금 대기 안내</span>
-                                </div>
-                                <p class="text-[11px] text-amber-800 leading-relaxed">아래 계좌로 기한 내 입금해 주셔야 최종 주문이 완료됩니다.</p>
-                                <div class="p-3 bg-white rounded-xl border border-amber-200/60 text-xs space-y-1.5">
-                                    <div class="flex justify-between"><span class="text-grayText">입금 은행</span><strong class="text-darkText">국민은행 274101-04-343976</strong></div>
-                                    <div class="flex justify-between"><span class="text-grayText">예 금 주</span><strong class="text-darkText">양대희 (희츠키)</strong></div>
-                                    <div class="flex justify-between"><span class="text-grayText">입금 금액</span><strong class="text-accentGreen">${ord.total}</strong></div>
-                                    <div class="flex justify-between items-start gap-2 pt-1 border-t border-black/5">
-                                        <span class="text-grayText flex-shrink-0">입금 기한</span>
-                                        <strong class="text-red-600 text-right">${displayDeadline}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
-
-                        <!-- Ordered Items List with Enhanced Thumbnails & Product Modal Link -->
-                        <div class="space-y-2.5">
-                            <h4 class="text-xs font-bold text-grayText uppercase tracking-wider">주문 상품 정보 (${ord.items ? ord.items.length : ord.itemsCount}종)</h4>
-                            <div class="space-y-2.5">
-                                ${ord.items && ord.items.length > 0 ? ord.items.map(item => {
-                                    // 상품명에 따른 상세 정보 매핑 (상품 모달 바로가기 연동용)
-                                    let desc = '자연의 숨결을 담은 프리미엄 시그니처 아이템';
-                                    let options = [item.option || '표준 옵션'];
-                                    let images = [item.image || 'https://placehold.co/600x600/E8F0EC/00712D?text=HEETSUKI'];
-                                    
-                                    if (item.name.includes('티셔츠')) {
-                                        desc = '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠';
-                                        options = ['S', 'M', 'L', 'XL'];
-                                        images = [
-                                            item.image,
-                                            'https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI+Tee+Back',
-                                            'https://placehold.co/600x600/DCE3DF/00712D?text=HEETSUKI+Tee+Detail'
-                                        ];
-                                    } else if (item.name.includes('수초')) {
-                                        desc = '우아하게 물결치는 아름다운 레이아웃 수초';
-                                        options = ['표준 포트 (1포트)', '대형 풍성 포트 (2포트)'];
-                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Vallisneria+2'];
-                                    } else if (item.name.includes('입출수구')) {
-                                        desc = '고투명 유리로 제작된 프리미엄 입출수구 세트';
-                                        options = ['13mm (일반형)', '17mm (대형형)'];
-                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Glass+Pipe+2'];
-                                    } else if (item.name.includes('어항')) {
-                                        desc = '45도 미이터 컷 고투명 올디아망 어항';
-                                        options = ['30큐브 (30x30x30)', '45큐브 (45x45x45)', '60사이즈 (60x30x36)'];
-                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Tank+Miter+Cut'];
-                                    }
-
-                                    // 데이터 안전 이스케이프
-                                    const safeName = item.name.replace(/'/g, "\\'");
-                                    const safePrice = formatPrice(item.price);
-                                    const safeDesc = desc.replace(/'/g, "\\'");
-                                    const optionsJson = JSON.stringify(options).replace(/"/g, '&quot;');
-                                    const imagesJson = JSON.stringify(images).replace(/"/g, '&quot;');
-
-                                    return `
-                                        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 hover:border-black/20 transition-all group">
-                                            <div onclick="closeOrderDetailModal(); openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsJson}, ${imagesJson})" class="w-16 h-16 rounded-xl overflow-hidden bg-white border border-black/10 flex-shrink-0 cursor-pointer shadow-xs relative">
-                                                <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                                    <span class="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-white bg-black/70 px-1.5 py-0.5 rounded">보기</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1 min-w-0 cursor-pointer" onclick="closeOrderDetailModal(); openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsJson}, ${imagesJson})">
-                                                <h5 class="text-xs font-bold text-darkText group-hover:text-accentGreen transition-colors truncate">${item.name}</h5>
-                                                <p class="text-[11px] text-grayText mt-0.5">선택 옵션: <strong class="text-darkText">${item.option}</strong></p>
-                                                <p class="text-[11px] text-grayText">수량: <strong class="text-darkText">${item.qty}개</strong> · 개당 ${formatPrice(item.price)}</p>
-                                            </div>
-                                            <div class="text-right flex-shrink-0">
-                                                <span class="text-xs sm:text-sm font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('') : `<p class="text-xs text-grayText">주문 상품 데이터가 기록되었습니다.</p>`}
-                            </div>
-                        </div>
-
-                        <!-- Payment & Shipping Details -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div class="p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-1.5">
-                                <h5 class="text-[11px] font-bold text-grayText uppercase">결제 정보</h5>
-                                <p class="text-xs font-semibold text-darkText">결제 수단: ${ord.payment}</p>
-                                <p class="text-xs font-bold ${isCancelled ? 'text-grayText line-through' : 'text-accentGreen'}">최종 금액: ${ord.total}</p>
-                                ${ord.payment === '무통장입금' ? `
-                                    <p class="text-[11px] text-darkText">입금 계좌: <span class="font-semibold">국민은행 274101-04-343976</span></p>
-                                    <p class="text-[11px] font-bold text-darkText">예 금 주: 양대희 (희츠키)</p>
-                                    <p class="text-[11px] font-bold ${isCancelled ? 'text-grayText line-through' : 'text-red-600'}">입금 기한: ${displayDeadline}</p>
-                                ` : ''}
-                                <p class="text-[11px] text-grayText">주문 일시: ${ord.date}</p>
-                            </div>
-                            <div class="p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-1.5">
-                                <h5 class="text-[11px] font-bold text-grayText uppercase">배송지 정보</h5>
-                                <p class="text-xs font-semibold text-darkText">수령인: ${ord.shippingInfo ? ord.shippingInfo.name : '고객'}</p>
-                                <p class="text-xs text-grayText">연락처: ${ord.shippingInfo ? ord.shippingInfo.phone : '미입력'}</p>
-                                <p class="text-xs text-grayText">주소: ${ord.shippingInfo ? ord.shippingInfo.address : '일반 배송지'}</p>
-                                ${ord.shippingInfo && ord.shippingInfo.memo ? `<p class="text-[11px] text-grayText">요청사항: ${ord.shippingInfo.memo}</p>` : ''}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 border-t border-black/10 flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-2">
-                            ${canCancel ? `
-                                <button type="button" onclick="openCancelOrderModal(${orderIndex})" class="px-4 py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 text-xs sm:text-sm font-semibold transition-colors">
-                                    주문 취소
-                                </button>
-                            ` : ''}
-                            ${canDelete ? `
-                                <button type="button" onclick="deleteOrderHistory(${orderIndex})" class="px-4 py-3 rounded-2xl bg-gray-200 hover:bg-gray-300 text-darkText text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    <span>주문 내역 삭제</span>
-                                </button>
-                            ` : ''}
-                        </div>
-                        <button type="button" onclick="closeOrderDetailModal()" class="px-6 py-3 rounded-2xl bg-darkText text-white text-xs sm:text-sm font-semibold hover:bg-black transition-colors ml-auto">
-                            확인
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            detailModal.classList.remove('hidden');
-            detailModal.classList.add('flex');
-        };
-
-        window.closeOrderDetailModal = function() {
-            const modal = document.getElementById('order-detail-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        };
-
-        // 주문 내역 삭제 기능
-        window.deleteOrderHistory = async function(orderIndex) {
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const ord = orders[orderIndex];
-            if (!ord) return;
-
-            if (!confirm('정말 주문 내역을 삭제하시겠습니까? 삭제된 내역은 복구할 수 없습니다.')) {
-                return;
-            }
-
-            const deletedOrderId = ord.id;
-            orders.splice(orderIndex, 1);
-            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
-
-            // Firestore 동기화 (로그인 상태인 경우 삭제 또는 숨김 처리)
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await deleteDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', deletedOrderId));
-                }
-            } catch (err) {
-                console.warn('Firestore order deletion sync fallback:', err);
-            }
-
-            // 주문 상세 모달이 열려 있다면 닫기
-            closeOrderDetailModal();
-            showToast('주문 내역이 깔끔하게 삭제되었습니다.');
-
-            // 마이페이지 모달이 열려 있는 경우 즉시 재렌더링하여 목록 실시간 동기화
-            const myPageModal = document.getElementById('mypage-modal');
-            if (myPageModal && !myPageModal.classList.contains('hidden')) {
-                openMyPageModal();
-            }
-        };
-
-        // Dedicated Order Cancellation Modal
-        window.openCancelOrderModal = function(orderIndex) {
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const ord = orders[orderIndex];
-            if (!ord) return;
-
-            const itemSummary = ord.items && ord.items.length > 0
-                ? ord.items[0].name + (ord.items.length > 1 ? ` 외 ${ord.items.length - 1}건` : '')
-                : 'HEETSUKI 상품';
-
-            let cancelModal = document.getElementById('cancel-order-modal');
-            if (!cancelModal) {
-                cancelModal = document.createElement('div');
-                cancelModal.id = 'cancel-order-modal';
-                // 주문 취소 모달은 주문 상세 창(z-[130])보다도 높은 최상단 계층으로 배치 (z-[140])
-                cancelModal.className = 'fixed inset-0 z-[140] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
-                document.body.appendChild(cancelModal);
-            } else {
-                cancelModal.style.zIndex = '140';
-            }
-
-            const cancelReasons = [
-                '단순 변심',
-                '옵션/사이즈 변경',
-                '배송 지연',
-                '기타(직접 입력)'
-            ];
-
-            cancelModal.innerHTML = `
-                <div class="bg-white border border-black/10 rounded-[28px] max-w-md w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-                    <div class="flex items-center justify-between pb-4 border-b border-black/10">
-                        <div>
-                            <span class="text-[11px] font-bold text-red-600 uppercase tracking-wider">CANCEL ORDER</span>
-                            <h3 class="text-xl font-bold text-darkText mt-0.5">주문 취소 신청</h3>
-                        </div>
-                        <button type="button" onclick="closeCancelOrderModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                        </button>
-                    </div>
-
-                    <div class="py-5 space-y-5 text-sm">
-                        <!-- 1. 취소 대상 주문 정보 요약 -->
-                        <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-1.5">
-                            <p class="text-[11px] font-bold text-grayText uppercase">취소 대상 주문 요약</p>
-                            <div class="flex justify-between text-xs pt-1">
-                                <span class="text-grayText">주문 번호</span>
-                                <span class="font-bold text-darkText">${ord.id}</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-grayText">상품명</span>
-                                <span class="font-semibold text-darkText truncate max-w-[200px]">${itemSummary}</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-grayText">결제 금액</span>
-                                <span class="font-bold text-accentGreen">${ord.total} (${ord.payment})</span>
-                            </div>
-                        </div>
-
-                        <!-- 2. 취소 사유 선택 -->
-                        <div class="space-y-2">
-                            <label class="block text-xs font-bold text-darkText">취소 사유 선택 <span class="text-red-500">*</span></label>
-                            <div class="space-y-2" id="cancel-reasons-group">
-                                ${cancelReasons.map((reason, idx) => `
-                                    <label class="flex items-center gap-3 p-3 rounded-xl bg-[#F5F5F7] hover:bg-black/[0.04] border border-black/5 cursor-pointer transition-colors">
-                                        <input type="radio" name="cancel-reason-radio" value="${reason}" onchange="handleCancelReasonChange(this.value)" class="w-4 h-4 accent-[#00712D] cursor-pointer">
-                                        <span class="text-xs font-medium text-darkText">${reason}</span>
-                                    </label>
-                                `).join('')}
-                            </div>
-                            <p id="error-cancel-reason" class="text-xs text-red-500 font-semibold hidden">취소 사유를 선택해 주세요.</p>
-                        </div>
-
-                        <!-- 3. 상세 취소 사유 입력란 -->
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-bold text-darkText">상세 취소 사유 <span id="cancel-detail-badge" class="text-grayText font-normal">(선택)</span></label>
-                            <textarea id="cancel-detail-textarea" rows="3" oninput="clearCancelDetailError()" placeholder="상세한 취소 사유나 요청사항을 입력해 주세요." class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none resize-none"></textarea>
-                            <p id="error-cancel-detail" class="text-xs text-red-500 font-semibold hidden">기타 사유 선택 시 상세 내용을 입력해 주세요.</p>
-                        </div>
-
-                        <!-- 4. 환불 및 취소 안내 문구 -->
-                        <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/70 space-y-1 text-[11px] text-amber-900 leading-relaxed">
-                            <p class="font-bold">환불 및 취소 처리 안내</p>
-                            <p>• 무통장입금 대기 건은 신청 즉시 취소 처리됩니다.</p>
-                            <p>• 카드 및 간편결제 완료 건은 취소 승인 후 영업일 기준 2~5일 이내에 원결제 수단으로 환불됩니다.</p>
-                        </div>
-                    </div>
-
-                    <!-- 5. 하단 버튼 -->
-                    <div class="pt-4 border-t border-black/10 grid grid-cols-2 gap-2.5">
-                        <button type="button" onclick="closeCancelOrderModal()" class="w-full py-3.5 rounded-2xl bg-[#F5F5F7] hover:bg-black/10 text-darkText text-xs sm:text-sm font-semibold transition-colors">
-                            취소 철회/닫기
-                        </button>
-                        <button type="button" onclick="submitOrderCancellation(${orderIndex})" class="w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold transition-colors shadow-sm">
-                            주문 취소 신청하기
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            cancelModal.classList.remove('hidden');
-            cancelModal.classList.add('flex');
-        };
-
-        window.handleCancelReasonChange = function(val) {
-            const reasonErr = document.getElementById('error-cancel-reason');
-            const detailBadge = document.getElementById('cancel-detail-badge');
-            const detailErr = document.getElementById('error-cancel-detail');
-            if (reasonErr) reasonErr.classList.add('hidden');
-            if (detailErr) detailErr.classList.add('hidden');
-
-            if (detailBadge) {
-                if (val === '기타(직접 입력)') {
-                    detailBadge.textContent = '*';
-                    detailBadge.className = 'text-red-500 font-bold';
-                } else {
-                    detailBadge.textContent = '(선택)';
-                    detailBadge.className = 'text-grayText font-normal';
-                }
-            }
-        };
-
-        window.clearCancelDetailError = function() {
-            const detailErr = document.getElementById('error-cancel-detail');
-            if (detailErr) detailErr.classList.add('hidden');
-        };
-
-        window.closeCancelOrderModal = function() {
-            const modal = document.getElementById('cancel-order-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        };
-
-        window.submitOrderCancellation = async function(orderIndex) {
-            const selectedRadio = document.querySelector('input[name="cancel-reason-radio"]:checked');
-            const reasonErr = document.getElementById('error-cancel-reason');
-            const detailTextarea = document.getElementById('cancel-detail-textarea');
-            const detailErr = document.getElementById('error-cancel-detail');
-
-            if (!selectedRadio) {
-                if (reasonErr) reasonErr.classList.remove('hidden');
-                showToast('취소 사유를 선택해 주세요.');
-                return;
-            }
-
-            const selectedReason = selectedRadio.value;
-            const detailText = detailTextarea ? detailTextarea.value.trim() : '';
-
-            if (selectedReason === '기타(직접 입력)' && !detailText) {
-                if (detailErr) detailErr.classList.remove('hidden');
-                if (detailTextarea) detailTextarea.focus();
-                showToast('기타 사유 선택 시 상세 내용을 입력해 주세요.');
-                return;
-            }
-
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const ord = orders[orderIndex];
-            if (!ord) return;
-
-            ord.status = '주문 취소됨';
-            ord.cancelReason = selectedReason;
-            ord.cancelDetail = detailText;
-            ord.cancelledAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-
-            orders[orderIndex] = ord;
-            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
-
-            // Firestore 동기화 (로그인 상태인 경우)
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', ord.id), ord, { merge: true });
-                }
-            } catch (err) {
-                console.warn('Firestore order cancellation sync fallback:', err);
-            }
-
-            // 조건 없이 주문 취소 관리자 이메일 무조건 발송 (독립적 실행)
-            try {
-                window.requestOrderCancel(ord.id, selectedReason);
-            } catch (cancelMailErr) {
-                console.error("[주문 취소 메일 호출 에러]", cancelMailErr);
-            }
-
-            closeCancelOrderModal();
-            showToast(`[${ord.id}] 주문 취소가 완료되었습니다.`);
-
-            // 주문 상세 창 즉시 재렌더링하여 '주문 취소됨' 상태 반영
-            openOrderDetailModal(orderIndex);
-
-            // 마이페이지 모달이 열려 있다면 구매 내역 상태도 즉시 동기화
-            const myPageModal = document.getElementById('mypage-modal');
-            if (myPageModal && !myPageModal.classList.contains('hidden')) {
-                openMyPageModal();
-            }
-        };
-
-        window.saveMyPageShippingInfo = async function() {
-            const name = document.getElementById('mypage-ship-name').value.trim();
-            const phone = document.getElementById('mypage-ship-phone').value.trim();
-            const zipcode = document.getElementById('mypage-ship-zip').value.trim();
-            const address = document.getElementById('mypage-ship-addr').value.trim();
-            const detail = document.getElementById('mypage-ship-detail').value.trim();
-
-            const newInfo = { name, phone, zipcode, address, detail };
-            
-            // 1. Save to local storage cache
-            localStorage.setItem('heetsuki_shipping_info', JSON.stringify(newInfo));
-
-            // 2. Sync logged-in user display name immediately
-            if (name) {
-                try {
-                    const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-                    if (savedUser) {
-                        const parsedUser = JSON.parse(savedUser);
-                        parsedUser.name = name;
-                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(parsedUser));
-                        if (typeof window.applyLoginState === 'function') {
-                            window.applyLoginState(parsedUser);
-                        }
-                    }
-                } catch(e) {}
-            }
-
-            // 3. Save securely to Firestore database if authenticated
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'profile', 'shipping'), newInfo);
-                }
-            } catch (err) {
-                console.warn('Cloud shipping save fallback:', err);
-            }
-
-            showToast('배송지 정보가 안전하게 저장되었습니다.');
-        };
-
-        window.removeWishlistItem = function(index) {
-            let wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
-            wishlist.splice(index, 1);
-            localStorage.setItem('heetsuki_wishlist', JSON.stringify(wishlist));
-            showToast('찜한 상품이 삭제되었습니다.');
-            openMyPageModal();
-        };
-
-        window.handleAccountWithdrawal = function() {
-            openCustomConfirmModal(
-                '회원 탈퇴 및 연동 해제',
-                '정말로 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 초기화됩니다.',
-                function() {
-                    localStorage.removeItem('heetsuki_logged_in_user');
-                    localStorage.removeItem('heetsuki_shipping_info');
-                    localStorage.removeItem('heetsuki_orders');
-                    localStorage.removeItem('heetsuki_wishlist');
-                    closeMyPageModal();
-                    showToast('회원 탈퇴 및 연동 해제가 완료되었습니다.');
-                    window.location.reload();
-                }
-            );
-        };
-
-        // Custom Non-Blocking Confirmation Modal (Replaces native confirm())
-        window.openCustomConfirmModal = function(title, message, onConfirm) {
-            let confirmModal = document.getElementById('custom-confirm-modal');
-            if (!confirmModal) {
-                confirmModal = document.createElement('div');
-                confirmModal.id = 'custom-confirm-modal';
-                confirmModal.className = 'fixed inset-0 z-[150] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
-                document.body.appendChild(confirmModal);
-            }
-            confirmModal.innerHTML = `
-                <div class="bg-white border border-black/10 rounded-[24px] max-w-sm w-full p-6 shadow-2xl space-y-4">
-                    <h3 class="text-lg font-bold text-darkText">${title}</h3>
-                    <p class="text-xs sm:text-sm text-grayText leading-relaxed">${message}</p>
-                    <div class="pt-2 flex justify-end gap-2">
-                        <button type="button" id="custom-confirm-cancel" class="px-4 py-2.5 rounded-xl bg-[#F5F5F7] hover:bg-black/10 text-darkText text-xs font-semibold transition-colors">취소</button>
-                        <button type="button" id="custom-confirm-ok" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors">확인</button>
-                    </div>
-                </div>
-            `;
-            confirmModal.classList.remove('hidden');
-            confirmModal.classList.add('flex');
-
-            document.getElementById('custom-confirm-cancel').onclick = function() {
-                confirmModal.classList.add('hidden');
-                confirmModal.classList.remove('flex');
-            };
-            document.getElementById('custom-confirm-ok').onclick = function() {
-                confirmModal.classList.add('hidden');
-                confirmModal.classList.remove('flex');
-                if (typeof onConfirm === 'function') onConfirm();
-            };
-        };
-
-        window.removeWishlistItem = function(index) {
-            let wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
-            wishlist.splice(index, 1);
-            localStorage.setItem('heetsuki_wishlist', JSON.stringify(wishlist));
-            showToast('찜한 상품이 삭제되었습니다.');
-            openMyPageModal();
-        };
-
-        window.handleAccountWithdrawal = function() {
-            if (confirm('정말로 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 초기화됩니다.')) {
-                localStorage.removeItem('heetsuki_logged_in_user');
-                localStorage.removeItem('heetsuki_shipping_info');
-                localStorage.removeItem('heetsuki_orders');
-                localStorage.removeItem('heetsuki_wishlist');
-                closeMyPageModal();
-                showToast('회원 탈퇴 및 연동 해제가 완료되었습니다.');
-                window.location.reload();
-            }
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         };
 
         window.closeMyPageModal = function() {
-            const modal = document.getElementById('mypage-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
+            const m = document.getElementById('mypage-modal');
+            if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
         };
 
-        // Road Name Address Search (Official Daum Postcode API Integration)
         function openAddressSearch() {
             if (typeof daum !== 'undefined' && daum.Postcode) {
                 new daum.Postcode({
                     oncomplete: function(data) {
-                        const cleanZip = String(data.zonecode || data.zipNo || '21077').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
-                        const roadAddr = data.roadAddress || data.address;
-                        const building = data.buildingName ? ` (${data.buildingName})` : '';
-                        const fullRoad = roadAddr + building;
-                        selectDaumAddress(cleanZip, fullRoad, data.buildingName || '');
+                        document.getElementById('order-zipcode').value = data.zonecode;
+                        document.getElementById('order-address').value = data.roadAddress || data.address;
+                        showToast('주소가 입력되었습니다.');
                     }
                 }).open();
-                return;
             }
-
-            showToast('카카오 우편번호 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
-        }
-
-        function selectDaumAddress(zip, road, detailHint = '') {
-            const cleanZip = String(zip || '21077').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
-
-            const orderZip = document.getElementById('order-zipcode');
-            const orderAddr = document.getElementById('order-address');
-            const orderDetail = document.getElementById('order-address-detail');
-            const orderZipErr = document.getElementById('error-order-zipcode');
-
-            if (orderZip) {
-                orderZip.value = cleanZip;
-                orderZip.classList.remove('border-red-500');
-            }
-            if (orderAddr) {
-                orderAddr.value = road;
-                orderAddr.classList.remove('border-red-500');
-            }
-            if (orderZipErr) {
-                orderZipErr.classList.add('hidden');
-            }
-            if (orderDetail) {
-                orderDetail.classList.remove('border-red-500');
-                if (!orderDetail.value && detailHint) {
-                    orderDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
-                }
-            }
-            
-            const addrErr = document.getElementById('error-order-address-detail');
-            if (addrErr) addrErr.classList.add('hidden');
-            const globalErr = document.getElementById('error-checkout-global');
-            if (globalErr) globalErr.classList.add('hidden');
-
-            const myPageZip = document.getElementById('mypage-ship-zip');
-            const myPageAddr = document.getElementById('mypage-ship-addr');
-            const myPageDetail = document.getElementById('mypage-ship-detail');
-
-            if (myPageZip) myPageZip.value = cleanZip;
-            if (myPageAddr) myPageAddr.value = road;
-            if (myPageDetail) {
-                if (detailHint && !myPageDetail.value) {
-                    myPageDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
-                }
-                setTimeout(() => myPageDetail.focus(), 80);
-            } else if (orderDetail) {
-                setTimeout(() => orderDetail.focus(), 80);
-            }
-
-            showToast(`[${cleanZip}] 5자리 우편번호와 도로명 주소가 정확하게 입력되었습니다.`);
         }
 
         function formatPhoneNumber(input) {
-            let cursorPosition = input.selectionStart;
-            let originalValue = input.value;
-            
-            let num = originalValue.replace(/[^0-9]/g, '');
-            let formatted = '';
-
-            if (num.startsWith('02')) {
-                if (num.length > 10) num = num.slice(0, 10);
-                if (num.length >= 10) {
-                    formatted = num.replace(/^(\d{2})(\d{4})(\d{4})$/, '$1-$2-$3');
-                } else if (num.length > 5) {
-                    formatted = num.replace(/^(\d{2})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
-                } else if (num.length > 2) {
-                    formatted = num.replace(/^(\d{2})(\d{1,3})$/, '$1-$2');
-                } else {
-                    formatted = num;
-                }
-            } else {
-                if (num.length > 11) num = num.slice(0, 11);
-                if (num.length >= 11) {
-                    formatted = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
-                } else if (num.length === 10) {
-                    formatted = num.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
-                } else if (num.length > 6) {
-                    formatted = num.replace(/^(\d{3})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
-                } else if (num.length > 3) {
-                    formatted = num.replace(/^(\d{3})(\d{1,4})$/, '$1-$2');
-                } else {
-                    formatted = num;
-                }
-            }
-
-            if (input.value !== formatted) {
-                let oldLength = input.value.length;
-                input.value = formatted;
-                
-                try {
-                    let diff = input.value.length - oldLength;
-                    let newPos = Math.max(0, cursorPosition + diff);
-                    input.setSelectionRange(newPos, newPos);
-                } catch (e) {}
-            }
+            let num = input.value.replace(/[^0-9]/g, '');
+            if (num.length >= 11) input.value = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
+            else if (num.length >= 7) input.value = num.replace(/^(\d{3})(\d{3,4})(\d{4})$/, '$1-$2-$3');
+            else input.value = num;
         }
 
         function switchAuthTab(mode) {
             const loginForm = document.getElementById('form-login');
             const signupForm = document.getElementById('form-signup');
-            const loginBtn = document.getElementById('tab-login-btn');
-            const signupBtn = document.getElementById('tab-signup-btn');
-
-            if (mode === 'login') {
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
-                loginBtn.className = 'text-lg font-bold text-darkText pb-1 border-b-2 border-accentGreen transition-colors';
-                signupBtn.className = 'text-lg font-bold text-grayText pb-1 border-b-2 border-transparent transition-colors';
-            } else {
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
-                signupBtn.className = 'text-lg font-bold text-darkText pb-1 border-b-2 border-accentGreen transition-colors';
-                loginBtn.className = 'text-lg font-bold text-grayText pb-1 border-b-2 border-transparent transition-colors';
-            }
+            if (mode === 'login') { loginForm.classList.remove('hidden'); signupForm.classList.add('hidden'); }
+            else { loginForm.classList.add('hidden'); signupForm.classList.remove('hidden'); }
         }
 
-        let tTimer;
+        function openAuthModal(mode) {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('auth-modal').classList.add('flex');
+            switchAuthTab(mode);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-modal').classList.remove('flex');
+        }
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toast-text').textContent = msg;
             t.classList.remove('opacity-0', 'translate-y-2');
             t.classList.add('opacity-100', 'translate-y-0');
-            clearTimeout(tTimer);
-            tTimer = setTimeout(() => {
+            setTimeout(() => {
                 t.classList.add('opacity-0', 'translate-y-2');
                 t.classList.remove('opacity-100', 'translate-y-0');
             }, 2600);
         }
 
-        if (document.readyState === 'loading') {
-            window.addEventListener('DOMContentLoaded', () => {
-                initScene();
-                updateCartUI();
-                if (!animationFrameId) animationFrameId = requestAnimationFrame(animate);
-            });
-        } else {
+        window.addEventListener('DOMContentLoaded', () => {
             initScene();
             updateCartUI();
             if (!animationFrameId) animationFrameId = requestAnimationFrame(animate);
-        }
+        });
     </script>
 </body>
 </html>
