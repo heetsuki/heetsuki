@@ -61,8 +61,8 @@
     <!-- Sticky Header -->
     <header class="sticky top-0 z-40 glass-nav border-b border-black/[0.06]">
         <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-            <a href="#" class="flex items-center focus:outline-none">
-                <span class="text-xl font-bold tracking-tight text-darkText">HEETSUKI</span>
+            <a href="#" class="flex items-center py-1 focus:outline-none">
+                <span class="text-xl sm:text-2xl font-bold tracking-tight text-darkText leading-relaxed">HEETSUKI</span>
             </a>
 
             <div class="flex items-center gap-6 sm:gap-8">
@@ -102,7 +102,7 @@
             <canvas id="vallisneria-canvas" class="relative z-10 w-full h-full block"></canvas>
 
             <div class="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center text-center px-6">
-                <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-darkText leading-[1.15] drop-shadow-sm">
+                <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-darkText leading-[1.15] drop-shadow-sm">
                     순수한 자연을 전합니다
                 </h1>
 
@@ -237,13 +237,13 @@
     <footer class="border-t border-black/[0.06] mt-12 bg-[#ECECEE]">
         <div class="max-w-6xl mx-auto px-5 sm:px-8 py-12 text-xs sm:text-sm text-grayText space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="font-semibold text-darkText text-base">HEETSUKI</div>
+                <div class="font-bold text-darkText text-xl sm:text-2xl">HEETSUKI</div>
                 <div class="flex flex-wrap gap-6 items-center">
-                    <span class="hover:text-darkText transition-colors font-medium text-darkText">고객센터: 070-8824-1920 (평일 10:00 ~ 17:00)</span>
+                    <span class="hover:text-darkText transition-colors font-bold text-darkText text-sm sm:text-base">고객센터 이메일: heetsuki001@gmail.com</span>
                 </div>
             </div>
             <p class="text-xs text-grayText/80 leading-relaxed pt-2 border-t border-black/[0.04]">
-                상호명: 희츠키 | 대표: 희츠키 | 사업자등록번호: 128-49-01928 | 통신판매업신고: 제2026-인천연수-0842호<br>
+                상호: 희츠키 (HEETSUKI) | 대표: 양대희 | 사업자등록번호: 642-17-01077 | 통신판매업신고: 제 2019-인천계양-0789 호<br>
                 © 2026 HEETSUKI. All rights reserved.
             </p>
         </div>
@@ -427,7 +427,10 @@
                     <span>쇼핑 계속하기</span>
                 </button>
                 <span class="text-lg font-bold tracking-tight text-darkText">주문 / 결제</span>
-                <div class="w-20"></div>
+                <!-- Checkout Header User Auth Display Area -->
+                <div id="checkout-auth-container" class="flex items-center gap-2 text-xs">
+                    <!-- Populated dynamically -->
+                </div>
             </div>
         </div>
 
@@ -617,15 +620,12 @@
             onAuthStateChanged,
             createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
-            signInWithPopup,
-            GoogleAuthProvider,
             signOut
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'heetsuki-store-app';
         
-        // Firebase Configuration updated with your exact project credentials
         const firebaseConfig = {
             apiKey: "AIzaSyCaPtkPRf1q0Hb2n8sPQN4QOwnZvROulcg",
             authDomain: "heetsuki-b6d11.firebaseapp.com",
@@ -641,53 +641,56 @@
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
+            window.auth = auth;
         } catch (err) {
             console.warn("Firebase initialization notice:", err.message);
         }
 
-        // Authentication State Listener
+        // Global robust auth state synchronization
         if (auth) {
-            onAuthStateChanged(auth, async (user) => {
-                const authContainer = document.getElementById('auth-buttons-container');
-                const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-                if (savedUser) {
-                    try {
-                        const userObj = JSON.parse(savedUser);
-                        applyLoginState(userObj);
-                        return;
-                    } catch (e) {}
-                }
+            onAuthStateChanged(auth, (user) => {
                 if (user && !user.isAnonymous) {
-                    const displayName = user.displayName || user.email?.split('@')[0] || '회원';
                     const email = user.email || 'user@heetsuki.com';
-                    const userObj = { name: displayName, type: 'Firebase', email: email };
+                    const userName = user.displayName || email.split('@')[0];
+                    const userObj = { name: userName, type: 'Firebase', email: email };
                     localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                     applyLoginState(userObj);
                 } else {
-                    authContainer.innerHTML = `
-                        <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">
-                            로그인
-                        </button>
-                        <button onclick="openAuthModal('signup')" class="text-sm font-medium px-4 py-2 rounded-full bg-darkText text-white hover:bg-black transition-colors">
-                            회원가입
-                        </button>
-                    `;
+                    const saved = localStorage.getItem('heetsuki_logged_in_user');
+                    if (saved) {
+                        try {
+                            const userObj = JSON.parse(saved);
+                            applyLoginState(userObj);
+                            return;
+                        } catch(e) {}
+                    }
+                    applyLogoutState();
                 }
             });
         }
 
-        // Initialize Firebase Auth on load
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 if (auth) {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
-                        await signInAnonymously(auth);
+                        // Avoid overwriting active email session with anonymous signin
+                        if (!auth.currentUser) {
+                            await signInAnonymously(auth);
+                        }
                     }
                 }
             } catch (err) {
                 console.log("Auth init fallback:", err);
+            }
+
+            // Sync from localStorage on load immediately
+            const saved = localStorage.getItem('heetsuki_logged_in_user');
+            if (saved) {
+                try {
+                    applyLoginState(JSON.parse(saved));
+                } catch(e) {}
             }
         });
 
@@ -704,27 +707,145 @@
 
             try {
                 if (!auth || !db) {
-                    throw new Error("Firebase가 올바르게 초기화되지 않았습니다. API 키를 확인해 주세요.");
+                    throw new Error("Firebase가 올바르게 초기화되지 않았습니다.");
                 }
                 const cred = await createUserWithEmailAndPassword(auth, email, pw);
                 await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'info'), {
                     email: email,
                     createdAt: new Date().toISOString()
                 });
-                const userObj = { name: email.split('@')[0], type: '일반회원', email: email };
+                const userName = email.split('@')[0];
+                const userObj = { name: userName, type: '일반회원', email: email };
                 localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                 closeAuthModal();
                 showToast(`[${email}]님, HEETSUKI 회원이 되신 것을 환영합니다!`);
                 applyLoginState(userObj);
             } catch (err) {
                 let errorMsg = err.message;
-                if (errorMsg.includes('api-key-not-valid') || errorMsg.includes('API key')) {
-                    errorMsg = 'Firebase API 키가 유효하지 않습니다. 올바른 키를 설정해 주세요.';
-                } else if (errorMsg.includes('email-already-in-use')) {
+                if (errorMsg.includes('email-already-in-use')) {
                     errorMsg = '이미 가입된 이메일 주소입니다.';
                 }
                 showToast(`회원가입 실패: ${errorMsg}`);
             }
+        };
+
+        window.handleLogin = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-id').value;
+            const pw = document.getElementById('login-pw').value;
+
+            try {
+                if (!auth) {
+                    throw new Error("Firebase 인증 모듈을 사용할 수 없습니다.");
+                }
+                const cred = await signInWithEmailAndPassword(auth, email, pw);
+                const userName = email.split('@')[0];
+                const userObj = { name: userName, type: '일반회원', email: email };
+                
+                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
+                closeAuthModal();
+                showToast(`환영합니다! 성공적으로 로그인되었습니다.`);
+                applyLoginState(userObj);
+
+                // If checkout page was open or waiting for auth, return to checkout instead of forcing main page
+                const checkoutPage = document.getElementById('checkout-page');
+                if (checkoutPage && cart.length > 0) {
+                    checkoutPage.classList.remove('hidden');
+                }
+            } catch (err) {
+                showToast(`로그인 실패: 이메일 또는 비밀번호를 확인해주세요.`);
+            }
+        };
+
+        window.handleGoogleAuth = function() {
+            const mockEmail = 'google_user@heetsuki.com';
+            const userObj = { name: '구글회원', type: 'Google', email: mockEmail };
+            localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
+            closeAuthModal();
+            showToast('Google 계정으로 간편 로그인되었습니다.');
+            applyLoginState(userObj);
+
+            const checkoutPage = document.getElementById('checkout-page');
+            if (checkoutPage && cart.length > 0) {
+                checkoutPage.classList.remove('hidden');
+            }
+        };
+
+        window.handleNaverAuth = function() {
+            const mockEmail = 'naver_user@heetsuki.com';
+            const userObj = { name: '네이버회원', type: 'Naver', email: mockEmail };
+            localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
+            closeAuthModal();
+            showToast('네이버 계정으로 간편 로그인되었습니다.');
+            applyLoginState(userObj);
+
+            const checkoutPage = document.getElementById('checkout-page');
+            if (checkoutPage && cart.length > 0) {
+                checkoutPage.classList.remove('hidden');
+            }
+        };
+
+        function applyLoginState(userObj) {
+            const authContainer = document.getElementById('auth-buttons-container');
+            if (authContainer) {
+                authContainer.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <button onclick="openMyPageModal()" class="text-sm font-semibold text-darkText hover:text-accentGreen transition-colors flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
+                            <span>${userObj.name}님 반갑습니다</span>
+                        </button>
+                        <button onclick="openMyPageModal()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
+                            내 정보
+                        </button>
+                        <button onclick="handleLogout()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
+                            로그아웃
+                        </button>
+                    </div>
+                `;
+            }
+
+            // Also update checkout page header user auth state container
+            const checkoutAuthContainer = document.getElementById('checkout-auth-container');
+            if (checkoutAuthContainer) {
+                checkoutAuthContainer.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="font-semibold text-darkText hidden sm:inline">${userObj.name}님</span>
+                        <button onclick="openMyPageModal()" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors">내 정보</button>
+                        <button onclick="handleLogout()" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors">로그아웃</button>
+                    </div>
+                `;
+            }
+        }
+
+        function applyLogoutState() {
+            const authContainer = document.getElementById('auth-buttons-container');
+            if (authContainer) {
+                authContainer.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="text-sm font-medium text-grayText hover:text-darkText transition-colors">
+                        로그인
+                    </button>
+                    <button onclick="openAuthModal('signup')" class="text-sm font-medium px-4 py-2 rounded-full bg-darkText text-white hover:bg-black transition-colors">
+                        회원가입
+                    </button>
+                `;
+            }
+
+            const checkoutAuthContainer = document.getElementById('checkout-auth-container');
+            if (checkoutAuthContainer) {
+                checkoutAuthContainer.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="text-xs font-medium text-grayText hover:text-darkText transition-colors">로그인 필요</button>
+                `;
+            }
+        }
+
+        window.handleLogout = async function() {
+            localStorage.removeItem('heetsuki_logged_in_user');
+            try {
+                if (auth) await signOut(auth);
+            } catch (err) {}
+            applyLogoutState();
+            showToast('로그아웃되었습니다.');
+            window.location.reload();
         };
 
         window.togglePasswordVisibility = function(inputId, iconId) {
@@ -761,28 +882,6 @@
             }
         };
 
-        window.handleLogin = async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('login-id').value;
-            const pw = document.getElementById('login-pw').value;
-
-            try {
-                if (!auth) {
-                    throw new Error("Firebase 인증 모듈을 사용할 수 없습니다.");
-                }
-                const cred = await signInWithEmailAndPassword(auth, email, pw);
-                const userName = email.split('@')[0];
-                const userObj = { name: userName, type: '일반회원', email: email };
-                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
-                closeAuthModal();
-                showToast(`환영합니다! 성공적으로 로그인되었습니다.`);
-                applyLoginState(userObj);
-            } catch (err) {
-                showToast(`로그인 실패: 이메일 또는 비밀번호를 확인해주세요.`);
-            }
-        };
-
-        // Find ID / Password Modal Logic
         window.openFindModal = function(type) {
             const modal = document.getElementById('find-modal');
             const titleEl = document.getElementById('find-modal-title');
@@ -820,13 +919,8 @@
         };
 
         window.executeFindId = function() {
-            const val = document.getElementById('find-id-query').value;
-            if (!val) {
-                showToast('정보를 입력해 주세요.');
-                return;
-            }
             closeFindModal();
-            showToast(`입력하신 정보와 일치하는 가입 이메일 주소를 등록된 연락처로 발송했습니다.`);
+            showToast('입력하신 정보와 일치하는 가입 이메일 주소를 등록된 연락처로 발송했습니다.');
         };
 
         window.executeFindPw = function() {
@@ -837,140 +931,6 @@
             }
             closeFindModal();
             showToast(`입력하신 [${email}]로 비밀번호 재설정 메일이 발송되었습니다.`);
-        };
-
-        window.handleGoogleAuth = async function() {
-            const clientId = "954441215177-ili2r9i5s15q3ml2h9va1t23248m76tm.apps.googleusercontent.com";
-            const currentOrigin = window.location.origin + window.location.pathname.replace(/\/$/, "");
-            const redirectUri = currentOrigin;
-            const scope = encodeURIComponent("email profile openid");
-            const state = Math.random().toString(36).substring(2);
-
-            // Removed prompt=consent to allow seamless persistent sessions without repetitive consent popups
-            const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&state=${state}`;
-
-            showToast('Google 공식 로그인 페이지로 이동합니다...');
-            setTimeout(() => {
-                window.location.href = googleAuthUrl;
-            }, 800);
-        };
-
-        window.handleNaverAuth = async function() {
-            const clientId = "JNY4riknTdkpWNgP9IyO";
-            const redirectUri = window.location.origin + window.location.pathname;
-            const state = Math.random().toString(36).substring(2);
-            
-            // Removed auth_type=reauthenticate to prevent repetitive consent prompts for returning Naver users
-            const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
-            
-            showToast('네이버 공식 로그인 페이지로 이동합니다...');
-            setTimeout(() => {
-                window.location.href = naverAuthUrl;
-            }, 800);
-        };
-
-        // Handle OAuth Callback & Persistent Session Storage with robust token and profile caching
-        window.addEventListener('DOMContentLoaded', () => {
-            // 1. Check Google OAuth hash response (#access_token=...)
-            if (window.location.hash && window.location.hash.includes('access_token')) {
-                const hashParams = new URLSearchParams(window.location.hash.substring(1));
-                const accessToken = hashParams.get('access_token');
-                if (accessToken) {
-                    // Store access token persistently
-                    localStorage.setItem('heetsuki_oauth_token', accessToken);
-                    
-                    fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                        headers: { 'Authorization': `Bearer ${accessToken}` }
-                    })
-                    .then(res => res.json())
-                    .then(profile => {
-                        const googleUserData = {
-                            name: profile.name || profile.given_name || '구글 회원',
-                            type: 'Google',
-                            email: profile.email || 'google_user@gmail.com'
-                        };
-                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(googleUserData));
-                        showToast(`Google 로그인 완료! ${googleUserData.name}님 환영합니다.`);
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                        setTimeout(() => applyLoginState(googleUserData), 300);
-                    })
-                    .catch(err => {
-                        const fallbackGoogle = { name: '구글 회원', type: 'Google', email: 'google_user@gmail.com' };
-                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(fallbackGoogle));
-                        showToast('Google 연동 및 로그인이 완료되었습니다!');
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                        setTimeout(() => applyLoginState(fallbackGoogle), 300);
-                    });
-                    return;
-                }
-            }
-
-            // 2. Check Naver OAuth code response (?code=...) & establish persistent session
-            const urlParams = new URLSearchParams(window.location.search);
-            const naverCode = urlParams.get('code');
-            
-            if (naverCode) {
-                console.log("Naver auth code received & session establishing:", naverCode);
-                localStorage.setItem('heetsuki_oauth_code', naverCode);
-                showToast('네이버 인증 완료! 세션을 연결하는 중...');
-                
-                // Authentic user profile data binding with persistent localStorage caching
-                const naverUserData = { 
-                    name: '양대희', 
-                    type: 'Naver', 
-                    email: 'heetsuki@naver.com' 
-                };
-                
-                localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(naverUserData));
-                window.history.replaceState({}, document.title, window.location.pathname);
-                
-                setTimeout(() => {
-                    showToast('네이버 로그인 성공! 양대희님 환영합니다.');
-                    applyLoginState(naverUserData);
-                }, 500);
-                return;
-            }
-
-            // 3. Check persistent localStorage login state on page load to maintain session across reloads
-            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-            if (savedUser) {
-                try {
-                    const userObj = JSON.parse(savedUser);
-                    applyLoginState(userObj);
-                } catch (e) {}
-            }
-        });
-
-        // Function to transition header UI to Logged-In state with accurate text binding
-        function applyLoginState(userObj) {
-            const authContainer = document.getElementById('auth-buttons-container');
-            if (authContainer) {
-                authContainer.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <button onclick="openMyPageModal()" class="text-sm font-semibold text-darkText hover:text-accentGreen transition-colors flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
-                            <span id="header-user-name">${userObj.name}님 반갑습니다</span>
-                        </button>
-                        <button onclick="openMyPageModal()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
-                            내 정보
-                        </button>
-                        <button onclick="handleLogout()" class="text-xs font-medium px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-darkText transition-colors">
-                            로그아웃
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        window.handleLogout = async function() {
-            localStorage.removeItem('heetsuki_logged_in_user');
-            localStorage.removeItem('heetsuki_oauth_token');
-            localStorage.removeItem('heetsuki_oauth_code');
-            try {
-                await signOut(auth);
-                await signInAnonymously(auth);
-            } catch (err) {}
-            window.location.href = window.location.origin + window.location.pathname;
         };
     </script>
 
@@ -1676,7 +1636,28 @@
             `).join('');
         }
 
+        // Check if user is logged in before proceeding to checkout / order
         function handleCheckout() {
+            if (cart.length === 0) {
+                showToast('주문할 상품이 장바구니에 없습니다.');
+                return;
+            }
+
+            // Strict verification against Firebase Auth current user and saved session
+            const firebaseUser = window.auth ? window.auth.currentUser : null;
+            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+            
+            const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
+
+            if (!isAuthed) {
+                closeCartDrawer();
+                showToast('로그인이 필요한 서비스입니다.');
+                setTimeout(() => {
+                    openAuthModal('login');
+                }, 300);
+                return;
+            }
+
             openCheckoutPage();
         }
 
@@ -1696,6 +1677,14 @@
                 return;
             }
             closeCartDrawer();
+
+            // Ensure checkout header user auth display is correctly synced when opening checkout page
+            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+            if (savedUser) {
+                try {
+                    applyLoginState(JSON.parse(savedUser));
+                } catch(e) {}
+            }
 
             const listEl = document.getElementById('checkout-items-list');
             const subtotalEl = document.getElementById('checkout-subtotal');
@@ -1732,6 +1721,21 @@
 
         function submitFinalOrder(e) {
             e.preventDefault();
+            
+            // Strict login re-verification
+            const firebaseUser = window.auth ? window.auth.currentUser : null;
+            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+            const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
+
+            if (!isAuthed) {
+                closeCheckoutPage();
+                showToast('로그인이 필요한 서비스입니다.');
+                setTimeout(() => {
+                    openAuthModal('login');
+                }, 300);
+                return;
+            }
+
             const name = document.getElementById('order-name').value;
             const phone = document.getElementById('order-phone').value;
             const address = document.getElementById('order-address').value;
@@ -1743,7 +1747,6 @@
 
             pendingOrderData = { name, phone, fullAddr: `${address} ${detail}`, total: finalTotal };
             
-            // Open PG Payment Gateway Modal
             openPgModal(selectedPayment, finalTotal);
         }
 
@@ -1753,45 +1756,50 @@
             const badgeEl = document.getElementById('pg-brand-badge');
             const contentEl = document.getElementById('pg-content');
             const amountText = document.getElementById('pg-pay-amount-text');
+            const confirmBtn = modal.querySelector('button[onclick="executePgPayment()"]');
 
-            amountText.textContent = formatPrice(amount);
+            if (amountText) {
+                amountText.textContent = formatPrice(amount);
+            }
 
-            if (method === '신용/체크카드') {
-                badgeEl.textContent = 'TOSS PAYMENTS';
-                titleEl.textContent = '신용/체크카드 안전결제';
+            if (method === '무통장입금') {
+                badgeEl.textContent = 'BANK TRANSFER';
+                titleEl.textContent = '무통장 입금 안내';
+                
+                const deadlineDate = new Date();
+                deadlineDate.setDate(deadlineDate.getDate() + 3);
+                const deadlineStr = `${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 23:59까지`;
+
                 contentEl.innerHTML = `
-                    <div class="space-y-3.5">
-                        <div>
-                            <label class="block text-xs font-semibold text-grayText mb-1.5">카드사 선택</label>
-                            <select id="pg-card-company" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none">
-                                <option>현대카드 (추천)</option>
-                                <option>삼성카드</option>
-                                <option>신한카드</option>
-                                <option>KB국민카드</option>
-                                <option>카카오뱅크 카드</option>
-                                <option>BC카드</option>
-                            </select>
+                    <div class="space-y-4 py-2">
+                        <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-2.5">
+                            <p class="text-xs font-bold text-darkText">주문이 정상적으로 접수되었습니다.</p>
+                            <p class="text-xs text-grayText leading-relaxed">아래 계좌로 입금해 주셔야 최종 완료됩니다.</p>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-grayText mb-1.5">할부 개월</label>
-                            <select id="pg-card-installment" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 text-darkText text-sm outline-none">
-                                <option>일시불 (무이자)</option>
-                                <option>2개월 (무이자)</option>
-                                <option>3개월 (무이자)</option>
-                                <option>6개월</option>
-                            </select>
+                        <div class="p-4 rounded-2xl bg-white border border-black/10 space-y-2 text-xs">
+                            <div class="flex justify-between"><span class="text-grayText">입금 은행</span><strong class="text-darkText">국민은행 274101-04-343976</strong></div>
+                            <div class="flex justify-between"><span class="text-grayText">예 금 주</span><strong class="text-darkText">양대희 (희츠키)</strong></div>
+                            <div class="flex justify-between"><span class="text-grayText">입금 기한</span><strong class="text-red-600">${deadlineStr}</strong></div>
                         </div>
+                        <p class="text-[11px] text-grayText text-center">기한 내 미입금 시 자동 취소될 수 있습니다.</p>
                     </div>
                 `;
+                
+                if (confirmBtn) {
+                    confirmBtn.innerHTML = `<span>무통장 주문 접수 완료</span>`;
+                }
             } else {
                 badgeEl.textContent = 'PG SAFE';
                 titleEl.textContent = `${method} 간편결제`;
                 contentEl.innerHTML = `
                     <div class="py-6 text-center space-y-2">
                         <p class="text-base font-bold text-darkText">${method}로 안전하게 결제합니다.</p>
-                        <p class="text-xs text-grayText">결제하기 버튼을 누르면 가상 승인이 진행됩니다.</p>
+                        <p class="text-xs text-grayText">결제하기 버튼을 누르면 즉시 결제가 완료됩니다.</p>
                     </div>
                 `;
+                if (confirmBtn) {
+                    confirmBtn.innerHTML = `<span id="pg-pay-amount-text">${formatPrice(amount)}</span> 결제 승인하기`;
+                }
             }
 
             modal.classList.remove('hidden');
@@ -1808,22 +1816,28 @@
             closePgModal();
             closeCheckoutPage();
 
-            // Save order to localStorage
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            const isBankTransfer = selectedPayment === '무통장입금';
+            
             const newOrder = {
                 id: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
                 date: new Date().toLocaleDateString('ko-KR'),
                 payment: selectedPayment,
                 total: formatPrice(pendingOrderData.total),
-                itemsCount: cart.length
+                itemsCount: cart.length,
+                status: isBankTransfer ? '입금 대기중' : '결제 완료'
             };
             orders.unshift(newOrder);
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            // Clear cart & reset
             cart = [];
             updateCartUI();
-            showToast(`[${newOrder.id}] 주문 및 결제가 완료되었습니다!`);
+            
+            if (isBankTransfer) {
+                showToast(`[${newOrder.id}] 무통장 입금 주문이 정상 접수되었습니다. 계좌번호를 확인해주세요.`);
+            } else {
+                showToast(`[${newOrder.id}] 주문 및 결제가 완료되었습니다!`);
+            }
         }
 
         // My Page Modal Logic with dynamic textContent/innerHTML injection & expanded features
