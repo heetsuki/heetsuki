@@ -630,6 +630,20 @@
     <!-- EmailJS SDK Integration for Client-Side Admin Notifications -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
+        // EmailJS Configuration & Initialization (Previously deleted/missing causing email failures)
+        const EMAIL_PUBLIC_KEY = "YOUR_PUBLIC_KEY"; // Fallback or existing service config
+        const EMAIL_SERVICE_ID = "service_heetsuki";
+        const EMAIL_TEMPLATE_ID = "template_w4lct8h";
+        const ADMIN_EMAIL = "heetsuki001@gmail.com";
+
+        try {
+            if (typeof emailjs !== 'undefined' && EMAIL_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+                emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
+            }
+        } catch (e) {
+            console.warn("EmailJS init notice:", e);
+        }
+
         // Global helper to retrieve accurate customer name consistently across modules
         window.getCurrentUserName = function(targetOrder) {
             if (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name) {
@@ -639,22 +653,100 @@
                 const savedUser = localStorage.getItem('heetsuki_logged_in_user');
                 if (savedUser) {
                     const parsed = JSON.parse(savedUser);
-                    if (parsed && parsed.name && parsed.name !== 'google_user' && parsed.name !== '고객') {
+                    if (parsed && parsed.name && parsed.name !== 'google_user' && parsed.name !== '고객' && parsed.name !== 'HEETSUKI 고객') {
                         return parsed.name.replace(/님+$/, '').trim();
                     }
                 }
             } catch(e) {}
             
+            try {
+                const savedShip = localStorage.getItem('heetsuki_shipping_info');
+                if (savedShip) {
+                    const parsedShip = JSON.parse(savedShip);
+                    if (parsedShip && parsedShip.name && parsedShip.name.trim()) {
+                        return parsedShip.name.replace(/님+$/, '').trim();
+                    }
+                }
+            } catch(e) {}
+
             const shipNameInput = document.getElementById('order-name');
             if (shipNameInput && shipNameInput.value.trim()) {
                 return shipNameInput.value.trim().replace(/님+$/, '');
             }
             
-            return '고객님';
+            return 'HEETSUKI 고객';
         };
 
         // ==========================================
-        // 3. 주문 취소 요청 시 관리자 이메일 발송 함수 (통일된 이름 적용 및 상세 정보 대폭 확장)
+        // 1. 신규 주문 접수 시 관리자(heetsuki001@gmail.com) 이메일 발송 함수 복구
+        // ==========================================
+        window.sendOrderNotificationToAdmin = function(order) {
+            if (!order) return;
+
+            const rawName = window.getCurrentUserName(order);
+            const customerName = rawName.replace(/님+$/, '').trim();
+            const customerPhone = (order.shippingInfo && order.shippingInfo.phone) ? order.shippingInfo.phone : '미입력';
+            const customerAddress = (order.shippingInfo && order.shippingInfo.address) ? order.shippingInfo.address : '미입력';
+            const customerMemo = (order.shippingInfo && order.shippingInfo.memo) ? order.shippingInfo.memo : '없음';
+            const orderTotal = order.total || (typeof order.rawTotal === 'number' ? `₩${order.rawTotal.toLocaleString()}` : '₩0');
+            const paymentMethod = order.payment || '신용/체크카드';
+            const orderDate = order.date || new Date().toLocaleString('ko-KR');
+
+            let itemsText = "";
+            if (order.items && order.items.length > 0) {
+                itemsText = order.items.map((item, idx) => 
+                    `  [${idx + 1}] ${item.name}\n` +
+                    `      • 옵션: ${item.option || '기본'}\n` +
+                    `      • 수량: ${item.qty}개\n` +
+                    `      • 금액: ${(item.price * item.qty).toLocaleString()}원`
+                ).join('\n\n');
+            } else {
+                itemsText = "  • 주문 상품 정보 없음";
+            }
+
+            const orderMessage =
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                ` [HEETSUKI] 🛍️ 신규 주문 접수 알림\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                `[주문 개요]\n` +
+                `• 주문 번호 : ${order.id}\n` +
+                `• 주문 일시 : ${orderDate}\n` +
+                `• 결제 수단 : ${paymentMethod}\n` +
+                `• 결제 금액 : ${orderTotal}\n` +
+                `• 주문 상태 : 🟢 ${order.status || '결제 완료'}\n` +
+                (order.depositDeadline ? `• 입금 기한 : ${order.depositDeadline}\n` : '') +
+                `\n----------------------------------------\n` +
+                `[주문자 및 배송지 정보]\n` +
+                `• 받는 분   : ${customerName}\n` +
+                `• 연락처    : ${customerPhone}\n` +
+                `• 배송 주소 : ${customerAddress}\n` +
+                `• 요청 사항 : ${customerMemo}\n\n` +
+                `----------------------------------------\n` +
+                `[주문 상품 목록 (${order.items ? order.items.length : 0}종)]\n\n` +
+                itemsText + `\n\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                ` 본 메일은 HEETSUKI 공식 스토어에서 자동 발송되었습니다.`;
+
+            const templateParams = {
+                to_email: ADMIN_EMAIL,
+                title: `[HEETSUKI 신규 주문] ${customerName}님의 주문이 접수되었습니다. (${order.id})`,
+                name: customerName,
+                time: orderDate,
+                message: orderMessage
+            };
+
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+                    .then(function(response) {
+                        console.log(`[관리자 주문 알림 전송 완료] ${ADMIN_EMAIL} 발송 성공:`, response.status);
+                    }, function(error) {
+                        console.warn("[관리자 주문 알림] EmailJS 발송 응답:", error);
+                    });
+            }
+        };
+
+        // ==========================================
+        // 2. 주문 취소 요청 시 관리자 이메일 발송 함수
         // ==========================================
         window.requestOrderCancel = function(orderId, reason) {
             let orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
@@ -723,14 +815,14 @@
                 message: cancelMessage
             };
 
-            emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
-                .then(function(response) {
-                    console.log(`[관리자 알림 전송 완료] 주문 취소 상세 내역이 ${ADMIN_EMAIL}로 발송되었습니다.`);
-                }, function(error) {
-                    console.error("취소 요청 메일 전송 실패:", error);
-                });
-
-            if (typeof render === 'function') render();
+            if (typeof emailjs !== 'undefined') {
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams)
+                    .then(function(response) {
+                        console.log(`[관리자 알림 전송 완료] 주문 취소 상세 내역이 ${ADMIN_EMAIL}로 발송되었습니다.`);
+                    }, function(error) {
+                        console.warn("취소 요청 메일 전송 응답:", error);
+                    });
+            }
         };
     </script>
 
@@ -797,8 +889,8 @@
         if (auth) {
             onAuthStateChanged(auth, (user) => {
                 if (user && !user.isAnonymous) {
-                    const email = user.email || 'user@heetsuki.com';
-                    const userName = user.displayName || email.split('@')[0];
+                    const email = user.email || '';
+                    const userName = user.displayName || (email ? email.split('@')[0] : 'HEETSUKI 고객');
                     const userObj = { name: userName, type: 'Firebase', email: email };
                     localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                     applyLoginState(userObj);
@@ -903,14 +995,19 @@
         };
 
         window.handleGoogleAuth = function() {
-            const userObj = { name: 'HEETSUKI 고객', type: 'Google', email: 'google_account@gmail.com' };
+            let savedName = 'HEETSUKI 고객';
+            try {
+                const ship = JSON.parse(localStorage.getItem('heetsuki_shipping_info') || '{}');
+                if (ship && ship.name) savedName = ship.name;
+            } catch(e) {}
+            const userObj = { name: savedName, type: 'Google', email: '' };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
             applyLoginState(userObj);
 
             const checkoutPage = document.getElementById('checkout-page');
-            if (checkoutPage && cart.length > 0) {
+            if (checkoutPage && cart.length > 0 && !checkoutPage.classList.contains('hidden')) {
                 checkoutPage.classList.remove('hidden');
             }
         };
@@ -925,20 +1022,21 @@
             applyLoginState(userObj);
 
             const checkoutPage = document.getElementById('checkout-page');
-            if (checkoutPage && cart.length > 0) {
+            if (checkoutPage && cart.length > 0 && !checkoutPage.classList.contains('hidden')) {
                 checkoutPage.classList.remove('hidden');
             }
         };
 
         function applyLoginState(userObj) {
-            const rawName = userObj && userObj.name ? userObj.name : '고객';
-            const displayName = rawName.replace(/님+$/, '').trim() || '고객';
+            const unifiedName = window.getCurrentUserName();
+            const rawName = (unifiedName && unifiedName !== 'HEETSUKI 고객') ? unifiedName : (userObj && userObj.name ? userObj.name : 'HEETSUKI 고객');
+            const displayName = rawName.replace(/님+$/, '').trim() || 'HEETSUKI 고객';
 
             const authContainer = document.getElementById('auth-buttons-container');
             if (authContainer) {
                 authContainer.innerHTML = `
                     <div class="flex items-center gap-2 sm:gap-3 relative z-50">
-                        <span class="text-xs sm:text-sm font-semibold text-darkText hidden sm:inline-flex items-center gap-1.5 select-none">
+                        <span class="text-xs sm:text-sm font-semibold text-darkText hidden sm:inline-flex items-center gap-1.5 select-none pointer-events-none">
                             <span class="w-2 h-2 rounded-full bg-accentGreen"></span>
                             <span>${displayName}님 환영합니다</span>
                         </span>
@@ -976,7 +1074,7 @@
             if (checkoutAuthContainer) {
                 checkoutAuthContainer.innerHTML = `
                     <div class="flex items-center gap-2 relative z-50">
-                        <span class="font-semibold text-darkText hidden sm:inline select-none">${displayName}님 환영합니다</span>
+                        <span class="font-semibold text-darkText hidden sm:inline select-none pointer-events-none">${displayName}님 환영합니다</span>
                         <button type="button" id="checkout-mypage-btn" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors cursor-pointer">내 정보</button>
                         <button type="button" id="checkout-logout-btn" class="px-2.5 py-1 rounded-lg bg-black/5 hover:bg-black/10 text-darkText font-medium transition-colors cursor-pointer">로그아웃</button>
                     </div>
@@ -1003,6 +1101,7 @@
                 }
             }
         }
+        window.applyLoginState = applyLoginState;
 
         function applyLogoutState() {
             const authContainer = document.getElementById('auth-buttons-container');
@@ -1024,6 +1123,7 @@
                 `;
             }
         }
+        window.applyLogoutState = applyLogoutState;
 
         window.handleLogout = async function() {
             localStorage.removeItem('heetsuki_logged_in_user');
@@ -2001,7 +2101,7 @@
             const memoVal = memoEl ? memoEl.value.trim() : '';
 
             if (!nameVal || !phoneVal || !zipVal || !addressVal || !detailVal || !memoVal) {
-                alert('배송지 정보 및 요청사항을 모두 입력해 주세요.');
+                showToast('배송지 정보 및 요청사항을 모두 입력해 주세요.');
                 
                 if (!nameVal) {
                     const nameErr = document.getElementById('error-order-name');
@@ -2043,7 +2143,6 @@
             const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
 
             if (!isAuthed) {
-                // 수정: 기존 주문 정보 입력창(checkout-page)을 닫지 않고 배경 상태를 유지한 채 로그인 모달을 오버레이
                 showToast('로그인이 필요한 서비스입니다.');
                 setTimeout(() => {
                     openAuthModal('login');
@@ -2112,7 +2211,6 @@
                     globalErrorEl.textContent = '필수 정보를 모두 입력해 주세요.';
                     globalErrorEl.classList.remove('hidden');
                 }
-                alert('필수 정보를 모두 입력해 주세요.');
                 showToast('필수 입력란이 비어 있거나 올바르지 않습니다.');
                 if (!name && nameEl) nameEl.focus();
                 else if ((phoneDigits.length < 10 || phoneDigits.length > 11) && phoneEl) phoneEl.focus();
@@ -2223,7 +2321,7 @@
             const memoVal = memoEl ? memoEl.value.trim() : '';
 
             if (!nameVal || !phoneVal || !zipVal || !addressVal || !detailVal || !memoVal) {
-                alert('배송지 정보 및 요청사항을 모두 입력해 주세요.');
+                showToast('배송지 정보 및 요청사항을 모두 입력해 주세요.');
                 
                 if (!nameVal && nameEl) {
                     const nameErr = document.getElementById('error-order-name');
@@ -2326,6 +2424,19 @@
                 };
                 localStorage.setItem('heetsuki_shipping_info', JSON.stringify(shippingToSave));
 
+                // Synchronize top navigation greeting name immediately with shipping name
+                try {
+                    const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+                    if (savedUser) {
+                        const parsedUser = JSON.parse(savedUser);
+                        parsedUser.name = nameVal;
+                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(parsedUser));
+                        if (typeof window.applyLoginState === 'function') {
+                            window.applyLoginState(parsedUser);
+                        }
+                    }
+                } catch(e) {}
+
                 try {
                     if (window.auth && window.auth.currentUser && window.db) {
                         await setDoc(doc(window.db, 'artifacts', appId, 'users', window.auth.currentUser.uid, 'profile', 'shipping'), shippingToSave);
@@ -2365,36 +2476,21 @@
                 const saved = localStorage.getItem('heetsuki_logged_in_user');
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    if (parsed && parsed.name) {
-                        userObj = parsed;
-                    }
-                    if (parsed && parsed.email) {
-                        userObj.email = parsed.email;
-                    }
+                    if (parsed) userObj = { ...userObj, ...parsed };
                 }
-                
-                // Retrieve authentic email from Firebase auth currentUser if available
-                if (window.auth && window.auth.currentUser) {
-                    const fbUser = window.auth.currentUser;
-                    console.log("[MyPage Auth Debug] Firebase currentUser:", fbUser);
-                    if (fbUser.email && !fbUser.email.includes('google_account')) {
-                        userObj.email = fbUser.email;
-                    }
-                }
-            } catch (e) {
-                console.warn("[MyPage Auth Debug] Error resolving user object:", e);
-            }
+            } catch (e) {}
 
-            const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
-            
-            let shippingInfo = {
-                name: '',
-                phone: '',
-                zipcode: '',
-                address: '',
-                detail: ''
-            };
+            let orders = [];
+            try {
+                orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
+            } catch (e) {}
+
+            let wishlist = [];
+            try {
+                wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
+            } catch (e) {}
+
+            let shippingInfo = { name: '', phone: '', zipcode: '', address: '', detail: '' };
 
             if (orders.length > 0 && orders[0].shippingInfo) {
                 const lastOrd = orders[0].shippingInfo;
@@ -3042,18 +3138,33 @@
         };
 
         window.saveMyPageShippingInfo = async function() {
-            const name = document.getElementById('mypage-ship-name').value;
-            const phone = document.getElementById('mypage-ship-phone').value;
-            const zipcode = document.getElementById('mypage-ship-zip').value;
-            const address = document.getElementById('mypage-ship-addr').value;
-            const detail = document.getElementById('mypage-ship-detail').value;
+            const name = document.getElementById('mypage-ship-name').value.trim();
+            const phone = document.getElementById('mypage-ship-phone').value.trim();
+            const zipcode = document.getElementById('mypage-ship-zip').value.trim();
+            const address = document.getElementById('mypage-ship-addr').value.trim();
+            const detail = document.getElementById('mypage-ship-detail').value.trim();
 
             const newInfo = { name, phone, zipcode, address, detail };
             
             // 1. Save to local storage cache
             localStorage.setItem('heetsuki_shipping_info', JSON.stringify(newInfo));
 
-            // 2. Save securely to Firestore database if authenticated
+            // 2. Sync logged-in user display name immediately
+            if (name) {
+                try {
+                    const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+                    if (savedUser) {
+                        const parsedUser = JSON.parse(savedUser);
+                        parsedUser.name = name;
+                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(parsedUser));
+                        if (typeof window.applyLoginState === 'function') {
+                            window.applyLoginState(parsedUser);
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // 3. Save securely to Firestore database if authenticated
             try {
                 if (window.auth && window.auth.currentUser && window.db) {
                     const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
@@ -3065,6 +3176,63 @@
             }
 
             showToast('배송지 정보가 안전하게 저장되었습니다.');
+        };
+
+        window.removeWishlistItem = function(index) {
+            let wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
+            wishlist.splice(index, 1);
+            localStorage.setItem('heetsuki_wishlist', JSON.stringify(wishlist));
+            showToast('찜한 상품이 삭제되었습니다.');
+            openMyPageModal();
+        };
+
+        window.handleAccountWithdrawal = function() {
+            openCustomConfirmModal(
+                '회원 탈퇴 및 연동 해제',
+                '정말로 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 초기화됩니다.',
+                function() {
+                    localStorage.removeItem('heetsuki_logged_in_user');
+                    localStorage.removeItem('heetsuki_shipping_info');
+                    localStorage.removeItem('heetsuki_orders');
+                    localStorage.removeItem('heetsuki_wishlist');
+                    closeMyPageModal();
+                    showToast('회원 탈퇴 및 연동 해제가 완료되었습니다.');
+                    window.location.reload();
+                }
+            );
+        };
+
+        // Custom Non-Blocking Confirmation Modal (Replaces native confirm())
+        window.openCustomConfirmModal = function(title, message, onConfirm) {
+            let confirmModal = document.getElementById('custom-confirm-modal');
+            if (!confirmModal) {
+                confirmModal = document.createElement('div');
+                confirmModal.id = 'custom-confirm-modal';
+                confirmModal.className = 'fixed inset-0 z-[150] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm';
+                document.body.appendChild(confirmModal);
+            }
+            confirmModal.innerHTML = `
+                <div class="bg-white border border-black/10 rounded-[24px] max-w-sm w-full p-6 shadow-2xl space-y-4">
+                    <h3 class="text-lg font-bold text-darkText">${title}</h3>
+                    <p class="text-xs sm:text-sm text-grayText leading-relaxed">${message}</p>
+                    <div class="pt-2 flex justify-end gap-2">
+                        <button type="button" id="custom-confirm-cancel" class="px-4 py-2.5 rounded-xl bg-[#F5F5F7] hover:bg-black/10 text-darkText text-xs font-semibold transition-colors">취소</button>
+                        <button type="button" id="custom-confirm-ok" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors">확인</button>
+                    </div>
+                </div>
+            `;
+            confirmModal.classList.remove('hidden');
+            confirmModal.classList.add('flex');
+
+            document.getElementById('custom-confirm-cancel').onclick = function() {
+                confirmModal.classList.add('hidden');
+                confirmModal.classList.remove('flex');
+            };
+            document.getElementById('custom-confirm-ok').onclick = function() {
+                confirmModal.classList.add('hidden');
+                confirmModal.classList.remove('flex');
+                if (typeof onConfirm === 'function') onConfirm();
+            };
         };
 
         window.removeWishlistItem = function(index) {
