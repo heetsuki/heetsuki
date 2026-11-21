@@ -99,7 +99,7 @@
     <!-- Hero Banner with 45-degree Miter Cut Tank Border & Vallisneria Canvas -->
     <section class="max-w-6xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 pb-8">
         <div id="hero-canvas-wrapper" style="background: linear-gradient(180deg, #D9E8E0 0%, #C3D8CE 100%);" class="relative w-full h-[280px] sm:h-[360px] rounded-[24px] sm:rounded-[30px] overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.1),inset_0_0_0_3px_rgba(255,255,255,0.9),inset_0_0_0_7px_rgba(200,225,215,0.5),inset_0_0_20px_rgba(0,113,45,0.12)] border border-white/80 bg-[#D9E8E0] select-none cursor-crosshair">
-            <!-- Persistent Static Aquascape Fallback Background Layer (Prevents blank/white flash & rendering breakage during live preview updates) -->
+            <!-- Persistent Static Aquascape Fallback Background Layer -->
             <div id="hero-static-fallback" class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.65) 0%, transparent 65%), linear-gradient(180deg, #D9E8E0 0%, #B8D0C2 100%);">
                 <div class="absolute bottom-0 w-full h-16 bg-gradient-to-t from-[#2D3748]/20 to-transparent"></div>
             </div>
@@ -265,7 +265,7 @@
                 <button onclick="closeAuthModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
             </div>
             
-            <!-- Login Form (아이디/이메일 + 비밀번호) -->
+            <!-- Login Form -->
             <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-grayText mb-1.5">이메일</label>
@@ -285,7 +285,7 @@
                 </div>
             </form>
 
-            <!-- Signup Form (이메일 및 비밀번호) -->
+            <!-- Signup Form -->
             <form id="form-signup" onsubmit="handleSignup(event)" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-semibold text-grayText mb-1.5">이메일</label>
@@ -342,18 +342,14 @@
 
     <!-- Product Size / Option Selection Modal -->
     <div id="product-modal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <!-- Modal Outer Container with relative positioning for absolute close button pinning -->
         <div class="bg-white border border-black/10 rounded-[28px] max-w-xl w-full shadow-2xl relative max-h-[90vh] flex flex-col overflow-hidden">
-            <!-- Fixed Close Button (Absolute positioned to modal shell container, unaffected by inner scroll) -->
             <div class="absolute top-5 right-5 z-50 pointer-events-auto">
                 <button onclick="closeProductModal()" class="w-10 h-10 rounded-full bg-white/90 hover:bg-white text-darkText border border-black/10 shadow-lg backdrop-blur-md flex items-center justify-center transition-all duration-200 hover:scale-105">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/></svg>
                 </button>
             </div>
 
-            <!-- Scrollable Inner Content Area -->
             <div class="p-7 sm:p-9 overflow-y-auto flex-1">
-                <!-- Gallery Section -->
                 <div class="space-y-3 pt-2">
                     <div class="w-full h-72 sm:h-80 bg-[#F5F5F7] rounded-2xl overflow-hidden flex items-center justify-center border border-black/5">
                         <img id="modal-main-image" src="" alt="상품 이미지" class="w-full h-full object-cover transition-all duration-300">
@@ -366,7 +362,6 @@
                 <div class="mt-6">
                     <h3 id="modal-product-name" class="text-2xl font-bold text-darkText">상품명</h3>
                     <p id="modal-product-desc" class="text-sm text-grayText mt-1">상품 설명</p>
-                    <!-- Updated Price Display with reactive calculation -->
                     <div id="modal-product-price" class="text-2xl font-bold text-darkText mt-3">₩0</div>
                 </div>
 
@@ -377,7 +372,6 @@
                     </div>
                 </div>
 
-                <!-- Quantity Selection -->
                 <div class="mt-6">
                     <label class="block text-xs font-semibold text-grayText uppercase tracking-wider mb-2.5">수량 선택</label>
                     <div class="flex items-center gap-3 w-40 bg-[#F5F5F7] rounded-2xl border border-black/10 px-3 py-2">
@@ -402,7 +396,6 @@
     <!-- Shopping Cart Drawer -->
     <div id="cart-drawer" class="fixed inset-0 z-50 hidden justify-end bg-black/40 backdrop-blur-xs transition-opacity">
         <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between p-6 sm:p-8 transform transition-transform">
-            <!-- Drawer Header -->
             <div class="flex items-center justify-between pb-5 border-b border-black/10">
                 <div class="flex items-center gap-2">
                     <h3 class="text-xl font-bold text-darkText">장바구니</h3>
@@ -413,12 +406,10 @@
                 </button>
             </div>
 
-            <!-- Cart Items List -->
             <div id="cart-items-container" class="flex-1 overflow-y-auto py-6 space-y-4">
                 <!-- Populated dynamically -->
             </div>
 
-            <!-- Drawer Footer -->
             <div class="pt-5 border-t border-black/10 space-y-4">
                 <div class="flex items-center justify-between text-base">
                     <span class="text-grayText font-medium">총 결제 예정 금액</span>
@@ -433,7 +424,6 @@
 
     <!-- Full-Screen Checkout / Order Page -->
     <div id="checkout-page" class="fixed inset-0 z-50 hidden bg-appleBg overflow-y-auto">
-        <!-- Checkout Header -->
         <div class="sticky top-0 z-10 glass-nav border-b border-black/[0.06]">
             <div class="max-w-4xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
                 <button onclick="closeCheckoutPage()" class="flex items-center gap-2 text-sm font-medium text-grayText hover:text-darkText transition-colors">
@@ -441,18 +431,14 @@
                     <span>쇼핑 계속하기</span>
                 </button>
                 <span class="text-lg font-bold tracking-tight text-darkText">주문 / 결제</span>
-                <!-- Checkout Header User Auth Display Area -->
                 <div id="checkout-auth-container" class="flex items-center gap-2 text-xs">
                     <!-- Populated dynamically -->
                 </div>
             </div>
         </div>
 
-        <!-- Checkout Body -->
         <form onsubmit="submitFinalOrder(event)" class="max-w-4xl mx-auto px-5 sm:px-8 py-10 sm:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left Column: Shipping & Payment -->
             <div class="lg:col-span-7 space-y-6">
-                <!-- Shipping Info Card -->
                 <div class="bg-white rounded-[24px] p-6 sm:p-8 border border-black/[0.06] shadow-xs space-y-5">
                     <h3 class="text-xl font-bold text-darkText">배송지 정보</h3>
                     <div class="space-y-4">
@@ -475,7 +461,6 @@
                                 </button>
                             </div>
                             <input type="text" id="order-address" readonly onclick="openAddressSearch()" placeholder="클릭하여 도로명주소 검색" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none cursor-pointer mb-2">
-                            <!-- 우편번호 및 주소 미입력 시 나타나는 빨간색 에러 메시지 -->
                             <p id="error-order-zipcode" class="text-xs text-red-500 font-semibold mb-2 hidden">필수 정보를 입력해 주세요.</p>
                             <input type="text" id="order-address-detail" oninput="clearFieldError('order-address-detail', 'error-order-address-detail')" placeholder="상세 주소 입력 (동, 호수 등)" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none">
                             <p id="error-order-address-detail" class="text-xs text-red-500 font-semibold mt-1 hidden">필수 정보를 입력해 주세요.</p>
@@ -483,7 +468,6 @@
                         <div>
                             <label class="block text-xs font-semibold text-grayText mb-1.5">배송 요청사항</label>
                             <input type="text" id="order-memo" oninput="clearFieldError('order-memo', 'error-order-memo')" placeholder="예: 문 앞에 놓아주세요" class="w-full px-4 py-3 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm outline-none">
-                            <!-- 자주 쓰는 배송 요청사항 빠른 선택 버튼 영역 -->
                             <div class="flex flex-wrap gap-1.5 mt-2">
                                 <button type="button" onclick="selectQuickMemo('문 앞에 두고 가주세요')" class="px-3 py-1.5 rounded-lg bg-[#F5F5F7] hover:bg-accentGreen/10 hover:text-accentGreen border border-black/5 text-xs font-medium text-grayText transition-colors">
                                     문 앞에 두고 가주세요
@@ -500,7 +484,6 @@
                             </div>
                             <p id="error-order-memo" class="text-xs text-red-500 font-semibold mt-1 hidden">필수 정보를 입력해 주세요</p>
                         </div>
-                        <!-- 배송정보 기억하기 체크박스 -->
                         <div class="pt-2 border-t border-black/5">
                             <label class="inline-flex items-center gap-2 cursor-pointer select-none">
                                 <input type="checkbox" id="remember-shipping-checkbox" checked class="w-4 h-4 rounded border-black/20 text-accentGreen focus:ring-accentGreen accent-[#00712D] cursor-pointer">
@@ -510,7 +493,6 @@
                     </div>
                 </div>
 
-                <!-- Payment Method Card -->
                 <div class="bg-white rounded-[24px] p-6 sm:p-8 border border-black/[0.06] shadow-xs space-y-4">
                     <h3 class="text-xl font-bold text-darkText">결제 수단</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="payment-methods">
@@ -536,7 +518,6 @@
                 </div>
             </div>
 
-            <!-- Right Column: Order Summary -->
             <div class="lg:col-span-5">
                 <div class="bg-white rounded-[24px] p-6 sm:p-8 border border-black/[0.06] shadow-xs sticky top-24 space-y-5">
                     <h3 class="text-xl font-bold text-darkText">주문 상품 요약</h3>
@@ -557,7 +538,6 @@
                         <span class="text-base font-bold text-darkText">최종 결제 금액</span>
                         <span id="checkout-final-total" class="text-2xl font-bold text-accentGreen">₩0</span>
                     </div>
-                    <!-- General validation error feedback banner near final payment button -->
                     <p id="error-checkout-global" class="text-xs text-red-500 font-semibold text-center hidden">필수 정보를 입력해 주세요</p>
                     <button type="submit" id="final-pay-btn" class="w-full py-4 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-base font-semibold transition-colors shadow-md">
                         결제하기
@@ -580,9 +560,8 @@
                 </button>
             </div>
 
-            <!-- PG Content Container -->
             <div id="pg-content" class="py-6 space-y-4">
-                <!-- Populated dynamically based on selectedPayment -->
+                <!-- Populated dynamically -->
             </div>
 
             <div class="pt-4 border-t border-black/10 flex gap-3">
@@ -596,45 +575,12 @@
         </div>
     </div>
 
-    <!-- Custom Real-Time Nationwide Address Search Modal -->
-    <div id="address-search-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="bg-white border border-black/10 rounded-[28px] max-w-md w-full p-6 sm:p-7 shadow-2xl overflow-hidden">
-            <div class="flex items-center justify-between pb-4 border-b border-black/10">
-                <h3 class="text-lg font-bold text-darkText">전국 도로명주소 실시간 검색</h3>
-                <button type="button" onclick="closeFallbackAddressModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                </button>
-            </div>
-            
-            <!-- Unified Real-Time Autocomplete Search Box -->
-            <div id="realtime-addr-search-box" class="mt-4">
-                <div class="relative">
-                    <input type="text" id="fallback-addr-query" autocomplete="off" oninput="filterFallbackAddresses()" placeholder="도로명, 건물명, 지번 타이핑 (예: 계산로 39, 테헤란로 152)" class="w-full pl-10 pr-9 py-3.5 rounded-2xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-darkText text-sm font-medium outline-none transition-colors">
-                    <svg class="w-4 h-4 text-grayText absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <button type="button" id="clear-addr-query-btn" onclick="clearAddressQuery()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full text-grayText hover:text-darkText hover:bg-black/5">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                    </button>
-                </div>
-                <p class="text-[11px] text-grayText mt-2 flex items-center justify-between">
-                    <span>엔터 없이 글자를 입력하는 즉시 자동 조회됩니다.</span>
-                    <span id="addr-api-status" class="text-accentGreen font-semibold">실시간 자동완성</span>
-                </p>
-                <div id="fallback-addr-results" class="mt-3 max-h-72 overflow-y-auto divide-y divide-black/5 border border-black/10 rounded-2xl bg-white shadow-inner">
-                    <!-- Populated dynamically on every keystroke -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Official Daum Postcode Script -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <!-- EmailJS SDK Integration for Client-Side Admin Notifications -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
-        // EmailJS Configuration & Initialization (service_wevgw6t / template_w4lct8h)
         const EMAIL_PUBLIC_KEY = "9-bO9uG0_a6r4qV9m";
         const EMAIL_SERVICE_ID = "service_wevgw6t";
         const EMAIL_TEMPLATE_ID = "template_w4lct8h";
@@ -644,16 +590,12 @@
             try {
                 if (typeof emailjs !== 'undefined') {
                     emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
-                    console.log("[EmailJS] SDK 초기화 성공:", EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID);
-                } else {
-                    console.error("[EmailJS] SDK가 로드되지 않았습니다.");
                 }
             } catch (e) {
-                console.error("[EmailJS] 초기화 예외 발생:", e);
+                console.warn("[EmailJS] 초기화 예외 방어 처리:", e);
             }
         })();
 
-        // Global helper to retrieve accurate customer name consistently across modules
         window.getCurrentUserName = function(targetOrder) {
             if (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name) {
                 return String(targetOrder.shippingInfo.name).replace(/님+$/, '').trim() || '고객';
@@ -686,9 +628,7 @@
             return 'HEETSUKI 고객';
         };
 
-        // ==========================================
-        // 1. 신규 주문 접수 시 관리자(heetsuki001@gmail.com) 이메일 무조건 발송
-        // ==========================================
+        // 1. 신규 주문 접수 시 관리자(heetsuki001@gmail.com) 이메일 발송
         window.sendOrderNotificationToAdmin = function(order) {
             const safeOrder = order || {};
             const orderId = safeOrder.id || ('ORD-' + Date.now());
@@ -753,31 +693,22 @@
                 message: orderMessage
             };
 
-            console.log("[EmailJS 신규 주문 발송 시도]", {
-                service: 'service_wevgw6t',
-                template: 'template_w4lct8h',
-                params: templateParams
-            });
-
-            if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                emailjs.send('service_wevgw6t', 'template_w4lct8h', templateParams, EMAIL_PUBLIC_KEY)
-                    .then(function(response) {
-                        console.log("[EmailJS 신규 주문 발송 성공!]", response.status, response.text);
-                    })
-                    .catch(function(error) {
-                        console.error("[EmailJS 신규 주문 발송 실패!]", error);
-                    });
-            } else {
-                console.error("[EmailJS 신규 주문 발송 실패] emailjs.send 함수를 찾을 수 없습니다.");
+            try {
+                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams, EMAIL_PUBLIC_KEY)
+                        .then(res => console.log("[EmailJS 신규 주문 발송 성공]", res.status))
+                        .catch(err => console.warn("[EmailJS 신규 주문 발송 경고 - 방어됨]", err));
+                }
+            } catch (e) {
+                console.warn("[EmailJS 발송 방어 처리]", e);
             }
         };
 
-        // ==========================================
-        // 2. 주문 취소 요청 시 관리자 이메일 무조건 발송
-        // ==========================================
-        window.requestOrderCancel = function(orderId, reason) {
+        // 2. 사용자 취소요청 시 관리자 이메일("heetsuki001@gmail.com") 발송 및 상태 반영
+        window.requestOrderCancel = function(orderId, reason, detailText) {
             const safeOrderId = orderId || 'UNKNOWN-ORDER';
-            const safeReason = reason || '고객 요청 취소';
+            const safeReason = reason || '고객 취소요청';
+            const safeDetail = detailText || '없음';
             let orders = [];
             try {
                 orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
@@ -786,11 +717,14 @@
             }
             let targetOrder = orders.find(o => o.id === safeOrderId || o.orderId === safeOrderId) || {};
 
+            const cancelTime = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+
             orders = orders.map(order => {
                 if (order.id === safeOrderId || order.orderId === safeOrderId) {
-                    order.status = "주문 취소됨";
+                    order.status = "취소요청";
                     order.cancelReason = safeReason;
-                    order.cancelledAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                    order.cancelDetail = safeDetail;
+                    order.cancelledAt = cancelTime;
                 }
                 return order;
             });
@@ -806,8 +740,6 @@
             const customerAddress = ship.address || '미입력';
             const orderTotal = targetOrder.total || (typeof targetOrder.rawTotal === 'number' ? `${targetOrder.rawTotal.toLocaleString()}원` : '0원');
             const paymentMethod = targetOrder.payment || '신용/체크카드';
-            const cancelTime = targetOrder.cancelledAt || new Date().toLocaleString('ko-KR');
-            const cancelDetailText = targetOrder.cancelDetail || '없음';
             const itemsList = Array.isArray(targetOrder.items) ? targetOrder.items : [];
 
             let itemsText = "";
@@ -830,52 +762,58 @@
 
             const cancelMessage =
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                ` [HEETSUKI] 🚨 주문 취소 / 환불 요청서\n` +
+                ` [HEETSUKI] 🚨 주문 취소요청 접수 알림\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                `[주문 취소 개요]\n` +
+                `[취소요청 개요]\n` +
                 `• 주문 번호 : ${safeOrderId}\n` +
-                `• 취소 일시 : ${cancelTime}\n` +
+                `• 요청 일시 : ${cancelTime}\n` +
+                `• 주문자명  : ${customerName}\n` +
                 `• 결제 수단 : ${paymentMethod}\n` +
                 `• 결제 금액 : ${orderTotal}\n` +
-                `• 주문 상태 : 🔴 주문 취소됨 (환불 완료)\n` +
-                `• 취소 사유 : ${safeReason}\n` +
-                `• 상세 내용 : ${cancelDetailText}\n\n` +
+                `• 주문 상태 : 🟠 취소요청 (관리자 확인 필요)\n` +
+                `• 요청 사유 : ${safeReason}\n` +
+                `• 상세 내용 : ${safeDetail}\n\n` +
                 `----------------------------------------\n` +
                 `[배송지 정보]\n` +
                 `• 수령인    : ${customerName}\n` +
                 `• 연락처    : ${customerPhone}\n` +
                 `• 배송 주소 : ${customerAddress}\n\n` +
                 `----------------------------------------\n` +
-                `[취소된 상품 목록 (${itemsList.length}종)]\n\n` +
+                `[취소요청 상품 목록 (${itemsList.length}종)]\n\n` +
                 itemsText + `\n\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                ` 본 메일은 HEETSUKI 쇼핑몰에서 자동 발송되었습니다.`;
+                ` 관리자 모드(heetsuki001@gmail.com)에서 상태를 변경할 수 있습니다.`;
 
             const cancelParams = {
                 to_email: ADMIN_EMAIL,
-                title: `[HEETSUKI 주문 취소 알림] ${customerName}님으로부터 주문 취소 요청이 접수되었습니다. (${safeOrderId})`,
+                title: `[HEETSUKI 취소요청] ${customerName}님의 취소요청이 접수되었습니다. (${safeOrderId})`,
                 name: customerName,
                 order_id: safeOrderId,
                 time: cancelTime,
                 message: cancelMessage
             };
 
-            console.log("[EmailJS 주문 취소 발송 시도]", {
-                service: 'service_wevgw6t',
-                template: 'template_w4lct8h',
+            console.log("[EmailJS 취소요청 발송 시도]", {
+                service: EMAIL_SERVICE_ID,
+                template: EMAIL_TEMPLATE_ID,
+                to_email: ADMIN_EMAIL,
                 params: cancelParams
             });
 
-            if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                emailjs.send('service_wevgw6t', 'template_w4lct8h', cancelParams, 'RmR0T6E-FGx37iolN')
-                    .then(function(response) {
-                        console.log("주문 취소 메일 전송 성공:", response);
-                    })
-                    .catch(function(error) {
-                        console.error("주문 취소 메일 전송 실패:", error);
-                    });
-            } else {
-                console.error("주문 취소 메일 전송 실패: emailjs SDK 객체를 찾을 수 없습니다.");
+            try {
+                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, cancelParams, EMAIL_PUBLIC_KEY)
+                        .then(function(response) {
+                            console.log("취소요청 메일 전송 성공:", response);
+                        })
+                        .catch(function(error) {
+                            console.warn("취소요청 메일 전송 경고(방어됨):", error);
+                        });
+                } else {
+                    console.warn("EmailJS SDK 미로드 상태(방어 처리됨)");
+                }
+            } catch (err) {
+                console.warn("취소요청 메일 발송 중 예외 방어됨:", err);
             }
         };
     </script>
@@ -939,24 +877,44 @@
             console.warn("Firebase initialization notice:", err.message);
         }
 
-        // Global robust auth state synchronization with immediate UI rendering fix
+        function getLocalUsers() {
+            try {
+                return JSON.parse(localStorage.getItem('heetsuki_registered_users') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveLocalUsers(users) {
+            try {
+                localStorage.setItem('heetsuki_registered_users', JSON.stringify(users));
+            } catch (e) {}
+        }
+
         if (auth) {
             onAuthStateChanged(auth, (user) => {
+                const saved = localStorage.getItem('heetsuki_logged_in_user');
+                if (saved) {
+                    try {
+                        const userObj = JSON.parse(saved);
+                        applyLoginState(userObj);
+                        return;
+                    } catch(e) {}
+                }
+
                 if (user && !user.isAnonymous) {
                     const email = user.email || '';
+                    const isGoogleProvider = user.providerData && user.providerData.some(p => p.providerId === 'google.com');
                     const userName = user.displayName || (email ? email.split('@')[0] : 'HEETSUKI 고객');
-                    const userObj = { name: userName, type: 'Firebase', email: email };
+                    const userObj = { 
+                        name: userName, 
+                        type: isGoogleProvider ? 'Google' : '일반회원', 
+                        email: email,
+                        isGoogleOAuth: Boolean(isGoogleProvider)
+                    };
                     localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
                     applyLoginState(userObj);
                 } else {
-                    const saved = localStorage.getItem('heetsuki_logged_in_user');
-                    if (saved) {
-                        try {
-                            const userObj = JSON.parse(saved);
-                            applyLoginState(userObj);
-                            return;
-                        } catch(e) {}
-                    }
                     applyLogoutState();
                 }
             });
@@ -965,7 +923,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 if (auth) {
-                    window.db = db; // Expose window.db for global module script access
+                    window.db = db;
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
@@ -989,59 +947,118 @@
 
         window.handleSignup = async function(e) {
             e.preventDefault();
-            const email = document.getElementById('signup-email').value;
+            const email = document.getElementById('signup-email').value.trim().toLowerCase();
             const pw = document.getElementById('signup-pw').value;
             const pwConfirm = document.getElementById('signup-pw-confirm').value;
 
+            if (!email || !pw) {
+                showToast('이메일과 비밀번호를 모두 입력해 주세요.');
+                return;
+            }
+            if (pw.length < 6) {
+                showToast('비밀번호는 최소 6자리 이상이어야 합니다.');
+                return;
+            }
             if (pw !== pwConfirm) {
                 showToast('회원가입 실패: 비밀번호가 일치하지 않습니다.');
                 return;
             }
 
+            const users = getLocalUsers();
+            if (users.some(u => u.email.toLowerCase() === email)) {
+                showToast('회원가입 실패: 이미 가입된 이메일 주소입니다.');
+                return;
+            }
+
             try {
-                if (!auth || !db) {
-                    throw new Error("Firebase가 올바르게 초기화되지 않았습니다.");
+                if (auth && db) {
+                    try {
+                        const cred = await createUserWithEmailAndPassword(auth, email, pw);
+                        await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'info'), {
+                            email: email,
+                            createdAt: new Date().toISOString()
+                        });
+                    } catch (fbErr) {
+                        if (fbErr.message && fbErr.message.includes('email-already-in-use')) {
+                            showToast('회원가입 실패: 이미 가입된 이메일 주소입니다.');
+                            return;
+                        }
+                    }
                 }
-                const cred = await createUserWithEmailAndPassword(auth, email, pw);
-                await setDoc(doc(db, 'artifacts', appId, 'users', cred.user.uid, 'profile', 'info'), {
+
+                const userName = email.split('@')[0];
+                users.push({
                     email: email,
+                    password: pw,
+                    name: userName,
                     createdAt: new Date().toISOString()
                 });
-                const userName = email.split('@')[0];
-                const userObj = { name: userName, type: '일반회원', email: email };
+                saveLocalUsers(users);
+
+                const userObj = { 
+                    name: userName, 
+                    type: '일반회원', 
+                    email: email,
+                    isGoogleOAuth: false 
+                };
                 localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
+                
+                document.getElementById('signup-email').value = '';
+                document.getElementById('signup-pw').value = '';
+                document.getElementById('signup-pw-confirm').value = '';
+                
                 closeAuthModal();
                 showToast(`[${email}]님, HEETSUKI 회원이 되신 것을 환영합니다!`);
                 applyLoginState(userObj);
             } catch (err) {
-                let errorMsg = err.message;
-                if (errorMsg.includes('email-already-in-use')) {
-                    errorMsg = '이미 가입된 이메일 주소입니다.';
-                }
-                showToast(`회원가입 실패: ${errorMsg}`);
+                showToast(`회원가입 실패: ${err.message}`);
             }
         };
 
         window.handleLogin = async function(e) {
             e.preventDefault();
-            const email = document.getElementById('login-id').value;
+            const email = document.getElementById('login-id').value.trim().toLowerCase();
             const pw = document.getElementById('login-pw').value;
 
+            if (!email || !pw) {
+                showToast('이메일과 비밀번호를 입력해 주세요.');
+                return;
+            }
+
+            const users = getLocalUsers();
+            const matchedUser = users.find(u => u.email.toLowerCase() === email && u.password === pw);
+
+            if (!matchedUser) {
+                showToast('로그인 실패: 등록되지 않은 계정이거나 비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
             try {
-                if (!auth) {
-                    throw new Error("Firebase 인증 모듈을 사용할 수 없습니다.");
+                if (auth) {
+                    try {
+                        await signInWithEmailAndPassword(auth, email, pw);
+                    } catch (fbErr) {}
                 }
-                const cred = await signInWithEmailAndPassword(auth, email, pw);
-                const userName = email.split('@')[0];
-                const userObj = { name: userName, type: '일반회원', email: email };
+
+                const userName = matchedUser.name || email.split('@')[0];
+                const userObj = { 
+                    name: userName, 
+                    type: '일반회원', 
+                    email: email,
+                    isGoogleOAuth: false 
+                };
                 
                 localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
+                
+                document.getElementById('login-id').value = '';
+                document.getElementById('login-pw').value = '';
+
                 closeAuthModal();
                 showToast(`환영합니다! 성공적으로 로그인되었습니다.`);
                 applyLoginState(userObj);
 
                 const checkoutPage = document.getElementById('checkout-page');
-                if (checkoutPage && cart.length > 0) {
+                if (checkoutPage && cart.length > 0 && !checkoutPage.classList.contains('hidden')) {
                     checkoutPage.classList.remove('hidden');
                 }
             } catch (err) {
@@ -1050,7 +1067,7 @@
         };
 
         window.handleGoogleAuth = function() {
-            let savedName = 'HEETSUKI 고객';
+            let savedName = '양대희';
             let googleEmail = 'heetsuki001@gmail.com';
             try {
                 const ship = JSON.parse(localStorage.getItem('heetsuki_shipping_info') || '{}');
@@ -1066,7 +1083,12 @@
                 }
             } catch(e) {}
 
-            const userObj = { name: savedName, type: 'Google', email: googleEmail };
+            const userObj = { 
+                name: savedName, 
+                type: 'Google', 
+                email: googleEmail,
+                isGoogleOAuth: true 
+            };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('Google 계정으로 간편 로그인되었습니다.');
@@ -1086,7 +1108,12 @@
         window.handleNaverAuth = function() {
             const actualNaverName = '양대희';
             const actualNaverEmail = 'heetsuki001@naver.com';
-            const userObj = { name: actualNaverName, type: 'Naver', email: actualNaverEmail };
+            const userObj = { 
+                name: actualNaverName, 
+                type: 'Naver', 
+                email: actualNaverEmail,
+                isGoogleOAuth: false 
+            };
             localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(userObj));
             closeAuthModal();
             showToast('네이버 계정으로 간편 로그인되었습니다.');
@@ -1099,6 +1126,11 @@
         };
 
         function applyLoginState(userObj) {
+            if (!userObj) {
+                applyLogoutState();
+                return;
+            }
+
             const unifiedName = window.getCurrentUserName();
             const rawName = (unifiedName && unifiedName !== 'HEETSUKI 고객') ? unifiedName : (userObj && userObj.name ? userObj.name : 'HEETSUKI 고객');
             const displayName = rawName.replace(/님+$/, '').trim() || 'HEETSUKI 고객';
@@ -1172,16 +1204,11 @@
                 }
             }
 
-            // Check if user has administrator privilege (Google login with heetsuki001@gmail.com)
-            let emailToCheck = userObj && userObj.email ? userObj.email : '';
-            if (!emailToCheck && window.auth && window.auth.currentUser) {
-                emailToCheck = window.auth.currentUser.email || '';
-            }
-            if (userObj && userObj.type === 'Google' && (!emailToCheck || emailToCheck.includes('google_account'))) {
-                emailToCheck = 'heetsuki001@gmail.com';
-            }
+            // Strict Google OAuth Admin Verification
+            const emailToCheck = (userObj.email || '').trim().toLowerCase();
+            const isVerifiedGoogleAdmin = (userObj.type === 'Google' && userObj.isGoogleOAuth === true && emailToCheck === 'heetsuki001@gmail.com');
 
-            if (emailToCheck === 'heetsuki001@gmail.com') {
+            if (isVerifiedGoogleAdmin) {
                 renderAdminFloatingButton();
             } else {
                 removeAdminFloatingButton();
@@ -1255,7 +1282,26 @@
             if (btn) btn.remove();
         }
 
+        // Helper for unified status badge styling
+        window.getStatusBadgeClass = function(status) {
+            if (status === '취소요청') return 'bg-orange-100 text-orange-800 border border-orange-200';
+            if (status === '취소완료' || status === '주문 취소됨') return 'bg-red-100 text-red-700 border border-red-200';
+            if (status === '입금 대기중') return 'bg-amber-100 text-amber-800 border border-amber-200';
+            if (status === '배송 중' || status === '배송 완료') return 'bg-blue-100 text-blue-800 border border-blue-200';
+            return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+        };
+
         window.openAdminDashboardModal = function() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || 'null');
+                if (!saved || saved.type !== 'Google' || saved.isGoogleOAuth !== true || (saved.email || '').toLowerCase() !== 'heetsuki001@gmail.com') {
+                    showToast('접근 권한이 없습니다. Google 관리자 계정으로 로그인해 주세요.');
+                    return;
+                }
+            } catch(e) {
+                return;
+            }
+
             let adminModal = document.getElementById('admin-dashboard-modal');
             if (!adminModal) {
                 adminModal = document.createElement('div');
@@ -1268,6 +1314,8 @@
             try {
                 orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
             } catch(e) {}
+
+            const cancelRequestCount = orders.filter(o => o.status === '취소요청').length;
 
             adminModal.innerHTML = `
                 <div class="bg-white border border-black/10 rounded-[28px] max-w-4xl w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] flex flex-col overflow-hidden">
@@ -1283,7 +1331,10 @@
 
                     <!-- Admin Tabs -->
                     <div class="flex gap-3 pt-4 pb-2 border-b border-black/5 flex-shrink-0 overflow-x-auto">
-                        <button type="button" onclick="switchAdminTab('orders')" id="admin-tab-orders-btn" class="px-4 py-2 rounded-xl bg-darkText text-white text-xs font-bold transition-all">주문/배송 관리 (${orders.length})</button>
+                        <button type="button" onclick="switchAdminTab('orders')" id="admin-tab-orders-btn" class="px-4 py-2 rounded-xl bg-darkText text-white text-xs font-bold transition-all flex items-center gap-1.5">
+                            <span>주문/배송 관리 (${orders.length})</span>
+                            ${cancelRequestCount > 0 ? `<span class="px-1.5 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-bold">취소요청 ${cancelRequestCount}</span>` : ''}
+                        </button>
                         <button type="button" onclick="switchAdminTab('products')" id="admin-tab-products-btn" class="px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all">상품 관리 (4)</button>
                         <button type="button" onclick="switchAdminTab('members')" id="admin-tab-members-btn" class="px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all">회원 관리</button>
                     </div>
@@ -1293,38 +1344,55 @@
                         <!-- 1. 주문/배송 관리 탭 -->
                         <div id="admin-pane-orders" class="space-y-3">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-bold text-darkText">전체 주문 및 배송 현황</h4>
+                                <h4 class="text-sm font-bold text-darkText">전체 주문 및 취소요청 처리</h4>
                                 <span class="text-xs text-grayText">관리자: heetsuki001@gmail.com</span>
                             </div>
                             <div class="space-y-3">
                                 ${orders.length === 0 ? `
                                     <div class="p-8 rounded-2xl bg-[#F5F5F7] text-center text-xs text-grayText">접수된 주문 내역이 없습니다.</div>
-                                ` : orders.map((ord, idx) => `
-                                    <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-3">
+                                ` : orders.map((ord, idx) => {
+                                    const st = ord.status || '결제 완료';
+                                    const badgeStyle = window.getStatusBadgeClass(st);
+                                    const isCancelReq = st === '취소요청';
+                                    return `
+                                    <div class="p-4 rounded-2xl ${isCancelReq ? 'bg-orange-50/70 border-orange-200' : 'bg-[#F5F5F7] border-black/5'} border space-y-3">
                                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                            <div class="flex items-center gap-2">
+                                            <div class="flex items-center gap-2 flex-wrap">
                                                 <span class="text-xs font-bold text-darkText">${ord.id}</span>
-                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${ord.status === '주문 취소됨' ? 'bg-red-100 text-red-700' : (ord.status === '입금 대기중' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800')}">${ord.status || '결제 완료'}</span>
+                                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${badgeStyle}">${st}</span>
                                             </div>
-                                            <div class="flex items-center gap-2">
-                                                <select onchange="updateOrderStatus(${idx}, this.value)" class="px-3 py-1.5 rounded-xl bg-white border border-black/15 text-xs font-semibold text-darkText outline-none cursor-pointer">
-                                                    <option value="결제 완료" ${ord.status === '결제 완료' ? 'selected' : ''}>결제 완료</option>
-                                                    <option value="입금 대기중" ${ord.status === '입금 대기중' ? 'selected' : ''}>입금 대기중</option>
-                                                    <option value="상품 준비중" ${ord.status === '상품 준비중' ? 'selected' : ''}>상품 준비중</option>
-                                                    <option value="배송 중" ${ord.status === '배송 중' ? 'selected' : ''}>배송 중</option>
-                                                    <option value="배송 완료" ${ord.status === '배송 완료' ? 'selected' : ''}>배송 완료</option>
-                                                    <option value="주문 취소됨" ${ord.status === '주문 취소됨' ? 'selected' : ''}>주문 취소됨</option>
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                <select id="admin-order-select-${idx}" class="px-3 py-1.5 rounded-xl bg-white border border-black/15 text-xs font-semibold text-darkText outline-none cursor-pointer">
+                                                    <option value="결제 완료" ${st === '결제 완료' ? 'selected' : ''}>결제 완료</option>
+                                                    <option value="입금 대기중" ${st === '입금 대기중' ? 'selected' : ''}>입금 대기중</option>
+                                                    <option value="상품 준비중" ${st === '상품 준비중' ? 'selected' : ''}>상품 준비중</option>
+                                                    <option value="배송 중" ${st === '배송 중' ? 'selected' : ''}>배송 중</option>
+                                                    <option value="배송 완료" ${st === '배송 완료' ? 'selected' : ''}>배송 완료</option>
+                                                    <option value="취소요청" ${st === '취소요청' ? 'selected' : ''}>취소요청</option>
+                                                    <option value="취소완료" ${st === '취소완료' || st === '주문 취소됨' ? 'selected' : ''}>취소완료</option>
                                                 </select>
-                                                <span class="text-xs font-bold text-darkText">${ord.total}</span>
+                                                <button type="button" onclick="applyAdminOrderStatusChange(${idx})" class="px-3 py-1.5 rounded-xl bg-darkText hover:bg-black text-white text-xs font-bold transition-colors cursor-pointer">
+                                                    상태 저장
+                                                </button>
+                                                <span class="text-xs font-bold text-darkText ml-1">${ord.total}</span>
                                             </div>
                                         </div>
+                                        ${isCancelReq || st === '취소완료' ? `
+                                            <div class="p-3 rounded-xl bg-white border border-orange-200/80 text-xs space-y-1">
+                                                <p class="font-bold text-orange-800">📌 고객 취소요청 내역</p>
+                                                <p class="text-darkText">요청 사유: <strong>${ord.cancelReason || '고객 취소요청'}</strong></p>
+                                                ${ord.cancelDetail ? `<p class="text-grayText">상세 내용: ${ord.cancelDetail}</p>` : ''}
+                                                ${ord.cancelledAt ? `<p class="text-[11px] text-grayText">요청 일시: ${ord.cancelledAt}</p>` : ''}
+                                            </div>
+                                        ` : ''}
                                         <div class="text-xs text-grayText space-y-0.5">
-                                            <p>수령인: <strong class="text-darkText">${ord.shippingInfo ? ord.shippingInfo.name : '고객'}</strong> (${ord.shippingInfo ? ord.shippingInfo.phone : '연락처 없음'})</p>
+                                            <p>주문자/수령인: <strong class="text-darkText">${ord.shippingInfo ? ord.shippingInfo.name : '고객'}</strong> (${ord.shippingInfo ? ord.shippingInfo.phone : '연락처 없음'})</p>
+                                            <p>주문 상품: ${ord.items && ord.items.length > 0 ? ord.items.map(it => `${it.name}(${it.option}) x${it.qty}`).join(', ') : 'HEETSUKI 상품'}</p>
                                             <p>배송 주소: ${ord.shippingInfo ? ord.shippingInfo.address : '주소 없음'}</p>
                                             <p>결제 수단: ${ord.payment} · 주문일시: ${ord.date}</p>
                                         </div>
                                     </div>
-                                `).join('')}
+                                `;}).join('')}
                             </div>
                         </div>
 
@@ -1380,22 +1448,24 @@
                                     <div>
                                         <div class="flex items-center gap-2">
                                             <strong class="text-xs font-bold text-darkText">양대희</strong>
-                                            <span class="px-2 py-0.5 rounded-full bg-accentGreen/10 text-accentGreen text-[10px] font-bold">최고 관리자</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-accentGreen/10 text-accentGreen text-[10px] font-bold">최고 관리자 (Google OAuth)</span>
                                         </div>
-                                        <p class="text-[11px] text-grayText mt-0.5">heetsuki001@gmail.com · Google 연동계정</p>
+                                        <p class="text-[11px] text-grayText mt-0.5">heetsuki001@gmail.com</p>
                                     </div>
                                     <span class="text-xs font-semibold text-accentGreen">권한 보유</span>
                                 </div>
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <strong class="text-xs font-bold text-darkText">HEETSUKI 고객</strong>
-                                            <span class="px-2 py-0.5 rounded-full bg-black/10 text-darkText text-[10px] font-semibold">일반 회원</span>
+                                ${getLocalUsers().map(u => `
+                                    <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <strong class="text-xs font-bold text-darkText">${u.name || u.email.split('@')[0]}</strong>
+                                                <span class="px-2 py-0.5 rounded-full bg-black/10 text-darkText text-[10px] font-semibold">일반 회원</span>
+                                            </div>
+                                            <p class="text-[11px] text-grayText mt-0.5">${u.email}</p>
                                         </div>
-                                        <p class="text-[11px] text-grayText mt-0.5">일반 쇼핑몰 이용고객</p>
+                                        <span class="text-xs text-grayText">일반 권한</span>
                                     </div>
-                                    <span class="text-xs text-grayText">일반 권한</span>
-                                </div>
+                                `).join('')}
                             </div>
                         </div>
                     </div>
@@ -1429,13 +1499,13 @@
             productsPane.classList.add('hidden');
             membersPane.classList.add('hidden');
 
-            ordersBtn.className = 'px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all';
+            ordersBtn.className = 'px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all flex items-center gap-1.5';
             productsBtn.className = 'px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all';
             membersBtn.className = 'px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all';
 
             if (tabName === 'orders') {
                 ordersPane.classList.remove('hidden');
-                ordersBtn.className = 'px-4 py-2 rounded-xl bg-darkText text-white text-xs font-bold transition-all';
+                ordersBtn.className = 'px-4 py-2 rounded-xl bg-darkText text-white text-xs font-bold transition-all flex items-center gap-1.5';
             } else if (tabName === 'products') {
                 productsPane.classList.remove('hidden');
                 productsBtn.className = 'px-4 py-2 rounded-xl bg-darkText text-white text-xs font-bold transition-all';
@@ -1445,7 +1515,12 @@
             }
         };
 
-        window.updateOrderStatus = function(orderIndex, newStatus) {
+        // 관리자 모드에서 주문 상태를 직접 변경하고 localStorage 및 사용자 화면과 즉시 동기화
+        window.applyAdminOrderStatusChange = function(orderIndex) {
+            const selectEl = document.getElementById(`admin-order-select-${orderIndex}`);
+            if (!selectEl) return;
+            const newStatus = selectEl.value;
+
             let orders = [];
             try {
                 orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
@@ -1453,9 +1528,25 @@
 
             if (orders[orderIndex]) {
                 orders[orderIndex].status = newStatus;
+                if (newStatus === '취소완료') {
+                    orders[orderIndex].refundStatus = '환불 완료';
+                    orders[orderIndex].completedCancelAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                }
                 localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
-                showToast(`주문[${orders[orderIndex].id}] 상태가 [${newStatus}]로 변경되었습니다.`);
+                showToast(`주문[${orders[orderIndex].id}] 상태가 [${newStatus}]로 변경 및 저장되었습니다.`);
+                
+                // Refresh Admin Modal UI
                 openAdminDashboardModal();
+
+                // Synchronize User Order Detail Modal & My Page Modal if open
+                const detailModal = document.getElementById('order-detail-modal');
+                if (detailModal && !detailModal.classList.contains('hidden')) {
+                    window.openOrderDetailModal(orderIndex);
+                }
+                const myPageModal = document.getElementById('mypage-modal');
+                if (myPageModal && !myPageModal.classList.contains('hidden')) {
+                    window.openMyPageModal();
+                }
             }
         };
 
@@ -1629,7 +1720,6 @@
             }
         }
 
-        // River Stone (수석) Class for Aquascape Substrate
         class RiverStone {
             constructor(x, y, radiusX, radiusY, rotation, color, points, shadowColor) {
                 this.x = x;
@@ -1638,7 +1728,7 @@
                 this.radiusY = radiusY;
                 this.rotation = rotation;
                 this.color = color;
-                this.points = points; // Irregular organic vertices
+                this.points = points;
                 this.shadowColor = shadowColor;
             }
             draw(ctx) {
@@ -1646,7 +1736,6 @@
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
 
-                // Natural stone shadow/depth on substrate
                 ctx.fillStyle = this.shadowColor;
                 ctx.beginPath();
                 if (this.points && this.points.length > 0) {
@@ -1660,7 +1749,6 @@
                 }
                 ctx.fill();
 
-                // Main irregular stone body with multi-stop gradient
                 const grad = ctx.createRadialGradient(-this.radiusX * 0.3, -this.radiusY * 0.3, 2, 0, 0, this.radiusX * 1.2);
                 grad.addColorStop(0, this.color);
                 grad.addColorStop(0.6, '#4A5568');
@@ -1679,7 +1767,6 @@
                 }
                 ctx.fill();
 
-                // Surface texture / moss or mineral strata lines
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
                 ctx.lineWidth = 1.2;
                 ctx.beginPath();
@@ -1687,7 +1774,6 @@
                 ctx.lineTo(this.radiusX * 0.3, this.radiusY * 0.3);
                 ctx.stroke();
 
-                // Highlight texture on weathered stone surface
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
                 ctx.beginPath();
                 ctx.ellipse(-this.radiusX * 0.25, -this.radiusY * 0.3, this.radiusX * 0.35, this.radiusY * 0.25, -0.4, 0, Math.PI * 2);
@@ -1733,7 +1819,7 @@
                 this.wobbleSpeed = 0.02 + Math.random() * 0.03;
                 this.changeDirTimer = Math.floor(100 + Math.random() * 300);
             }
-            update(time, allTetras) {
+            update(time) {
                 this.changeDirTimer--;
                 this.wobblePhase += this.wobbleSpeed;
 
@@ -1808,14 +1894,13 @@
             }
         }
 
-        // New Freshwater Cherry Shrimp (생이새우) Class
         class CherryShrimp {
             constructor() {
                 this.reset();
             }
             reset() {
                 this.x = Math.random() * width;
-                this.y = height - 25 - Math.random() * 25; // Crawling near the tank floor
+                this.y = height - 25 - Math.random() * 25;
                 this.vx = (Math.random() - 0.5) * 0.4;
                 this.direction = this.vx >= 0 ? 1 : -1;
                 this.scuttleTimer = Math.floor(80 + Math.random() * 200);
@@ -1836,12 +1921,10 @@
                 } else {
                     if (this.scuttleTimer <= 0) {
                         if (Math.random() < 0.25) {
-                            // Sudden shrimp flick / swim upwards
                             this.isSwimming = true;
                             this.swimTimer = Math.floor(40 + Math.random() * 60);
                             this.vx = (Math.random() - 0.5) * 1.2;
                         } else {
-                            // Normal slow walk along substrate
                             this.vx = (Math.random() - 0.5) * 0.4;
                         }
                         this.direction = this.vx >= 0 ? 1 : -1;
@@ -1850,31 +1933,25 @@
                     this.x += this.vx;
                 }
 
-                // Screen wrap
                 if (this.x < -30) this.x = width + 20;
                 if (this.x > width + 30) this.x = -20;
                 
                 this.antennaWave = Math.sin(time * 0.015 + this.x * 0.1) * 3;
             }
-            draw(ctx, time) {
+            draw(ctx) {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 if (this.direction < 0) ctx.scale(-1, 1);
 
-                // Translucent red/pink cherry shrimp body (Carapace segments)
                 ctx.fillStyle = 'rgba(235, 87, 87, 0.75)';
-                
-                // Head thorax
                 ctx.beginPath();
                 ctx.ellipse(-2, -3, 6, 4, -0.2, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Abdomen segments curved upward/backward
                 ctx.beginPath();
                 ctx.ellipse(4, -1, 7, 3.5, 0.3, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Tail fan
                 ctx.fillStyle = 'rgba(255, 120, 120, 0.85)';
                 ctx.beginPath();
                 ctx.moveTo(9, -2);
@@ -1883,7 +1960,6 @@
                 ctx.closePath();
                 ctx.fill();
 
-                // Long delicate antennae
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
                 ctx.lineWidth = 0.8;
                 ctx.beginPath();
@@ -1904,7 +1980,6 @@
                 const measuredWidth = rect.width || wrapper.clientWidth || window.innerWidth || 800;
                 const measuredHeight = rect.height || wrapper.clientHeight || 320;
                 
-                // Safe guard against 0-dimension measurements during live editor re-mounts
                 if (measuredWidth <= 0 || measuredHeight <= 0) {
                     setTimeout(() => {
                         if (initScene() && !animationFrameId) {
@@ -1921,7 +1996,6 @@
                 canvas.height = Math.floor(height * dpr);
                 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-                // Generate Natural Weathered Aquascape Rocks (수석) with irregular organic shapes
                 rocks = [];
                 const stoneColors = ['#687585', '#4E5D6C', '#78828F', '#566573', '#626D7A', '#3E4C59'];
                 const countStones = Math.max(3, Math.floor(width / 130) + 2);
@@ -1963,7 +2037,6 @@
                 renderHeroFrame(performance.now());
                 return true;
             } catch (err) {
-                console.warn('Hero banner safe recovery triggered:', err);
                 return false;
             }
         }
@@ -1978,37 +2051,15 @@
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, width, height);
 
-            particles.forEach(p => {
-                p.update();
-                p.draw(ctx);
-            });
-
-            rocks.forEach(rock => {
-                rock.draw(ctx);
-            });
-
-            blades.forEach(blade => {
-                blade.update(time);
-                blade.draw(ctx);
-            });
-
-            shrimps.forEach(shrimp => {
-                shrimp.update(time);
-                shrimp.draw(ctx, time);
-            });
-
-            tetras.forEach(tetra => {
-                tetra.update(time, tetras);
-                tetra.draw(ctx);
-            });
+            particles.forEach(p => { p.update(); p.draw(ctx); });
+            rocks.forEach(rock => { rock.draw(ctx); });
+            blades.forEach(blade => { blade.update(time); blade.draw(ctx); });
+            shrimps.forEach(shrimp => { shrimp.update(time); shrimp.draw(ctx); });
+            tetras.forEach(tetra => { tetra.update(time); tetra.draw(ctx); });
         }
 
         function animate(time) {
-            try {
-                renderHeroFrame(time);
-            } catch (err) {
-                console.warn('Hero frame error suppressed:', err);
-            }
+            try { renderHeroFrame(time); } catch (err) {}
             animationFrameId = requestAnimationFrame(animate);
         }
 
@@ -2020,23 +2071,17 @@
                 pointer.active = true;
             });
 
-            wrapper.addEventListener('pointerleave', () => {
-                pointer.active = false;
-            });
+            wrapper.addEventListener('pointerleave', () => { pointer.active = false; });
 
             if (typeof ResizeObserver !== 'undefined') {
-                const ro = new ResizeObserver(() => {
-                    initScene();
-                });
+                const ro = new ResizeObserver(() => { initScene(); });
                 ro.observe(wrapper);
             }
         }
 
-        window.addEventListener('resize', () => {
-            initScene();
-        });
+        window.addEventListener('resize', () => { initScene(); });
 
-        // Product Modal Logic with Multi-Image Gallery & Cart State
+        // Product Modal & Cart Logic
         let currentProduct = { name: '', price: 0, priceStr: '', image: '' };
         let selectedOptionValue = '';
         let modalSelectedQty = 1;
@@ -2069,7 +2114,6 @@
             document.getElementById('modal-product-desc').textContent = desc;
             updateModalPriceDisplay();
             
-            // Gallery Setup
             const mainImg = document.getElementById('modal-main-image');
             const thumbContainer = document.getElementById('modal-thumbnails');
             thumbContainer.innerHTML = '';
@@ -2094,7 +2138,6 @@
                 });
             }
 
-            // Options Setup
             const container = document.getElementById('modal-options-container');
             container.innerHTML = '';
             selectedOptionValue = options[0];
@@ -2247,39 +2290,6 @@
             `).join('');
         }
 
-        // Check if user is logged in before proceeding to checkout / order
-        function handleCheckout() {
-            if (cart.length === 0) {
-                showToast('주문할 상품이 장바구니에 없습니다.');
-                return;
-            }
-
-            // Strict verification against Firebase Auth current user and saved session
-            const firebaseUser = window.auth ? window.auth.currentUser : null;
-            const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-            
-            const isAuthed = (firebaseUser && !firebaseUser.isAnonymous) || savedUser;
-
-            if (!isAuthed) {
-                closeCartDrawer();
-                showToast('로그인이 필요한 서비스입니다.');
-                const checkoutPage = document.getElementById('checkout-page');
-                if (checkoutPage) {
-                    checkoutPage.classList.remove('hidden');
-                }
-                setTimeout(() => {
-                    openAuthModal('login');
-                    const authModal = document.getElementById('auth-modal');
-                    if (authModal) {
-                        authModal.style.zIndex = '110';
-                    }
-                }, 100);
-                return;
-            }
-
-            openCheckoutPage();
-        }
-
         let selectedPayment = '신용/체크카드';
 
         function selectPaymentMethod(btn, method) {
@@ -2363,20 +2373,7 @@
                 if (addrEl && saved.address) addrEl.value = saved.address;
                 if (detailEl && saved.detail) detailEl.value = saved.detail;
                 if (memoEl && saved.memo) memoEl.value = saved.memo;
-
-                ['order-name', 'order-phone', 'order-zipcode', 'order-address', 'order-address-detail', 'order-memo'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el && el.value.trim()) {
-                        el.classList.remove('border-red-500');
-                    }
-                });
-                ['error-order-name', 'error-order-phone', 'error-order-zipcode', 'error-order-address-detail', 'error-order-memo', 'error-checkout-global'].forEach(errId => {
-                    const errEl = document.getElementById(errId);
-                    if (errEl) errEl.classList.add('hidden');
-                });
-            } catch (e) {
-                console.warn('저장된 배송지 정보 로드 실패:', e);
-            }
+            } catch (e) {}
         }
 
         function closeCheckoutPage() {
@@ -2420,39 +2417,11 @@
 
             if (!nameVal || !phoneVal || !zipVal || !addressVal || !detailVal || !memoVal) {
                 showToast('배송지 정보 및 요청사항을 모두 입력해 주세요.');
-                
-                if (!nameVal) {
-                    const nameErr = document.getElementById('error-order-name');
-                    if (nameErr) nameErr.classList.remove('hidden');
-                    if (nameEl) nameEl.classList.add('border-red-500');
-                }
-                if (!phoneVal) {
-                    const phoneErr = document.getElementById('error-order-phone');
-                    if (phoneErr) phoneErr.classList.remove('hidden');
-                    if (phoneEl) phoneEl.classList.add('border-red-500');
-                }
-                if (!zipVal || !addressVal) {
-                    const zipErr = document.getElementById('error-order-zipcode');
-                    if (zipErr) zipErr.classList.remove('hidden');
-                    if (zipEl) zipEl.classList.add('border-red-500');
-                    if (addressEl) addressEl.classList.add('border-red-500');
-                }
-                if (!detailVal) {
-                    const addrErr = document.getElementById('error-order-address-detail');
-                    if (addrErr) addrErr.classList.remove('hidden');
-                    if (detailEl) detailEl.classList.add('border-red-500');
-                }
-                if (!memoVal) {
-                    const memoErr = document.getElementById('error-order-memo');
-                    if (memoErr) memoErr.classList.remove('hidden');
-                    if (memoEl) memoEl.classList.add('border-red-500');
-                }
-
-                const globalErrorEl = document.getElementById('error-checkout-global');
-                if (globalErrorEl) {
-                    globalErrorEl.textContent = '필수 정보를 모두 입력해 주세요.';
-                    globalErrorEl.classList.remove('hidden');
-                }
+                if (!nameVal) { const err = document.getElementById('error-order-name'); if (err) err.classList.remove('hidden'); if (nameEl) nameEl.classList.add('border-red-500'); }
+                if (!phoneVal) { const err = document.getElementById('error-order-phone'); if (err) err.classList.remove('hidden'); if (phoneEl) phoneEl.classList.add('border-red-500'); }
+                if (!zipVal || !addressVal) { const err = document.getElementById('error-order-zipcode'); if (err) err.classList.remove('hidden'); if (zipEl) zipEl.classList.add('border-red-500'); if (addressEl) addressEl.classList.add('border-red-500'); }
+                if (!detailVal) { const err = document.getElementById('error-order-address-detail'); if (err) err.classList.remove('hidden'); if (detailEl) detailEl.classList.add('border-red-500'); }
+                if (!memoVal) { const err = document.getElementById('error-order-memo'); if (err) err.classList.remove('hidden'); if (memoEl) memoEl.classList.add('border-red-500'); }
                 return;
             }
             
@@ -2465,92 +2434,20 @@
                 setTimeout(() => {
                     openAuthModal('login');
                     const authModal = document.getElementById('auth-modal');
-                    if (authModal) {
-                        authModal.style.zIndex = '110';
-                    }
+                    if (authModal) authModal.style.zIndex = '110';
                 }, 100);
                 return;
             }
 
-            const name = nameVal;
-            const phone = phoneVal;
-            const zipcode = zipVal;
-            const address = addressVal;
-            const detail = detailVal;
-            const memo = memoEl ? memoEl.value.trim() : '';
-
-            let hasError = false;
-            const globalErrorEl = document.getElementById('error-checkout-global');
-            const phoneDigits = phone.replace(/[^0-9]/g, '');
-
-            if (!name) {
-                const err = document.getElementById('error-order-name');
-                if (err) err.classList.remove('hidden');
-                if (nameEl) nameEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (phoneDigits.length < 10 || phoneDigits.length > 11) {
-                const err = document.getElementById('error-order-phone');
-                if (err) {
-                    err.textContent = '올바른 연락처(10~11자리)를 입력해 주세요.';
-                    err.classList.remove('hidden');
-                }
-                if (phoneEl) phoneEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (!zipcode || !address) {
-                const zipErr = document.getElementById('error-order-zipcode');
-                if (zipErr) {
-                    zipErr.textContent = '필수 정보를 입력해 주세요';
-                    zipErr.classList.remove('hidden');
-                }
-                if (zipEl) zipEl.classList.add('border-red-500');
-                if (addressEl) addressEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (!detail) {
-                const detailErr = document.getElementById('error-order-address-detail');
-                if (detailErr) {
-                    detailErr.textContent = '필수 정보를 입력해 주세요';
-                    detailErr.classList.remove('hidden');
-                }
-                if (detailEl) detailEl.classList.add('border-red-500');
-                hasError = true;
-            }
-            if (!memo) {
-                const memoErr = document.getElementById('error-order-memo');
-                if (memoErr) memoErr.classList.remove('hidden');
-                if (memoEl) memoEl.classList.add('border-red-500');
-                hasError = true;
-            }
-
-            if (hasError) {
-                if (globalErrorEl) {
-                    globalErrorEl.textContent = '필수 정보를 모두 입력해 주세요.';
-                    globalErrorEl.classList.remove('hidden');
-                }
-                showToast('필수 입력란이 비어 있거나 올바르지 않습니다.');
-                if (!name && nameEl) nameEl.focus();
-                else if ((phoneDigits.length < 10 || phoneDigits.length > 11) && phoneEl) phoneEl.focus();
-                else if ((!zipcode || !address) && zipEl) openAddressSearch();
-                else if (!detail && detailEl) detailEl.focus();
-                else if (!memo && memoEl) memoEl.focus();
-                return;
-            }
-
-            if (globalErrorEl) {
-                globalErrorEl.classList.add('hidden');
-            }
-            
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             const shipping = subtotal >= 50000 ? 0 : 3000;
             const finalTotal = subtotal + shipping;
 
             pendingOrderData = {
-                name,
-                phone,
-                fullAddr: `${address} ${detail}`,
-                memo,
+                name: nameVal,
+                phone: phoneVal,
+                fullAddr: `${addressVal} ${detailVal}`,
+                memo: memoVal,
                 subtotal,
                 shipping,
                 total: finalTotal,
@@ -2568,14 +2465,11 @@
             const amountText = document.getElementById('pg-pay-amount-text');
             const confirmBtn = modal.querySelector('button[onclick="executePgPayment()"]');
 
-            if (amountText) {
-                amountText.textContent = formatPrice(amount);
-            }
+            if (amountText) amountText.textContent = formatPrice(amount);
 
             if (method === '무통장입금') {
                 badgeEl.textContent = 'BANK TRANSFER';
                 titleEl.textContent = '무통장 입금 안내';
-                
                 const deadlineDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
                 const pad2 = (n) => String(n).padStart(2, '0');
                 const deadlineStr = `3일 후 ${deadlineDate.getFullYear()}년 ${deadlineDate.getMonth() + 1}월 ${deadlineDate.getDate()}일 ${pad2(deadlineDate.getHours())}시 ${pad2(deadlineDate.getMinutes())}분까지 (72시간 이내)`;
@@ -2591,13 +2485,9 @@
                             <div class="flex justify-between"><span class="text-grayText">예 금 주</span><strong class="text-darkText">양대희 (희츠키)</strong></div>
                             <div class="flex justify-between items-start gap-2"><span class="text-grayText flex-shrink-0">입금 기한</span><strong class="text-red-600 text-right">${deadlineStr}</strong></div>
                         </div>
-                        <p class="text-[11px] text-grayText text-center">기한(3일/72시간) 내 미입금 시 자동 취소될 수 있습니다.</p>
                     </div>
                 `;
-                
-                if (confirmBtn) {
-                    confirmBtn.innerHTML = `<span>무통장 주문 접수 완료</span>`;
-                }
+                if (confirmBtn) confirmBtn.innerHTML = `<span>무통장 주문 접수 완료</span>`;
             } else {
                 badgeEl.textContent = 'PG SAFE';
                 titleEl.textContent = `${method} 간편결제`;
@@ -2607,9 +2497,7 @@
                         <p class="text-xs text-grayText">결제하기 버튼을 누르면 즉시 결제가 완료됩니다.</p>
                     </div>
                 `;
-                if (confirmBtn) {
-                    confirmBtn.innerHTML = `<span id="pg-pay-amount-text">${formatPrice(amount)}</span> 결제 승인하기`;
-                }
+                if (confirmBtn) confirmBtn.innerHTML = `<span id="pg-pay-amount-text">${formatPrice(amount)}</span> 결제 승인하기`;
             }
 
             modal.classList.remove('hidden');
@@ -2623,56 +2511,7 @@
         }
 
         async function executePgPayment() {
-            const addressEl = document.getElementById('order-address');
-            const detailEl = document.getElementById('order-address-detail');
-            const nameEl = document.getElementById('order-name');
-            const phoneEl = document.getElementById('order-phone');
-            const zipEl = document.getElementById('order-zipcode');
-            const memoEl = document.getElementById('order-memo');
-
-            const addressVal = addressEl ? addressEl.value.trim() : '';
-            const detailVal = detailEl ? detailEl.value.trim() : '';
-            const nameVal = nameEl ? nameEl.value.trim() : '';
-            const phoneVal = phoneEl ? phoneEl.value.trim() : '';
-            const zipVal = zipEl ? zipEl.value.trim() : '';
-            const memoVal = memoEl ? memoEl.value.trim() : '';
-
-            if (!nameVal || !phoneVal || !zipVal || !addressVal || !detailVal || !memoVal) {
-                showToast('배송지 정보 및 요청사항을 모두 입력해 주세요.');
-                
-                if (!nameVal && nameEl) {
-                    const nameErr = document.getElementById('error-order-name');
-                    if (nameErr) nameErr.classList.remove('hidden');
-                    nameEl.classList.add('border-red-500');
-                }
-                if (!phoneVal && phoneEl) {
-                    const phoneErr = document.getElementById('error-order-phone');
-                    if (phoneErr) phoneErr.classList.remove('hidden');
-                    phoneEl.classList.add('border-red-500');
-                }
-                if ((!zipVal || !addressVal) && zipEl) {
-                    const zipErr = document.getElementById('error-order-zipcode');
-                    if (zipErr) zipErr.classList.remove('hidden');
-                    zipEl.classList.add('border-red-500');
-                    if (addressEl) addressEl.classList.add('border-red-500');
-                }
-                if (!detailVal && detailEl) {
-                    const addrErr = document.getElementById('error-order-address-detail');
-                    if (addrErr) addrErr.classList.remove('hidden');
-                    detailEl.classList.add('border-red-500');
-                }
-                if (!memoVal && memoEl) {
-                    const memoErr = document.getElementById('error-order-memo');
-                    if (memoErr) memoErr.classList.remove('hidden');
-                    memoEl.classList.add('border-red-500');
-                }
-
-                closePgModal();
-                return;
-            }
-
             if (!pendingOrderData) {
-                showToast('주문 정보가 올바르지 않습니다. 다시 시도해 주세요.');
                 closePgModal();
                 return;
             }
@@ -2682,7 +2521,6 @@
 
             const isBankTransfer = selectedPayment === '무통장입금';
             const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-            
             const now = new Date();
             const deadlineDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
             const pad2 = (n) => String(n).padStart(2, '0');
@@ -2708,152 +2546,32 @@
                 status: isBankTransfer ? '입금 대기중' : '결제 완료'
             };
 
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', orderId), newOrder);
-                }
-            } catch (err) {
-                console.warn('Firestore order sync fallback to local storage:', err);
-            }
-
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
             orders.unshift(newOrder);
             localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
 
-            try {
-                const safeOrder = newOrder || {};
-                const safeOrderId = safeOrder.id || orderId;
-                const safeName = String(safeOrder.shippingInfo && safeOrder.shippingInfo.name ? safeOrder.shippingInfo.name : (nameVal || '고객')).replace(/님+$/, '').trim() || 'HEETSUKI 고객';
-                const safePhone = safeOrder.shippingInfo && safeOrder.shippingInfo.phone ? safeOrder.shippingInfo.phone : (phoneVal || '미입력');
-                const safeAddress = safeOrder.shippingInfo && safeOrder.shippingInfo.address ? safeOrder.shippingInfo.address : (addressVal + ' ' + detailVal);
-                const safeMemo = safeOrder.shippingInfo && safeOrder.shippingInfo.memo ? safeOrder.shippingInfo.memo : (memoVal || '없음');
-                const safeTotal = safeOrder.total || formatPrice(pendingOrderData.total);
-                const safePayment = safeOrder.payment || selectedPayment || '신용/체크카드';
-                const safeDate = safeOrder.date || new Date().toLocaleString('ko-KR');
-                const safeItems = Array.isArray(safeOrder.items) ? safeOrder.items : (pendingOrderData.items || []);
-
-                let itemsTextStr = "";
-                if (safeItems.length > 0) {
-                    itemsTextStr = safeItems.map((item, idx) => {
-                        const iName = item.name || 'HEETSUKI 상품';
-                        const iOpt = item.option || '기본 옵션';
-                        const iQty = Number(item.qty) || 1;
-                        const iPrice = Number(item.price) || 0;
-                        return (
-                            `  [${idx + 1}] ${iName}\n` +
-                            `      • 옵션: ${iOpt}\n` +
-                            `      • 수량: ${iQty}개\n` +
-                            `      • 금액: ${(iPrice * iQty).toLocaleString()}원`
-                        );
-                    }).join('\n\n');
-                } else {
-                    itemsTextStr = "  • 주문 상품 정보 없음";
-                }
-
-                const finalOrderMessage =
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    ` [HEETSUKI] 🛍️ 신규 주문 접수 알림\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
-                    `[주문 개요]\n` +
-                    `• 주문 번호 : ${safeOrderId}\n` +
-                    `• 주문 일시 : ${safeDate}\n` +
-                    `• 결제 수단 : ${safePayment}\n` +
-                    `• 결제 금액 : ${safeTotal}\n` +
-                    `• 주문 상태 : 🟢 ${safeOrder.status || '결제 완료'}\n` +
-                    (safeOrder.depositDeadline ? `• 입금 기한 : ${safeOrder.depositDeadline}\n` : '') +
-                    `\n----------------------------------------\n` +
-                    `[주문자 및 배송지 정보]\n` +
-                    `• 받는 분   : ${safeName}\n` +
-                    `• 연락처    : ${safePhone}\n` +
-                    `• 배송 주소 : ${safeAddress}\n` +
-                    `• 요청 사항 : ${safeMemo}\n\n` +
-                    `----------------------------------------\n` +
-                    `[주문 상품 목록 (${safeItems.length}종)]\n\n` +
-                    itemsTextStr + `\n\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    ` 본 메일은 HEETSUKI 공식 스토어에서 자동 발송되었습니다.`;
-
-                const templateParams = {
-                    to_email: "heetsuki001@gmail.com",
-                    title: `[HEETSUKI 신규 주문] ${safeName}님의 주문이 접수되었습니다. (${safeOrderId})`,
-                    name: safeName,
-                    order_id: safeOrderId,
-                    time: safeDate,
-                    message: finalOrderMessage
-                };
-
-                console.log("[EmailJS 신규 주문 발송 시도]", {
-                    service: 'service_wevgw6t',
-                    template: 'template_w4lct8h',
-                    params: templateParams
-                });
-
-                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                    emailjs.send('service_wevgw6t', 'template_w4lct8h', templateParams, 'RmR0T6E-FGx37iolN')
-                        .then(function(response) {
-                            console.log("메일 전송 성공:", response);
-                        })
-                        .catch(function(error) {
-                            console.error("메일 전송 실패:", error);
-                        });
-                } else {
-                    console.error("메일 전송 실패: emailjs SDK 객체를 찾을 수 없습니다.");
-                }
-            } catch (mailEx) {
-                console.error("메일 전송 예외 발생:", mailEx);
+            // Send admin email notification safely
+            if (typeof window.sendOrderNotificationToAdmin === 'function') {
+                window.sendOrderNotificationToAdmin(newOrder);
             }
 
             const rememberCheckbox = document.getElementById('remember-shipping-checkbox');
-            const shouldRemember = rememberCheckbox ? rememberCheckbox.checked : false;
-
-            if (shouldRemember) {
-                const shippingToSave = {
-                    name: nameVal,
-                    phone: phoneVal,
-                    zipcode: zipVal,
-                    address: addressVal,
-                    detail: detailVal,
-                    memo: memoVal
-                };
-                localStorage.setItem('heetsuki_shipping_info', JSON.stringify(shippingToSave));
-
-                try {
-                    const savedUser = localStorage.getItem('heetsuki_logged_in_user');
-                    if (savedUser) {
-                        const parsedUser = JSON.parse(savedUser);
-                        parsedUser.name = nameVal;
-                        localStorage.setItem('heetsuki_logged_in_user', JSON.stringify(parsedUser));
-                        if (typeof window.applyLoginState === 'function') {
-                            window.applyLoginState(parsedUser);
-                        }
-                    }
-                } catch(e) {}
-
-                try {
-                    if (window.auth && window.auth.currentUser && window.db) {
-                        await setDoc(doc(window.db, 'artifacts', appId, 'users', window.auth.currentUser.uid, 'profile', 'shipping'), shippingToSave);
-                    }
-                } catch (err) {
-                    console.warn('Firestore shipping save fallback:', err);
-                }
-            } else {
-                localStorage.removeItem('heetsuki_shipping_info');
+            if (rememberCheckbox && rememberCheckbox.checked) {
+                localStorage.setItem('heetsuki_shipping_info', JSON.stringify({
+                    name: pendingOrderData.name,
+                    phone: pendingOrderData.phone,
+                    zipcode: document.getElementById('order-zipcode').value,
+                    address: document.getElementById('order-address').value,
+                    detail: document.getElementById('order-address-detail').value,
+                    memo: pendingOrderData.memo
+                }));
             }
 
             cart = [];
             updateCartUI();
-            
-            ['order-name','order-phone','order-zipcode','order-address','order-address-detail','order-memo']
-                .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-
             pendingOrderData = null;
 
-            if (isBankTransfer) {
-                showToast(`[${orderId}] 무통장 입금 주문이 정상 접수되었습니다. 계좌번호를 확인해주세요.`);
-            } else {
-                showToast(`[${orderId}] 주문 및 결제가 완료되었습니다!`);
-            }
+            showToast(isBankTransfer ? `[${orderId}] 무통장 입금 주문이 접수되었습니다.` : `[${orderId}] 주문 및 결제가 완료되었습니다!`);
 
             setTimeout(() => {
                 openOrderDetailModal(0);
@@ -2881,70 +2599,17 @@
             } catch (e) {}
 
             let shippingInfo = { name: '', phone: '', zipcode: '', address: '', detail: '' };
-
-            if (orders.length > 0 && orders[0].shippingInfo) {
-                const lastOrd = orders[0].shippingInfo;
-                if (lastOrd.name) shippingInfo.name = lastOrd.name.replace(/님+$/, '').trim();
-                if (lastOrd.phone) shippingInfo.phone = lastOrd.phone;
-                if (lastOrd.address) shippingInfo.address = lastOrd.address;
-            }
-
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    const shipDocRef = doc(window.db, 'artifacts', appId, 'users', uid, 'profile', 'shipping');
-                    const shipSnap = await getDoc(shipDocRef);
-                    if (shipSnap.exists()) {
-                        const cloudData = shipSnap.data();
-                        if (cloudData && (cloudData.address || cloudData.phone)) {
-                            shippingInfo = {
-                                name: cloudData.name ? cloudData.name.replace(/님+$/, '').trim() : shippingInfo.name,
-                                phone: cloudData.phone || shippingInfo.phone,
-                                zipcode: cloudData.zipcode || shippingInfo.zipcode,
-                                address: cloudData.address || shippingInfo.address,
-                                detail: cloudData.detail || shippingInfo.detail
-                            };
-                        }
-                    }
-                }
-            } catch (err) {}
-
             const localStored = localStorage.getItem('heetsuki_shipping_info');
             if (localStored) {
                 try {
                     const parsedLocal = JSON.parse(localStored);
-                    if (parsedLocal && (parsedLocal.address || parsedLocal.phone)) {
-                        shippingInfo = {
-                            name: parsedLocal.name ? parsedLocal.name.replace(/님+$/, '').trim() : shippingInfo.name,
-                            phone: parsedLocal.phone || shippingInfo.phone,
-                            zipcode: parsedLocal.zipcode || shippingInfo.zipcode,
-                            address: parsedLocal.address || shippingInfo.address,
-                            detail: parsedLocal.detail || shippingInfo.detail
-                        };
-                    }
+                    if (parsedLocal) shippingInfo = { ...shippingInfo, ...parsedLocal };
                 } catch(e) {}
             }
 
             const rawUnifiedName = window.getCurrentUserName();
             const displayUserName = (shippingInfo.name || rawUnifiedName || userObj.name || '고객').replace(/님+$/, '').trim();
-            
-            let displayEmail = userObj.email || '';
-            if (!displayEmail || displayEmail === 'user@heetsuki.com' || displayEmail.includes('google_account')) {
-                try {
-                    if (window.auth && window.auth.currentUser && window.auth.currentUser.email && !window.auth.currentUser.email.includes('google_account')) {
-                        displayEmail = window.auth.currentUser.email;
-                    }
-                } catch(e) {}
-            }
-            if (!displayEmail && userObj.type === 'Google') {
-                displayEmail = 'heetsuki001@gmail.com';
-            }
-            if (displayEmail.includes('google_account')) {
-                displayEmail = 'heetsuki001@gmail.com';
-            }
-            
-            const displaySubInfo = displayEmail ? displayEmail : (userObj.type ? `${userObj.type} 연동계정` : 'HEETSUKI 공식 계정');
+            const displayEmail = userObj.email || 'HEETSUKI 공식 계정';
 
             let modal = document.getElementById('mypage-modal');
             if (!modal) {
@@ -2963,20 +2628,18 @@
                     </button>
                     
                     <div class="flex items-center gap-4 pb-6 border-b border-black/10">
-                        <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center" id="mypage-avatar-initial">
+                        <div class="w-16 h-16 rounded-2xl bg-accentGreen/10 text-accentGreen font-bold text-2xl flex items-center justify-center">
                             ${displayUserName.charAt(0)}
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-darkText" id="mypage-user-name">${displayUserName}님</h3>
-                            <p class="text-sm text-grayText mt-0.5" id="mypage-user-subinfo">${displaySubInfo}</p>
+                            <h3 class="text-2xl font-bold text-darkText">${displayUserName}님</h3>
+                            <p class="text-sm text-grayText mt-0.5">${displayEmail}</p>
                         </div>
                     </div>
 
                     <!-- 1. 배송지 정보 영역 -->
                     <div class="mt-6 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">배송지 관리</h4>
-                        </div>
+                        <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">배송지 관리</h4>
                         <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-3">
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
@@ -3014,31 +2677,28 @@
                                     구매 내역이 없습니다.
                                 </div>
                             ` : orders.map((ord, oIdx) => {
-                                const isCancelled = ord.status === '주문 취소됨';
-                                const canDeleteInList = isCancelled && (ord.refundStatus === '환불 완료' || !ord.refundStatus);
-                                const badgeClass = isCancelled 
-                                    ? 'bg-red-100 text-red-700' 
-                                    : (ord.status === '입금 대기중' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800');
+                                const st = ord.status || '결제 완료';
+                                const isCancelledDone = st === '취소완료' || st === '주문 취소됨';
+                                const badgeClass = window.getStatusBadgeClass(st);
                                 return `
                                 <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 hover:border-black/20 transition-all space-y-2">
                                     <div onclick="openOrderDetailModal(${oIdx})" class="flex items-center justify-between cursor-pointer">
                                         <div class="space-y-1 min-w-0 pr-3">
                                             <div class="flex items-center gap-2">
                                                 <span class="text-xs font-bold text-darkText">${ord.id}</span>
-                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${ord.status || '결제 완료'}</span>
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${badgeClass}">${st}</span>
                                             </div>
                                             <p class="text-xs text-grayText truncate">${ord.items && ord.items.length > 0 ? ord.items[0].name + (ord.items.length > 1 ? ` 외 ${ord.items.length - 1}종` : '') : 'HEETSUKI 상품'}</p>
                                             <p class="text-[11px] text-grayText">${ord.date} · ${ord.payment}</p>
                                         </div>
                                         <div class="text-right flex-shrink-0">
-                                            <span class="text-sm font-bold ${isCancelled ? 'text-grayText line-through' : 'text-darkText'}">${ord.total}</span>
+                                            <span class="text-sm font-bold ${isCancelledDone ? 'text-grayText line-through' : 'text-darkText'}">${ord.total}</span>
                                             <p class="text-[11px] text-accentGreen font-semibold mt-0.5">상세보기 &rarr;</p>
                                         </div>
                                     </div>
-                                    ${canDeleteInList ? `
+                                    ${isCancelledDone ? `
                                         <div class="pt-2 border-t border-black/5 flex justify-end">
                                             <button type="button" onclick="event.stopPropagation(); deleteOrderHistory(${oIdx})" class="px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                 <span>주문 내역 삭제</span>
                                             </button>
                                         </div>
@@ -3049,33 +2709,7 @@
                         </div>
                     </div>
 
-                    <!-- 3. 찜한 상품 영역 -->
-                    <div class="mt-6 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold text-darkText uppercase tracking-wider">찜한 상품</h4>
-                            <span class="text-xs text-grayText">총 ${wishlist.length}개</span>
-                        </div>
-                        <div id="mypage-wishlist" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                            ${wishlist.length === 0 ? `
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] text-center text-xs text-grayText border border-black/5">
-                                    찜한 상품이 없습니다.
-                                </div>
-                            ` : wishlist.map((item, wIdx) => `
-                                <div class="flex items-center justify-between p-3 rounded-xl bg-[#F5F5F7] border border-black/5">
-                                    <div class="flex items-center gap-3">
-                                        <img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg object-cover bg-white">
-                                        <div>
-                                            <p class="text-xs font-bold text-darkText">${item.name}</p>
-                                            <p class="text-[11px] text-grayText">${item.price}</p>
-                                        </div>
-                                    </div>
-                                    <button onclick="removeWishlistItem(${wIdx})" class="text-grayText hover:text-red-600 text-xs p-1">삭제</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- 4. 회원 탈퇴 및 연동 해제 버튼 -->
+                    <!-- 3. 회원 탈퇴 및 로그아웃 버튼 -->
                     <div class="mt-8 pt-6 border-t border-black/15 flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <button onclick="closeMyPageModal(); handleLogout();" class="text-xs font-semibold text-darkText hover:text-black bg-black/5 hover:bg-black/10 px-4 py-2.5 rounded-xl transition-colors">
@@ -3103,20 +2737,12 @@
 
             const currentStatus = ord.status || '결제 완료';
             const isBankTransfer = ord.payment === '무통장입금' && currentStatus === '입금 대기중';
-            const isCancelled = currentStatus === '주문 취소됨';
+            const isCancelRequested = currentStatus === '취소요청';
+            const isCancelledDone = currentStatus === '취소완료' || currentStatus === '주문 취소됨';
             const canCancel = currentStatus === '입금 대기중' || currentStatus === '결제 완료';
-            const canDelete = isCancelled && (ord.refundStatus === '환불 완료' || !ord.refundStatus);
+            const canDelete = isCancelledDone;
 
-            let displayDeadline = ord.depositDeadline;
-            if (ord.payment === '무통장입금' && !displayDeadline) {
-                const fallbackDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-                const pad2 = (n) => String(n).padStart(2, '0');
-                displayDeadline = `3일 후 ${fallbackDate.getFullYear()}년 ${fallbackDate.getMonth() + 1}월 ${fallbackDate.getDate()}일 ${pad2(fallbackDate.getHours())}시 ${pad2(fallbackDate.getMinutes())}분까지 (주문 후 3일/72시간 이내)`;
-            }
-
-            const statusBadgeClass = isCancelled
-                ? 'bg-red-100 text-red-700'
-                : (currentStatus === '입금 대기중' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800');
+            const statusBadgeClass = window.getStatusBadgeClass(currentStatus);
 
             let detailModal = document.getElementById('order-detail-modal');
             if (!detailModal) {
@@ -3143,36 +2769,40 @@
                     </div>
 
                     <div class="py-5 space-y-5 text-sm">
-                        ${isCancelled ? `
+                        ${isCancelRequested ? `
+                            <div class="p-4 rounded-2xl bg-orange-50 border border-orange-200 space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2 text-orange-800 font-bold text-xs">
+                                        <span>🟠 취소요청이 접수되었습니다</span>
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded bg-orange-100 text-orange-800 text-[10px] font-bold">관리자 확인중</span>
+                                </div>
+                                ${ord.cancelReason ? `<p class="text-xs text-orange-800">요청 사유: <strong>${ord.cancelReason}</strong></p>` : ''}
+                                ${ord.cancelDetail ? `<p class="text-[11px] text-orange-700">상세 내용: ${ord.cancelDetail}</p>` : ''}
+                                ${ord.cancelledAt ? `<p class="text-[11px] text-grayText">취소요청 일시: ${ord.cancelledAt}</p>` : ''}
+                            </div>
+                        ` : ''}
+
+                        ${isCancelledDone ? `
                             <div class="p-4 rounded-2xl bg-red-50 border border-red-200 space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2 text-red-700 font-bold text-xs">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        <span>주문이 취소되었습니다 (환불 완료)</span>
+                                        <span>🔴 주문 취소가 완료되었습니다</span>
                                     </div>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">환불 완료</span>
+                                    <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">취소완료</span>
                                 </div>
-                                ${ord.cancelReason ? `<p class="text-xs text-red-600">취소 사유: <strong>${ord.cancelReason}</strong></p>` : ''}
+                                ${ord.cancelReason ? `<p class="text-xs text-red-600">요청 사유: <strong>${ord.cancelReason}</strong></p>` : ''}
                                 ${ord.cancelDetail ? `<p class="text-[11px] text-red-500">상세 내용: ${ord.cancelDetail}</p>` : ''}
-                                ${ord.cancelledAt ? `<p class="text-[11px] text-grayText">취소 및 환불 일시: ${ord.cancelledAt}</p>` : ''}
                             </div>
                         ` : ''}
 
                         ${isBankTransfer ? `
                             <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2">
-                                <div class="flex items-center gap-2 text-amber-900 font-bold text-xs">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>무통장 입금 대기 안내</span>
-                                </div>
-                                <p class="text-[11px] text-amber-800 leading-relaxed">아래 계좌로 기한 내 입금해 주셔야 최종 주문이 완료됩니다.</p>
+                                <p class="text-xs font-bold text-amber-900">무통장 입금 대기 안내</p>
                                 <div class="p-3 bg-white rounded-xl border border-amber-200/60 text-xs space-y-1.5">
                                     <div class="flex justify-between"><span class="text-grayText">입금 은행</span><strong class="text-darkText">국민은행 274101-04-343976</strong></div>
                                     <div class="flex justify-between"><span class="text-grayText">예 금 주</span><strong class="text-darkText">양대희 (희츠키)</strong></div>
                                     <div class="flex justify-between"><span class="text-grayText">입금 금액</span><strong class="text-accentGreen">${ord.total}</strong></div>
-                                    <div class="flex justify-between items-start gap-2 pt-1 border-t border-black/5">
-                                        <span class="text-grayText flex-shrink-0">입금 기한</span>
-                                        <strong class="text-red-600 text-right">${displayDeadline}</strong>
-                                    </div>
                                 </div>
                             </div>
                         ` : ''}
@@ -3180,58 +2810,19 @@
                         <div class="space-y-2.5">
                             <h4 class="text-xs font-bold text-grayText uppercase tracking-wider">주문 상품 정보 (${ord.items ? ord.items.length : ord.itemsCount}종)</h4>
                             <div class="space-y-2.5">
-                                ${ord.items && ord.items.length > 0 ? ord.items.map(item => {
-                                    let desc = '자연의 숨결을 담은 프리미엄 시그니처 아이템';
-                                    let options = [item.option || '표준 옵션'];
-                                    let images = [item.image || 'https://placehold.co/600x600/E8F0EC/00712D?text=HEETSUKI'];
-                                    
-                                    if (item.name.includes('티셔츠')) {
-                                        desc = '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠';
-                                        options = ['S', 'M', 'L', 'XL'];
-                                        images = [
-                                            item.image,
-                                            'https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI+Tee+Back',
-                                            'https://placehold.co/600x600/DCE3DF/00712D?text=HEETSUKI+Tee+Detail'
-                                        ];
-                                    } else if (item.name.includes('수초')) {
-                                        desc = '우아하게 물결치는 아름다운 레이아웃 수초';
-                                        options = ['표준 포트 (1포트)', '대형 풍성 포트 (2포트)'];
-                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Vallisneria+2'];
-                                    } else if (item.name.includes('입출수구')) {
-                                        desc = '고투명 유리로 제작된 프리미엄 입출수구 세트';
-                                        options = ['13mm (일반형)', '17mm (대형형)'];
-                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Glass+Pipe+2'];
-                                    } else if (item.name.includes('어항')) {
-                                        desc = '45도 미이터 컷 고투명 올디아망 어항';
-                                        options = ['30큐브 (30x30x30)', '45큐브 (45x45x45)', '60사이즈 (60x30x36)'];
-                                        images = [item.image, 'https://placehold.co/600x600/DCE3DF/00712D?text=Tank+Miter+Cut'];
-                                    }
-
-                                    const safeName = item.name.replace(/'/g, "\\'");
-                                    const safePrice = formatPrice(item.price);
-                                    const safeDesc = desc.replace(/'/g, "\\'");
-                                    const optionsJson = JSON.stringify(options).replace(/"/g, '&quot;');
-                                    const imagesJson = JSON.stringify(images).replace(/"/g, '&quot;');
-
-                                    return `
-                                        <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 hover:border-black/20 transition-all group">
-                                            <div onclick="closeOrderDetailModal(); openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsJson}, ${imagesJson})" class="w-16 h-16 rounded-xl overflow-hidden bg-white border border-black/10 flex-shrink-0 cursor-pointer shadow-xs relative">
-                                                <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                                    <span class="opacity-0 group-hover:opacity-100 text-[10px] font-bold text-white bg-black/70 px-1.5 py-0.5 rounded">보기</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-1 min-w-0 cursor-pointer" onclick="closeOrderDetailModal(); openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsJson}, ${imagesJson})">
-                                                <h5 class="text-xs font-bold text-darkText group-hover:text-accentGreen transition-colors truncate">${item.name}</h5>
-                                                <p class="text-[11px] text-grayText mt-0.5">선택 옵션: <strong class="text-darkText">${item.option}</strong></p>
-                                                <p class="text-[11px] text-grayText">수량: <strong class="text-darkText">${item.qty}개</strong> · 개당 ${formatPrice(item.price)}</p>
-                                            </div>
-                                            <div class="text-right flex-shrink-0">
-                                                <span class="text-xs sm:text-sm font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
-                                            </div>
+                                ${ord.items && ord.items.length > 0 ? ord.items.map(item => `
+                                    <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5">
+                                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-xl object-cover bg-white border border-black/10 flex-shrink-0">
+                                        <div class="flex-1 min-w-0">
+                                            <h5 class="text-xs font-bold text-darkText truncate">${item.name}</h5>
+                                            <p class="text-[11px] text-grayText mt-0.5">선택 옵션: <strong class="text-darkText">${item.option}</strong></p>
+                                            <p class="text-[11px] text-grayText">수량: <strong class="text-darkText">${item.qty}개</strong> · 개당 ${formatPrice(item.price)}</p>
                                         </div>
-                                    `;
-                                }).join('') : `<p class="text-xs text-grayText">주문 상품 데이터가 기록되었습니다.</p>`}
+                                        <div class="text-right flex-shrink-0">
+                                            <span class="text-xs sm:text-sm font-bold text-darkText">${formatPrice(item.price * item.qty)}</span>
+                                        </div>
+                                    </div>
+                                `).join('') : `<p class="text-xs text-grayText">주문 상품 데이터가 기록되었습니다.</p>`}
                             </div>
                         </div>
 
@@ -3239,12 +2830,7 @@
                             <div class="p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-1.5">
                                 <h5 class="text-[11px] font-bold text-grayText uppercase">결제 정보</h5>
                                 <p class="text-xs font-semibold text-darkText">결제 수단: ${ord.payment}</p>
-                                <p class="text-xs font-bold ${isCancelled ? 'text-grayText line-through' : 'text-accentGreen'}">최종 금액: ${ord.total}</p>
-                                ${ord.payment === '무통장입금' ? `
-                                    <p class="text-[11px] text-darkText">입금 계좌: <span class="font-semibold">국민은행 274101-04-343976</span></p>
-                                    <p class="text-[11px] font-bold text-darkText">예 금 주: 양대희 (희츠키)</p>
-                                    <p class="text-[11px] font-bold ${isCancelled ? 'text-grayText line-through' : 'text-red-600'}">입금 기한: ${displayDeadline}</p>
-                                ` : ''}
+                                <p class="text-xs font-bold ${isCancelledDone ? 'text-grayText line-through' : 'text-accentGreen'}">최종 금액: ${ord.total}</p>
                                 <p class="text-[11px] text-grayText">주문 일시: ${ord.date}</p>
                             </div>
                             <div class="p-3.5 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-1.5">
@@ -3252,7 +2838,6 @@
                                 <p class="text-xs font-semibold text-darkText">수령인: ${ord.shippingInfo ? ord.shippingInfo.name : '고객'}</p>
                                 <p class="text-xs text-grayText">연락처: ${ord.shippingInfo ? ord.shippingInfo.phone : '미입력'}</p>
                                 <p class="text-xs text-grayText">주소: ${ord.shippingInfo ? ord.shippingInfo.address : '일반 배송지'}</p>
-                                ${ord.shippingInfo && ord.shippingInfo.memo ? `<p class="text-[11px] text-grayText">요청사항: ${ord.shippingInfo.memo}</p>` : ''}
                             </div>
                         </div>
                     </div>
@@ -3260,14 +2845,13 @@
                     <div class="pt-4 border-t border-black/10 flex items-center justify-between gap-3">
                         <div class="flex items-center gap-2">
                             ${canCancel ? `
-                                <button type="button" onclick="openCancelOrderModal(${orderIndex})" class="px-4 py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 text-xs sm:text-sm font-semibold transition-colors">
-                                    주문 취소
+                                <button type="button" onclick="openCancelOrderModal(${orderIndex})" class="px-4 py-3 rounded-2xl bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 text-xs sm:text-sm font-semibold transition-colors">
+                                    취소요청
                                 </button>
                             ` : ''}
                             ${canDelete ? `
-                                <button type="button" onclick="deleteOrderHistory(${orderIndex})" class="px-4 py-3 rounded-2xl bg-gray-200 hover:bg-gray-300 text-darkText text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    <span>주문 내역 삭제</span>
+                                <button type="button" onclick="deleteOrderHistory(${orderIndex})" class="px-4 py-3 rounded-2xl bg-gray-200 hover:bg-gray-300 text-darkText text-xs sm:text-sm font-semibold transition-colors">
+                                    주문 내역 삭제
                                 </button>
                             ` : ''}
                         </div>
@@ -3290,36 +2874,24 @@
             }
         };
 
-        window.deleteOrderHistory = async function(orderIndex) {
+        window.deleteOrderHistory = function(orderIndex) {
             const orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
-            const ord = orders[orderIndex];
-            if (!ord) return;
+            if (!orders[orderIndex]) return;
 
-            if (!confirm('정말 주문 내역을 삭제하시겠습니까? 삭제된 내역은 복구할 수 없습니다.')) {
-                return;
-            }
-
-            const deletedOrderId = ord.id;
-            orders.splice(orderIndex, 1);
-            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
-
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await deleteDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', deletedOrderId));
+            openCustomConfirmModal(
+                '주문 내역 삭제',
+                '정말 주문 내역을 삭제하시겠습니까? 삭제된 내역은 복구할 수 없습니다.',
+                function() {
+                    orders.splice(orderIndex, 1);
+                    localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
+                    closeOrderDetailModal();
+                    showToast('주문 내역이 깔끔하게 삭제되었습니다.');
+                    const myPageModal = document.getElementById('mypage-modal');
+                    if (myPageModal && !myPageModal.classList.contains('hidden')) {
+                        openMyPageModal();
+                    }
                 }
-            } catch (err) {
-                console.warn('Firestore order deletion sync fallback:', err);
-            }
-
-            closeOrderDetailModal();
-            showToast('주문 내역이 깔끔하게 삭제되었습니다.');
-
-            const myPageModal = document.getElementById('mypage-modal');
-            if (myPageModal && !myPageModal.classList.contains('hidden')) {
-                openMyPageModal();
-            }
+            );
         };
 
         window.openCancelOrderModal = function(orderIndex) {
@@ -3352,8 +2924,8 @@
                 <div class="bg-white border border-black/10 rounded-[28px] max-w-md w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
                     <div class="flex items-center justify-between pb-4 border-b border-black/10">
                         <div>
-                            <span class="text-[11px] font-bold text-red-600 uppercase tracking-wider">CANCEL ORDER</span>
-                            <h3 class="text-xl font-bold text-darkText mt-0.5">주문 취소 신청</h3>
+                            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">CANCEL REQUEST</span>
+                            <h3 class="text-xl font-bold text-darkText mt-0.5">주문 취소요청 신청</h3>
                         </div>
                         <button type="button" onclick="closeCancelOrderModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -3362,7 +2934,7 @@
 
                     <div class="py-5 space-y-5 text-sm">
                         <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 space-y-1.5">
-                            <p class="text-[11px] font-bold text-grayText uppercase">취소 대상 주문 요약</p>
+                            <p class="text-[11px] font-bold text-grayText uppercase">취소요청 대상 주문 요약</p>
                             <div class="flex justify-between text-xs pt-1">
                                 <span class="text-grayText">주문 번호</span>
                                 <span class="font-bold text-darkText">${ord.id}</span>
@@ -3378,37 +2950,37 @@
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-xs font-bold text-darkText">취소 사유 선택 <span class="text-red-500">*</span></label>
+                            <label class="block text-xs font-bold text-darkText">취소요청 사유 선택 <span class="text-red-500">*</span></label>
                             <div class="space-y-2" id="cancel-reasons-group">
-                                ${cancelReasons.map((reason, idx) => `
+                                ${cancelReasons.map((reason) => `
                                     <label class="flex items-center gap-3 p-3 rounded-xl bg-[#F5F5F7] hover:bg-black/[0.04] border border-black/5 cursor-pointer transition-colors">
                                         <input type="radio" name="cancel-reason-radio" value="${reason}" onchange="handleCancelReasonChange(this.value)" class="w-4 h-4 accent-[#00712D] cursor-pointer">
                                         <span class="text-xs font-medium text-darkText">${reason}</span>
                                     </label>
                                 `).join('')}
                             </div>
-                            <p id="error-cancel-reason" class="text-xs text-red-500 font-semibold hidden">취소 사유를 선택해 주세요.</p>
+                            <p id="error-cancel-reason" class="text-xs text-red-500 font-semibold hidden">취소요청 사유를 선택해 주세요.</p>
                         </div>
 
                         <div class="space-y-1.5">
-                            <label class="block text-xs font-bold text-darkText">상세 취소 사유 <span id="cancel-detail-badge" class="text-grayText font-normal">(선택)</span></label>
-                            <textarea id="cancel-detail-textarea" rows="3" oninput="clearCancelDetailError()" placeholder="상세한 취소 사유나 요청사항을 입력해 주세요." class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none resize-none"></textarea>
+                            <label class="block text-xs font-bold text-darkText">상세 요청 사유 <span id="cancel-detail-badge" class="text-grayText font-normal">(선택)</span></label>
+                            <textarea id="cancel-detail-textarea" rows="3" oninput="clearCancelDetailError()" placeholder="상세한 취소요청 사유나 전달사항을 입력해 주세요." class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none resize-none"></textarea>
                             <p id="error-cancel-detail" class="text-xs text-red-500 font-semibold hidden">기타 사유 선택 시 상세 내용을 입력해 주세요.</p>
                         </div>
 
-                        <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/70 space-y-1 text-[11px] text-amber-900 leading-relaxed">
-                            <p class="font-bold">환불 및 취소 처리 안내</p>
-                            <p>• 무통장입금 대기 건은 신청 즉시 취소 처리됩니다.</p>
-                            <p>• 카드 및 간편결제 완료 건은 취소 승인 후 영업일 기준 2~5일 이내에 원결제 수단으로 환불됩니다.</p>
+                        <div class="p-3.5 rounded-2xl bg-orange-50/80 border border-orange-200/70 space-y-1 text-[11px] text-orange-900 leading-relaxed">
+                            <p class="font-bold">취소요청 접수 안내</p>
+                            <p>• 취소요청 즉시 관리자(heetsuki001@gmail.com)에게 알림 메일이 발송됩니다.</p>
+                            <p>• 관리자 확인 후 '취소완료' 상태로 변경 및 환불 절차가 진행됩니다.</p>
                         </div>
                     </div>
 
                     <div class="pt-4 border-t border-black/10 grid grid-cols-2 gap-2.5">
                         <button type="button" onclick="closeCancelOrderModal()" class="w-full py-3.5 rounded-2xl bg-[#F5F5F7] hover:bg-black/10 text-darkText text-xs sm:text-sm font-semibold transition-colors">
-                            취소 철회/닫기
+                            닫기
                         </button>
-                        <button type="button" onclick="submitOrderCancellation(${orderIndex})" class="w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold transition-colors shadow-sm">
-                            주문 취소 신청하기
+                        <button type="button" onclick="submitOrderCancellation(${orderIndex})" class="w-full py-3.5 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white text-xs sm:text-sm font-semibold transition-colors shadow-sm">
+                            취소요청 접수하기
                         </button>
                     </div>
                 </div>
@@ -3449,7 +3021,7 @@
             }
         };
 
-        window.submitOrderCancellation = async function(orderIndex) {
+        window.submitOrderCancellation = function(orderIndex) {
             const selectedRadio = document.querySelector('input[name="cancel-reason-radio"]:checked');
             const reasonErr = document.getElementById('error-cancel-reason');
             const detailTextarea = document.getElementById('cancel-detail-textarea');
@@ -3457,7 +3029,7 @@
 
             if (!selectedRadio) {
                 if (reasonErr) reasonErr.classList.remove('hidden');
-                showToast('취소 사유를 선택해 주세요.');
+                showToast('취소요청 사유를 선택해 주세요.');
                 return;
             }
 
@@ -3475,32 +3047,11 @@
             const ord = orders[orderIndex];
             if (!ord) return;
 
-            ord.status = '주문 취소됨';
-            ord.cancelReason = selectedReason;
-            ord.cancelDetail = detailText;
-            ord.cancelledAt = new Date().toLocaleDateString('ko-KR') + ' ' + new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-
-            orders[orderIndex] = ord;
-            localStorage.setItem('heetsuki_orders', JSON.stringify(orders));
-
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'orders', ord.id), ord, { merge: true });
-                }
-            } catch (err) {
-                console.warn('Firestore order cancellation sync fallback:', err);
-            }
-
-            try {
-                window.requestOrderCancel(ord.id, selectedReason);
-            } catch (cancelMailErr) {
-                console.error("[주문 취소 메일 호출 에러]", cancelMailErr);
-            }
+            // Update status to '취소요청' and dispatch EmailJS notification to heetsuki001@gmail.com
+            window.requestOrderCancel(ord.id, selectedReason, detailText);
 
             closeCancelOrderModal();
-            showToast(`[${ord.id}] 주문 취소가 완료되었습니다.`);
+            showToast(`[${ord.id}] 취소요청이 접수되었으며 관리자에게 알림이 발송되었습니다.`);
 
             openOrderDetailModal(orderIndex);
 
@@ -3510,7 +3061,7 @@
             }
         };
 
-        window.saveMyPageShippingInfo = async function() {
+        window.saveMyPageShippingInfo = function() {
             const name = document.getElementById('mypage-ship-name').value.trim();
             const phone = document.getElementById('mypage-ship-phone').value.trim();
             const zipcode = document.getElementById('mypage-ship-zip').value.trim();
@@ -3518,7 +3069,6 @@
             const detail = document.getElementById('mypage-ship-detail').value.trim();
 
             const newInfo = { name, phone, zipcode, address, detail };
-            
             localStorage.setItem('heetsuki_shipping_info', JSON.stringify(newInfo));
 
             if (name) {
@@ -3535,39 +3085,53 @@
                 } catch(e) {}
             }
 
-            try {
-                if (window.auth && window.auth.currentUser && window.db) {
-                    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
-                    const uid = window.auth.currentUser.uid;
-                    await setDoc(doc(window.db, 'artifacts', appId, 'users', uid, 'profile', 'shipping'), newInfo);
-                }
-            } catch (err) {
-                console.warn('Cloud shipping save fallback:', err);
-            }
-
             showToast('배송지 정보가 안전하게 저장되었습니다.');
-        };
-
-        window.removeWishlistItem = function(index) {
-            let wishlist = JSON.parse(localStorage.getItem('heetsuki_wishlist') || '[]');
-            wishlist.splice(index, 1);
-            localStorage.setItem('heetsuki_wishlist', JSON.stringify(wishlist));
-            showToast('찜한 상품이 삭제되었습니다.');
-            openMyPageModal();
         };
 
         window.handleAccountWithdrawal = function() {
             openCustomConfirmModal(
                 '회원 탈퇴 및 연동 해제',
-                '정말로 회원 탈퇴 및 소셜 연동을 해제하시겠습니까? 모든 정보가 초기화됩니다.',
+                '정말로 회원 탈퇴를 진행하시겠습니까? 가입된 계정 정보와 데이터가 즉시 삭제됩니다.',
                 function() {
+                    let currentEmail = '';
+                    try {
+                        const savedUser = JSON.parse(localStorage.getItem('heetsuki_logged_in_user') || 'null');
+                        if (savedUser && savedUser.email) {
+                            currentEmail = savedUser.email.toLowerCase();
+                        }
+                    } catch(e) {}
+
+                    if (currentEmail) {
+                        try {
+                            const users = JSON.parse(localStorage.getItem('heetsuki_registered_users') || '[]');
+                            const filtered = users.filter(u => u.email.toLowerCase() !== currentEmail);
+                            localStorage.setItem('heetsuki_registered_users', JSON.stringify(filtered));
+                        } catch(e) {}
+                    }
+
+                    try {
+                        if (window.auth && typeof window.auth.signOut === 'function') {
+                            window.auth.signOut().catch(() => {});
+                        }
+                    } catch(e) {}
+
                     localStorage.removeItem('heetsuki_logged_in_user');
                     localStorage.removeItem('heetsuki_shipping_info');
                     localStorage.removeItem('heetsuki_orders');
                     localStorage.removeItem('heetsuki_wishlist');
-                    closeMyPageModal();
-                    showToast('회원 탈퇴 및 연동 해제가 완료되었습니다.');
-                    window.location.reload();
+
+                    if (typeof window.closeMyPageModal === 'function') {
+                        window.closeMyPageModal();
+                    }
+                    if (typeof window.closeAdminDashboardModal === 'function') {
+                        window.closeAdminDashboardModal();
+                    }
+
+                    if (typeof window.applyLogoutState === 'function') {
+                        window.applyLogoutState();
+                    }
+
+                    showToast('회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.');
                 }
             );
         };
@@ -3625,102 +3189,47 @@
                 }).open();
                 return;
             }
-
             showToast('카카오 우편번호 서비스를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
         }
 
         function selectDaumAddress(zip, road, detailHint = '') {
             const cleanZip = String(zip || '21077').replace(/[^0-9]/g, '').padStart(5, '0').slice(0, 5);
-
             const orderZip = document.getElementById('order-zipcode');
             const orderAddr = document.getElementById('order-address');
             const orderDetail = document.getElementById('order-address-detail');
-            const orderZipErr = document.getElementById('error-order-zipcode');
 
-            if (orderZip) {
-                orderZip.value = cleanZip;
-                orderZip.classList.remove('border-red-500');
+            if (orderZip) { orderZip.value = cleanZip; orderZip.classList.remove('border-red-500'); }
+            if (orderAddr) { orderAddr.value = road; orderAddr.classList.remove('border-red-500'); }
+            if (orderDetail && !orderDetail.value && detailHint) {
+                orderDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
             }
-            if (orderAddr) {
-                orderAddr.value = road;
-                orderAddr.classList.remove('border-red-500');
-            }
-            if (orderZipErr) {
-                orderZipErr.classList.add('hidden');
-            }
-            if (orderDetail) {
-                orderDetail.classList.remove('border-red-500');
-                if (!orderDetail.value && detailHint) {
-                    orderDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
-                }
-            }
-            
-            const addrErr = document.getElementById('error-order-address-detail');
-            if (addrErr) addrErr.classList.add('hidden');
-            const globalErr = document.getElementById('error-checkout-global');
-            if (globalErr) globalErr.classList.add('hidden');
 
             const myPageZip = document.getElementById('mypage-ship-zip');
             const myPageAddr = document.getElementById('mypage-ship-addr');
-            const myPageDetail = document.getElementById('mypage-ship-detail');
-
             if (myPageZip) myPageZip.value = cleanZip;
             if (myPageAddr) myPageAddr.value = road;
-            if (myPageDetail) {
-                if (detailHint && !myPageDetail.value) {
-                    myPageDetail.placeholder = `상세 주소 입력 (예: ${detailHint})`;
-                }
-                setTimeout(() => myPageDetail.focus(), 80);
-            } else if (orderDetail) {
-                setTimeout(() => orderDetail.focus(), 80);
-            }
 
-            showToast(`[${cleanZip}] 5자리 우편번호와 도로명 주소가 정확하게 입력되었습니다.`);
+            showToast(`[${cleanZip}] 우편번호와 도로명 주소가 입력되었습니다.`);
         }
 
         function formatPhoneNumber(input) {
-            let cursorPosition = input.selectionStart;
-            let originalValue = input.value;
-            
-            let num = originalValue.replace(/[^0-9]/g, '');
+            let num = input.value.replace(/[^0-9]/g, '');
             let formatted = '';
-
             if (num.startsWith('02')) {
                 if (num.length > 10) num = num.slice(0, 10);
-                if (num.length >= 10) {
-                    formatted = num.replace(/^(\d{2})(\d{4})(\d{4})$/, '$1-$2-$3');
-                } else if (num.length > 5) {
-                    formatted = num.replace(/^(\d{2})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
-                } else if (num.length > 2) {
-                    formatted = num.replace(/^(\d{2})(\d{1,3})$/, '$1-$2');
-                } else {
-                    formatted = num;
-                }
+                if (num.length >= 10) formatted = num.replace(/^(\d{2})(\d{4})(\d{4})$/, '$1-$2-$3');
+                else if (num.length > 5) formatted = num.replace(/^(\d{2})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
+                else if (num.length > 2) formatted = num.replace(/^(\d{2})(\d{1,3})$/, '$1-$2');
+                else formatted = num;
             } else {
                 if (num.length > 11) num = num.slice(0, 11);
-                if (num.length >= 11) {
-                    formatted = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
-                } else if (num.length === 10) {
-                    formatted = num.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
-                } else if (num.length > 6) {
-                    formatted = num.replace(/^(\d{3})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
-                } else if (num.length > 3) {
-                    formatted = num.replace(/^(\d{3})(\d{1,4})$/, '$1-$2');
-                } else {
-                    formatted = num;
-                }
+                if (num.length >= 11) formatted = num.replace(/^(\d{3})(\d{4})(\d{4})$/, '$1-$2-$3');
+                else if (num.length === 10) formatted = num.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
+                else if (num.length > 6) formatted = num.replace(/^(\d{3})(\d{3,4})(\d{1,4})$/, '$1-$2-$3');
+                else if (num.length > 3) formatted = num.replace(/^(\d{3})(\d{1,4})$/, '$1-$2');
+                else formatted = num;
             }
-
-            if (input.value !== formatted) {
-                let oldLength = input.value.length;
-                input.value = formatted;
-                
-                try {
-                    let diff = input.value.length - oldLength;
-                    let newPos = Math.max(0, cursorPosition + diff);
-                    input.setSelectionRange(newPos, newPos);
-                } catch (e) {}
-            }
+            if (input.value !== formatted) input.value = formatted;
         }
 
         function switchAuthTab(mode) {
