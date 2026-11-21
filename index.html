@@ -579,7 +579,6 @@
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <!-- EmailJS SDK Integration for Client-Side Admin Notifications -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/emailjs.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         const EMAIL_PUBLIC_KEY = "9-bO9uG0_a6r4qV9m";
@@ -587,54 +586,15 @@
         const EMAIL_TEMPLATE_ID = "template_w4lct8h";
         const ADMIN_EMAIL = "heetsuki001@gmail.com";
 
-        let isEmailJsInitialized = false;
-
-        window.ensureEmailJsReady = function() {
+        (function initEmailJS() {
             try {
-                if (typeof emailjs === 'undefined') {
-                    console.warn("[EmailJS] SDK 전역 객체가 아직 로드되지 않았습니다.");
-                    return false;
-                }
-                if (!isEmailJsInitialized && typeof emailjs.init === 'function') {
+                if (typeof emailjs !== 'undefined') {
                     emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
-                    isEmailJsInitialized = true;
                 }
-                return typeof emailjs.send === 'function';
             } catch (e) {
-                console.error("[EmailJS] 초기화 중 오류가 발생했습니다:", e);
-                return false;
+                console.warn("[EmailJS] 초기화 예외 방어 처리:", e);
             }
-        };
-
-        window.dispatchAdminMail = function(mailType, templateParams) {
-            const payload = {
-                to_email: ADMIN_EMAIL,
-                admin_email: ADMIN_EMAIL,
-                ...(templateParams || {})
-            };
-
-            if (!EMAIL_PUBLIC_KEY || !EMAIL_SERVICE_ID || !EMAIL_TEMPLATE_ID) {
-                console.warn(`[EmailJS ${mailType}] 키 또는 템플릿 ID가 비어 있어 발송을 건너뜁니다. 수신 대상: ${ADMIN_EMAIL}`);
-                return;
-            }
-            if (!window.ensureEmailJsReady()) {
-                console.warn(`[EmailJS ${mailType}] EmailJS SDK가 준비되지 않아 발송을 건너뜁니다. 수신 대상: ${ADMIN_EMAIL}`);
-                return;
-            }
-            try {
-                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, payload, { publicKey: EMAIL_PUBLIC_KEY })
-                    .then(function(response) {
-                        console.log(`[EmailJS ${mailType} 발송 성공 -> ${ADMIN_EMAIL}]`, response.status || response);
-                    })
-                    .catch(function(error) {
-                        console.error(`[EmailJS ${mailType} 발송 실패 -> ${ADMIN_EMAIL}]`, error);
-                    });
-            } catch (err) {
-                console.error(`[EmailJS ${mailType} 전송 예외 -> ${ADMIN_EMAIL}]`, err);
-            }
-        };
-
-        window.ensureEmailJsReady();
+        })();
 
         window.getCurrentUserName = function(targetOrder) {
             if (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name) {
@@ -726,7 +686,6 @@
 
             const templateParams = {
                 to_email: ADMIN_EMAIL,
-                admin_email: ADMIN_EMAIL,
                 title: `[HEETSUKI 신규 주문] ${customerName}님의 주문이 접수되었습니다. (${orderId})`,
                 name: customerName,
                 order_id: orderId,
@@ -734,7 +693,15 @@
                 message: orderMessage
             };
 
-            window.dispatchAdminMail('신규 주문 접수', templateParams);
+            try {
+                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams, EMAIL_PUBLIC_KEY)
+                        .then(res => console.log("[EmailJS 신규 주문 발송 성공]", res.status))
+                        .catch(err => console.warn("[EmailJS 신규 주문 발송 경고 - 방어됨]", err));
+                }
+            } catch (e) {
+                console.warn("[EmailJS 발송 방어 처리]", e);
+            }
         };
 
         // 2. 사용자 취소요청 시 관리자 이메일("heetsuki001@gmail.com") 발송 및 상태 반영
@@ -819,7 +786,6 @@
 
             const cancelParams = {
                 to_email: ADMIN_EMAIL,
-                admin_email: ADMIN_EMAIL,
                 title: `[HEETSUKI 취소요청] ${customerName}님의 취소요청이 접수되었습니다. (${safeOrderId})`,
                 name: customerName,
                 order_id: safeOrderId,
@@ -827,7 +793,28 @@
                 message: cancelMessage
             };
 
-            window.dispatchAdminMail('주문 취소요청', cancelParams);
+            console.log("[EmailJS 취소요청 발송 시도]", {
+                service: EMAIL_SERVICE_ID,
+                template: EMAIL_TEMPLATE_ID,
+                to_email: ADMIN_EMAIL,
+                params: cancelParams
+            });
+
+            try {
+                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, cancelParams, EMAIL_PUBLIC_KEY)
+                        .then(function(response) {
+                            console.log("취소요청 메일 전송 성공:", response);
+                        })
+                        .catch(function(error) {
+                            console.warn("취소요청 메일 전송 경고(방어됨):", error);
+                        });
+                } else {
+                    console.warn("EmailJS SDK 미로드 상태(방어 처리됨)");
+                }
+            } catch (err) {
+                console.warn("취소요청 메일 발송 중 예외 방어됨:", err);
+            }
         };
     </script>
 
