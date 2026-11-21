@@ -121,7 +121,7 @@
         </div>
     </section>
 
-    <!-- Products Section -->
+            <!-- Products Section -->
     <main id="products-section" class="max-w-6xl mx-auto px-4 sm:px-8 py-16 sm:py-24">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
             <div>
@@ -129,11 +129,11 @@
                 <p class="text-base text-grayText mt-2">자연의 숨결을 담은 프리미엄 시그니처 아이템</p>
             </div>
             <div class="flex items-center gap-2 text-sm font-medium text-grayText">
-                <span>총 <strong class="text-darkText">4</strong>개 상품</span>
+                <span>총 <strong id="products-total-count" class="text-darkText">4</strong>개 상품</span>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
             <!-- Item 1: 프리미엄 티셔츠 (의류) -->
             <div onclick="openProductModal('프리미엄 피츠키 티셔츠', '₩100', '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠', ['S', 'M', 'L', 'XL'], [
                 'https://placehold.co/600x600/E8F0EC/00712D?text=HEETSUKI+Tee+Front',
@@ -1255,6 +1255,413 @@
             if (btn) btn.remove();
         }
 
+        const DEFAULT_STORE_PRODUCTS = [
+            {
+                id: 'prod-tee',
+                badge: 'APPAREL',
+                name: '프리미엄 피츠키 티셔츠',
+                priceStr: '₩100',
+                desc: '최고급 코튼 소재로 제작된 헤비웨이트 시그니처 티셔츠',
+                options: ['S', 'M', 'L', 'XL'],
+                images: [
+                    'https://placehold.co/600x600/E8F0EC/00712D?text=HEETSUKI+Tee+Front',
+                    'https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI+Tee+Back',
+                    'https://placehold.co/600x600/DCE3DF/00712D?text=HEETSUKI+Tee+Detail+1',
+                    'https://placehold.co/600x600/D5DDD9/00712D?text=HEETSUKI+Tee+Detail+2',
+                    'https://placehold.co/600x600/CED7D3/00712D?text=HEETSUKI+Tee+Label'
+                ],
+                svgType: 'apparel'
+            },
+            {
+                id: 'prod-vallisneria',
+                badge: 'PLANT',
+                name: '발리스네리아 수초',
+                priceStr: '₩100',
+                desc: '우아하게 물결치는 아름다운 레이아웃 수초',
+                options: ['표준 포트 (1포트)', '대형 풍성 포트 (2포트)'],
+                images: [
+                    'https://placehold.co/600x600/E3E8E5/00712D?text=Vallisneria+1',
+                    'https://placehold.co/600x600/DCE3DF/00712D?text=Vallisneria+2',
+                    'https://placehold.co/600x600/D5DDD9/00712D?text=Vallisneria+3'
+                ],
+                svgType: 'plant'
+            },
+            {
+                id: 'prod-pipe',
+                badge: 'HARDSCAPE',
+                name: '미니 유리 입출수구',
+                priceStr: '₩100',
+                desc: '고투명 유리로 제작된 프리미엄 입출수구 세트',
+                options: ['13mm (일반형)', '17mm (대형형)'],
+                images: [
+                    'https://placehold.co/600x600/E3E8E5/00712D?text=Glass+Pipe+1',
+                    'https://placehold.co/600x600/DCE3DF/00712D?text=Glass+Pipe+2'
+                ],
+                svgType: 'hardscape'
+            },
+            {
+                id: 'prod-tank',
+                badge: 'TANK',
+                name: '올디아망 어항',
+                priceStr: '₩100',
+                desc: '45도 미이터 컷 고투명 올디아망 어항',
+                options: ['30큐브 (30x30x30)', '45큐브 (45x45x45)', '60사이즈 (60x30x36)'],
+                images: [
+                    'https://placehold.co/600x600/E3E8E5/00712D?text=Tank+Front',
+                    'https://placehold.co/600x600/DCE3DF/00712D?text=Tank+Miter+Cut'
+                ],
+                svgType: 'tank'
+            }
+        ];
+
+        function getStoreProducts() {
+            try {
+                const raw = localStorage.getItem('heetsuki_products');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {}
+            const clonedDefaults = JSON.parse(JSON.stringify(DEFAULT_STORE_PRODUCTS));
+            try {
+                localStorage.setItem('heetsuki_products', JSON.stringify(clonedDefaults));
+            } catch (e) {}
+            return clonedDefaults;
+        }
+
+        function saveStoreProducts(products) {
+            try {
+                localStorage.setItem('heetsuki_products', JSON.stringify(products));
+            } catch (e) {}
+        }
+
+        function normalizePriceDisplay(priceInput) {
+            if (typeof priceInput === 'number') {
+                return '₩' + Math.max(0, Math.floor(priceInput)).toLocaleString('ko-KR');
+            }
+            const str = String(priceInput || '').trim();
+            if (!str) return '₩0';
+            const digits = parseInt(str.replace(/[^0-9]/g, ''), 10);
+            if (!isNaN(digits)) {
+                return '₩' + digits.toLocaleString('ko-KR');
+            }
+            return str.startsWith('₩') ? str : ('₩' + str);
+        }
+
+        function getProductCardSvg(svgType) {
+            if (svgType === 'plant') {
+                return `
+                    <svg class="w-36 h-36 text-accentGreen/80 transform group-hover:scale-105 transition-transform duration-500" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M100 30 C120 70, 140 120, 100 170 C60 120, 80 70, 100 30 Z" fill="rgba(0,113,45,0.08)"/>
+                        <path d="M70 50 C85 90, 95 130, 70 160" stroke-dasharray="4 4"/>
+                        <path d="M130 50 C115 90, 105 130, 130 160" stroke-dasharray="4 4"/>
+                    </svg>
+                `;
+            }
+            if (svgType === 'hardscape') {
+                return `
+                    <svg class="w-36 h-36 text-accentGreen/80 transform group-hover:scale-105 transition-transform duration-500" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M70 40 C70 30, 130 30, 130 40 L130 120 C130 150, 100 170, 100 170 C100 170, 70 150, 70 120 Z" fill="rgba(0,113,45,0.08)"/>
+                        <path d="M90 70 L110 70"/>
+                    </svg>
+                `;
+            }
+            if (svgType === 'tank') {
+                return `
+                    <svg class="w-36 h-36 text-accentGreen/80 transform group-hover:scale-105 transition-transform duration-500" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3">
+                        <rect x="40" y="60" width="120" height="80" rx="4" fill="rgba(0,113,45,0.08)"/>
+                        <line x1="40" y1="60" x2="60" y2="40"/>
+                        <line x1="160" y1="60" x2="140" y2="40"/>
+                    </svg>
+                `;
+            }
+            return `
+                <svg class="w-36 h-36 text-accentGreen/80 transform group-hover:scale-105 transition-transform duration-500" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3">
+                    <path d="M60 50 L100 35 L140 50 L160 90 L130 95 L130 160 L70 160 L70 95 L40 90 Z" fill="rgba(0,113,45,0.08)"/>
+                    <path d="M100 35 L100 160" stroke-dasharray="4 4"/>
+                </svg>
+            `;
+        }
+
+        function escapeJsSingleQuote(str) {
+            return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
+        }
+
+        function renderMainStoreProducts() {
+            const gridEl = document.getElementById('products-grid');
+            const countEl = document.getElementById('products-total-count');
+            const products = getStoreProducts();
+
+            if (countEl) {
+                countEl.textContent = String(products.length);
+            }
+
+            if (!gridEl) return;
+
+            gridEl.innerHTML = products.map((prod) => {
+                const badge = (prod.badge || 'ITEM').toUpperCase();
+                const name = prod.name || 'HEETSUKI 상품';
+                const priceStr = normalizePriceDisplay(prod.priceStr);
+                const desc = prod.desc || '자연의 숨결을 담은 프리미엄 시그니처 아이템';
+                const options = Array.isArray(prod.options) && prod.options.length > 0 ? prod.options : ['기본 옵션'];
+                const images = Array.isArray(prod.images) && prod.images.length > 0
+                    ? prod.images
+                    : [`https://placehold.co/600x600/E3E8E5/00712D?text=${encodeURIComponent(name)}`];
+
+                const safeName = escapeJsSingleQuote(name);
+                const safePrice = escapeJsSingleQuote(priceStr);
+                const safeDesc = escapeJsSingleQuote(desc);
+                const optionsAttr = JSON.stringify(options).replace(/"/g, '&quot;');
+                const imagesAttr = JSON.stringify(images).replace(/"/g, '&quot;');
+
+                const visualContent = prod.customImage && prod.images && prod.images[0]
+                    ? `<img src="${prod.images[0]}" alt="${name}" onerror="this.src='https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI'" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">`
+                    : getProductCardSvg(prod.svgType);
+
+                return `
+                    <div onclick="openProductModal('${safeName}', '${safePrice}', '${safeDesc}', ${optionsAttr}, ${imagesAttr})" class="apple-card p-8 sm:p-10 flex flex-col justify-between cursor-pointer group">
+                        <div class="w-full h-72 sm:h-80 bg-[#F5F5F7] rounded-3xl flex items-center justify-center relative overflow-hidden mb-8">
+                            ${visualContent}
+                            <span class="absolute top-5 left-5 px-3.5 py-1.5 rounded-full bg-white/90 text-xs font-semibold text-accentGreen shadow-xs">${badge}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-darkText group-hover:text-accentGreen transition-colors">${name}</h3>
+                            <p class="text-base text-grayText mt-2">${desc}</p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-2xl font-bold text-darkText">${priceStr}</span>
+                                <span class="text-base font-semibold text-accentGreen flex items-center gap-1.5 group-hover:translate-x-1.5 transition-transform">
+                                    옵션 선택 및 구매 &rarr;
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        window.renderMainStoreProducts = renderMainStoreProducts;
+
+        function renderAdminProductsTabHtml(products) {
+            return `
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-darkText">등록된 상품 목록 및 가격 관리</h4>
+                    <button type="button" onclick="openProductEditorModal(null)" class="px-3.5 py-2 rounded-xl bg-accentGreen hover:bg-accentGreenHover text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer">+ 신규 상품 등록</button>
+                </div>
+                <div id="admin-products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    ${products.map((prod, pIdx) => {
+                        const optText = Array.isArray(prod.options) && prod.options.length > 0 ? prod.options.join(', ') : '기본 옵션';
+                        return `
+                            <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between gap-3">
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="px-2 py-0.5 rounded bg-white text-[10px] font-bold text-accentGreen border border-black/5">${prod.badge || 'ITEM'}</span>
+                                        <h5 class="text-xs font-bold text-darkText truncate">${prod.name}</h5>
+                                    </div>
+                                    <p class="text-[11px] text-grayText truncate mt-1">옵션: ${optText}</p>
+                                    <p class="text-xs font-bold text-accentGreen mt-1">${normalizePriceDisplay(prod.priceStr)}</p>
+                                </div>
+                                <div class="flex items-center gap-1.5 flex-shrink-0">
+                                    <button type="button" onclick="openProductEditorModal(${pIdx})" class="px-3 py-1.5 rounded-xl bg-white hover:bg-black/5 border border-black/10 text-xs font-semibold text-darkText transition-colors cursor-pointer">수정</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        window.openProductEditorModal = function(productIndex) {
+            const products = getStoreProducts();
+            const isEdit = typeof productIndex === 'number' && productIndex >= 0 && products[productIndex];
+            const target = isEdit ? products[productIndex] : {
+                id: 'prod-' + Date.now(),
+                badge: 'NEW',
+                name: '',
+                priceStr: '₩100',
+                desc: '',
+                options: ['기본 옵션'],
+                images: ['https://placehold.co/600x600/E3E8E5/00712D?text=HEETSUKI+Item'],
+                svgType: 'apparel',
+                customImage: false
+            };
+
+            let editorModal = document.getElementById('admin-product-editor-modal');
+            if (!editorModal) {
+                editorModal = document.createElement('div');
+                editorModal.id = 'admin-product-editor-modal';
+                editorModal.className = 'fixed inset-0 z-[150] hidden items-center justify-center p-4 bg-black/65 backdrop-blur-sm';
+                document.body.appendChild(editorModal);
+            }
+
+            const optionsJoined = Array.isArray(target.options) ? target.options.join(', ') : '';
+            const primaryImage = Array.isArray(target.images) && target.images[0] ? target.images[0] : '';
+
+            editorModal.innerHTML = `
+                <div class="bg-white border border-black/10 rounded-[28px] max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center justify-between pb-4 border-b border-black/10">
+                        <div>
+                            <span class="text-[11px] font-bold text-accentGreen uppercase tracking-wider">PRODUCT MANAGER</span>
+                            <h3 class="text-xl font-bold text-darkText mt-0.5">${isEdit ? '상품 정보 수정' : '신규 상품 등록'}</h3>
+                        </div>
+                        <button type="button" onclick="closeProductEditorModal()" class="p-1.5 rounded-full text-grayText hover:bg-black/5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    <form onsubmit="saveProductFromEditor(event, ${isEdit ? productIndex : 'null'})" class="py-5 space-y-4 text-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-darkText mb-1.5">상품명 <span class="text-red-500">*</span></label>
+                                <input type="text" id="prod-edit-name" required value="${(target.name || '').replace(/"/g, '&quot;')}" placeholder="예: 프리미엄 수초 레이아웃 세트" class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-darkText mb-1.5">카테고리/뱃지</label>
+                                <input type="text" id="prod-edit-badge" value="${(target.badge || 'ITEM').replace(/"/g, '&quot;')}" placeholder="APPAREL / PLANT" class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-darkText mb-1.5">가격 <span class="text-red-500">*</span></label>
+                            <input type="text" id="prod-edit-price" required value="${normalizePriceDisplay(target.priceStr)}" placeholder="예: ₩100 또는 15000" class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-darkText mb-1.5">상품 설명 <span class="text-red-500">*</span></label>
+                            <textarea id="prod-edit-desc" rows="2" required placeholder="상품 상세 설명을 입력하세요" class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none resize-none">${target.desc || ''}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-darkText mb-1.5">옵션 목록 (쉼표로 구분)</label>
+                            <input type="text" id="prod-edit-options" value="${optionsJoined.replace(/"/g, '&quot;')}" placeholder="예: S, M, L, XL 또는 표준 포트, 대형 포트" class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-darkText mb-1.5">대표 이미지 URL (선택)</label>
+                            <input type="text" id="prod-edit-image" value="${primaryImage.replace(/"/g, '&quot;')}" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F5F7] border border-black/10 focus:border-accentGreen text-xs text-darkText outline-none">
+                        </div>
+
+                        <div class="pt-3 border-t border-black/10 flex items-center justify-between gap-2.5">
+                            ${isEdit ? `
+                                <button type="button" onclick="deleteProductFromEditor(${productIndex})" class="px-4 py-3 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold transition-colors cursor-pointer">
+                                    상품 삭제
+                                </button>
+                            ` : '<div></div>'}
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="closeProductEditorModal()" class="px-4 py-3 rounded-2xl bg-[#F5F5F7] hover:bg-black/10 text-darkText text-xs font-semibold transition-colors cursor-pointer">
+                                    취소
+                                </button>
+                                <button type="submit" class="px-5 py-3 rounded-2xl bg-accentGreen hover:bg-accentGreenHover text-white text-xs font-semibold transition-colors shadow-sm cursor-pointer">
+                                    ${isEdit ? '수정 내용 저장' : '상품 등록 저장'}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            editorModal.classList.remove('hidden');
+            editorModal.classList.add('flex');
+        };
+
+        window.closeProductEditorModal = function() {
+            const modal = document.getElementById('admin-product-editor-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        window.saveProductFromEditor = function(e, productIndex) {
+            e.preventDefault();
+            const nameInput = document.getElementById('prod-edit-name');
+            const badgeInput = document.getElementById('prod-edit-badge');
+            const priceInput = document.getElementById('prod-edit-price');
+            const descInput = document.getElementById('prod-edit-desc');
+            const optionsInput = document.getElementById('prod-edit-options');
+            const imageInput = document.getElementById('prod-edit-image');
+
+            const name = nameInput ? nameInput.value.trim() : '';
+            const badge = (badgeInput && badgeInput.value.trim()) ? badgeInput.value.trim().toUpperCase() : 'ITEM';
+            const priceStr = normalizePriceDisplay(priceInput ? priceInput.value : '₩100');
+            const desc = descInput ? descInput.value.trim() : '';
+            const optionsArr = (optionsInput && optionsInput.value.trim())
+                ? optionsInput.value.split(',').map(s => s.trim()).filter(Boolean)
+                : ['기본 옵션'];
+            const imgUrl = (imageInput && imageInput.value.trim())
+                ? imageInput.value.trim()
+                : `https://placehold.co/600x600/E3E8E5/00712D?text=${encodeURIComponent(name || 'HEETSUKI')}`;
+
+            if (!name || !desc) {
+                showToast('상품명과 상품 설명을 입력해 주세요.');
+                return;
+            }
+
+            const products = getStoreProducts();
+            const isEdit = typeof productIndex === 'number' && productIndex >= 0 && products[productIndex];
+            const prevProd = isEdit ? products[productIndex] : null;
+            const prevImages = prevProd && Array.isArray(prevProd.images) && prevProd.images.length > 0 ? [...prevProd.images] : [];
+            if (prevImages.length > 0) {
+                prevImages[0] = imgUrl;
+            } else {
+                prevImages.push(imgUrl);
+            }
+
+            const updatedProduct = {
+                id: prevProd ? prevProd.id : ('prod-' + Date.now()),
+                badge,
+                name,
+                priceStr,
+                desc,
+                options: optionsArr.length > 0 ? optionsArr : ['기본 옵션'],
+                images: prevImages,
+                svgType: prevProd ? (prevProd.svgType || 'apparel') : 'apparel',
+                customImage: prevProd ? Boolean(prevProd.customImage || (imgUrl && !imgUrl.includes('placehold.co'))) : Boolean(imgUrl && !imgUrl.includes('placehold.co'))
+            };
+
+            if (isEdit) {
+                products[productIndex] = updatedProduct;
+            } else {
+                products.push(updatedProduct);
+            }
+
+            saveStoreProducts(products);
+            renderMainStoreProducts();
+            closeProductEditorModal();
+
+            const productsPane = document.getElementById('admin-pane-products');
+            const productsTabBtn = document.getElementById('admin-tab-products-btn');
+            if (productsPane) {
+                productsPane.innerHTML = renderAdminProductsTabHtml(products);
+            }
+            if (productsTabBtn) {
+                productsTabBtn.textContent = `상품 관리 (${products.length})`;
+            }
+
+            showToast(isEdit ? `[${name}] 상품 정보가 저장되었습니다.` : `[${name}] 신규 상품이 등록되었습니다.`);
+        };
+
+        window.deleteProductFromEditor = function(productIndex) {
+            const products = getStoreProducts();
+            if (!products[productIndex]) return;
+            const removedName = products[productIndex].name;
+            products.splice(productIndex, 1);
+            saveStoreProducts(products);
+            renderMainStoreProducts();
+            closeProductEditorModal();
+
+            const productsPane = document.getElementById('admin-pane-products');
+            const productsTabBtn = document.getElementById('admin-tab-products-btn');
+            if (productsPane) {
+                productsPane.innerHTML = renderAdminProductsTabHtml(products);
+            }
+            if (productsTabBtn) {
+                productsTabBtn.textContent = `상품 관리 (${products.length})`;
+            }
+
+            showToast(`[${removedName}] 상품이 삭제되었습니다.`);
+        };
+
         window.openAdminDashboardModal = function() {
             let adminModal = document.getElementById('admin-dashboard-modal');
             if (!adminModal) {
@@ -1268,6 +1675,8 @@
             try {
                 orders = JSON.parse(localStorage.getItem('heetsuki_orders') || '[]');
             } catch(e) {}
+
+            const storeProducts = getStoreProducts();
 
             adminModal.innerHTML = `
                 <div class="bg-white border border-black/10 rounded-[28px] max-w-4xl w-full p-7 sm:p-9 shadow-2xl relative max-h-[90vh] flex flex-col overflow-hidden">
@@ -1284,7 +1693,7 @@
                     <!-- Admin Tabs -->
                     <div class="flex gap-3 pt-4 pb-2 border-b border-black/5 flex-shrink-0 overflow-x-auto">
                         <button type="button" onclick="switchAdminTab('orders')" id="admin-tab-orders-btn" class="px-4 py-2 rounded-xl bg-darkText text-white text-xs font-bold transition-all">주문/배송 관리 (${orders.length})</button>
-                        <button type="button" onclick="switchAdminTab('products')" id="admin-tab-products-btn" class="px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all">상품 관리 (4)</button>
+                        <button type="button" onclick="switchAdminTab('products')" id="admin-tab-products-btn" class="px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all">상품 관리 (${storeProducts.length})</button>
                         <button type="button" onclick="switchAdminTab('members')" id="admin-tab-members-btn" class="px-4 py-2 rounded-xl bg-[#F5F5F7] text-darkText hover:bg-black/10 text-xs font-semibold transition-all">회원 관리</button>
                     </div>
 
@@ -1330,44 +1739,7 @@
 
                         <!-- 2. 상품 관리 탭 -->
                         <div id="admin-pane-products" class="space-y-4 hidden">
-                            <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-bold text-darkText">등록된 상품 목록 및 가격 관리</h4>
-                                <button type="button" onclick="showToast('신규 상품 등록 폼이 열렸습니다.')" class="px-3.5 py-2 rounded-xl bg-accentGreen text-white text-xs font-semibold shadow-sm">+ 신규 상품 등록</button>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
-                                    <div>
-                                        <h5 class="text-xs font-bold text-darkText">프리미엄 피츠키 티셔츠</h5>
-                                        <p class="text-[11px] text-grayText">옵션: S, M, L, XL</p>
-                                        <p class="text-xs font-bold text-accentGreen mt-1">₩100</p>
-                                    </div>
-                                    <button onclick="showToast('[티셔츠] 상품 수정 모드')" class="px-3 py-1.5 rounded-xl bg-white border border-black/10 text-xs font-semibold text-darkText">수정</button>
-                                </div>
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
-                                    <div>
-                                        <h5 class="text-xs font-bold text-darkText">발리스네리아 수초</h5>
-                                        <p class="text-[11px] text-grayText">옵션: 표준 포트 / 대형 포트</p>
-                                        <p class="text-xs font-bold text-accentGreen mt-1">₩100</p>
-                                    </div>
-                                    <button onclick="showToast('[수초] 상품 수정 모드')" class="px-3 py-1.5 rounded-xl bg-white border border-black/10 text-xs font-semibold text-darkText">수정</button>
-                                </div>
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
-                                    <div>
-                                        <h5 class="text-xs font-bold text-darkText">미니 유리 입출수구</h5>
-                                        <p class="text-[11px] text-grayText">옵션: 13mm / 17mm</p>
-                                        <p class="text-xs font-bold text-accentGreen mt-1">₩100</p>
-                                    </div>
-                                    <button onclick="showToast('[입출수구] 상품 수정 모드')" class="px-3 py-1.5 rounded-xl bg-white border border-black/10 text-xs font-semibold text-darkText">수정</button>
-                                </div>
-                                <div class="p-4 rounded-2xl bg-[#F5F5F7] border border-black/5 flex items-center justify-between">
-                                    <div>
-                                        <h5 class="text-xs font-bold text-darkText">올디아망 어항</h5>
-                                        <p class="text-[11px] text-grayText">옵션: 30큐브 / 45큐브 / 60사이즈</p>
-                                        <p class="text-xs font-bold text-accentGreen mt-1">₩100</p>
-                                    </div>
-                                    <button onclick="showToast('[어항] 상품 수정 모드')" class="px-3 py-1.5 rounded-xl bg-white border border-black/10 text-xs font-semibold text-darkText">수정</button>
-                                </div>
-                            </div>
+                            ${renderAdminProductsTabHtml(storeProducts)}
                         </div>
 
                         <!-- 3. 회원 관리 탭 -->
@@ -3773,11 +4145,13 @@
 
         if (document.readyState === 'loading') {
             window.addEventListener('DOMContentLoaded', () => {
+                renderMainStoreProducts();
                 initScene();
                 updateCartUI();
                 if (!animationFrameId) animationFrameId = requestAnimationFrame(animate);
             });
         } else {
+            renderMainStoreProducts();
             initScene();
             updateCartUI();
             if (!animationFrameId) animationFrameId = requestAnimationFrame(animate);
