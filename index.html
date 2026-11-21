@@ -773,6 +773,125 @@
         };
 
         // ==========================================
+        // 1-2. 신규 주문 접수 시 주문한 고객에게도 접수 확인 메일 발송
+        // ==========================================
+        window.sendOrderConfirmationToCustomer = function(order) {
+            try {
+                const safeOrder = order || {};
+                let customerEmail = '';
+
+                try {
+                    const savedUser = localStorage.getItem('heetsuki_logged_in_user');
+                    if (savedUser) {
+                        const parsedUser = JSON.parse(savedUser);
+                        if (parsedUser && parsedUser.email && parsedUser.email.includes('@') && !parsedUser.email.includes('google_account')) {
+                            customerEmail = parsedUser.email.trim();
+                        }
+                    }
+                } catch (e) {}
+
+                if (!customerEmail && window.auth && window.auth.currentUser && window.auth.currentUser.email) {
+                    const authEmail = window.auth.currentUser.email.trim();
+                    if (authEmail.includes('@') && !authEmail.includes('google_account')) {
+                        customerEmail = authEmail;
+                    }
+                }
+
+                if (!customerEmail) {
+                    console.log("[EmailJS 고객 주문접수 메일 생략] 유효한 고객 이메일이 없어 발송을 건너뜁니다.");
+                    return;
+                }
+
+                const orderId = safeOrder.id || ('ORD-' + Date.now());
+                const rawName = window.getCurrentUserName(safeOrder) || 'HEETSUKI 고객';
+                const customerName = String(rawName).replace(/님+$/, '').trim() || 'HEETSUKI 고객';
+                const ship = safeOrder.shippingInfo || {};
+                const customerPhone = ship.phone || '미입력';
+                const customerAddress = ship.address || '미입력';
+                const customerMemo = ship.memo || '없음';
+                const orderTotal = safeOrder.total || (typeof safeOrder.rawTotal === 'number' ? `₩${safeOrder.rawTotal.toLocaleString()}` : '₩0');
+                const paymentMethod = safeOrder.payment || '신용/체크카드';
+                const orderDate = safeOrder.date || new Date().toLocaleString('ko-KR');
+                const itemsList = Array.isArray(safeOrder.items) ? safeOrder.items : [];
+
+                let itemsText = "";
+                if (itemsList.length > 0) {
+                    itemsText = itemsList.map((item, idx) => {
+                        const iName = item.name || 'HEETSUKI 상품';
+                        const iOpt = item.option || '기본';
+                        const iQty = Number(item.qty) || 1;
+                        const iPrice = Number(item.price) || 0;
+                        return (
+                            `  [${idx + 1}] ${iName}\n` +
+                            `      • 옵션: ${iOpt}\n` +
+                            `      • 수량: ${iQty}개\n` +
+                            `      • 금액: ${(iPrice * iQty).toLocaleString()}원`
+                        );
+                    }).join('\n\n');
+                } else {
+                    itemsText = "  • 주문 상품 정보 없음";
+                }
+
+                const customerMessage =
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    ` [HEETSUKI] ✅ 주문 접수 완료 안내\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n` +
+                    `안녕하세요, ${customerName}님!\n` +
+                    `HEETSUKI 공식 스토어에서 주문이 정상 접수되었습니다.\n\n` +
+                    `[주문 내역 요약]\n` +
+                    `• 주문 번호 : ${orderId}\n` +
+                    `• 주문 일시 : ${orderDate}\n` +
+                    `• 결제 수단 : ${paymentMethod}\n` +
+                    `• 결제 금액 : ${orderTotal}\n` +
+                    `• 주문 상태 : ${safeOrder.status || '결제 완료'}\n` +
+                    (safeOrder.depositDeadline ? `• 입금 기한 : ${safeOrder.depositDeadline}\n` : '') +
+                    `\n----------------------------------------\n` +
+                    `[배송지 정보]\n` +
+                    `• 받는 분   : ${customerName}\n` +
+                    `• 연락처    : ${customerPhone}\n` +
+                    `• 배송 주소 : ${customerAddress}\n` +
+                    `• 요청 사항 : ${customerMemo}\n\n` +
+                    `----------------------------------------\n` +
+                    `[주문 상품 목록 (${itemsList.length}종)]\n\n` +
+                    itemsText + `\n\n` +
+                    `문의 사항이 있으시면 heetsuki001@gmail.com 으로 연락해 주세요.\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    ` 감사합니다. - HEETSUKI 공식 스토어`;
+
+                const customerParams = {
+                    to_email: customerEmail,
+                    customer_email: customerEmail,
+                    reply_to: ADMIN_EMAIL,
+                    title: `[HEETSUKI 주문접수 완료] ${customerName}님의 주문(${orderId})이 접수되었습니다.`,
+                    name: customerName,
+                    order_id: orderId,
+                    time: orderDate,
+                    message: customerMessage
+                };
+
+                console.log("[EmailJS 고객 주문접수 메일 발송 시도]", {
+                    service: EMAIL_SERVICE_ID,
+                    template: EMAIL_TEMPLATE_ID,
+                    to: customerEmail
+                });
+
+                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
+                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, customerParams, EMAIL_PUBLIC_KEY)
+                        .then(function(response) {
+                            console.log("[EmailJS 고객 주문접수 메일 발송 성공!]", response.status, response.text);
+                        })
+                        .catch(function(error) {
+                            console.error("[EmailJS 고객 주문접수 메일 발송 실패!]", error);
+                        });
+                } else {
+                    console.error("[EmailJS 고객 주문접수 메일 발송 실패] emailjs SDK를 찾을 수 없습니다.");
+                }
+            } catch (err) {
+                console.error("[EmailJS 고객 주문접수 메일 예외 발생]", err);
+            }
+        };
+
+        // ==========================================
         // 2. 주문 취소 요청 시 관리자 이메일 무조건 발송
         // ==========================================
         window.requestOrderCancel = function(orderId, reason) {
@@ -2799,6 +2918,10 @@
                         });
                 } else {
                     console.error("메일 전송 실패: emailjs SDK 객체를 찾을 수 없습니다.");
+                }
+
+                if (typeof window.sendOrderConfirmationToCustomer === 'function') {
+                    window.sendOrderConfirmationToCustomer(newOrder);
                 }
             } catch (mailEx) {
                 console.error("메일 전송 예외 발생:", mailEx);
