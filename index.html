@@ -586,15 +586,47 @@
         const EMAIL_TEMPLATE_ID = "template_w4lct8h";
         const ADMIN_EMAIL = "heetsuki001@gmail.com";
 
-        (function initEmailJS() {
+        let isEmailJsInitialized = false;
+
+        window.ensureEmailJsReady = function() {
             try {
-                if (typeof emailjs !== 'undefined') {
-                    emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
+                if (typeof emailjs === 'undefined') {
+                    return false;
                 }
+                if (!isEmailJsInitialized && typeof emailjs.init === 'function') {
+                    emailjs.init({ publicKey: EMAIL_PUBLIC_KEY });
+                    isEmailJsInitialized = true;
+                }
+                return typeof emailjs.send === 'function';
             } catch (e) {
-                console.warn("[EmailJS] 초기화 예외 방어 처리:", e);
+                console.warn("[EmailJS] 초기화 확인 중 예외 방어됨:", e);
+                return false;
             }
-        })();
+        };
+
+        window.dispatchAdminMail = function(mailType, templateParams) {
+            if (!EMAIL_PUBLIC_KEY || !EMAIL_SERVICE_ID || !EMAIL_TEMPLATE_ID) {
+                console.warn(`[EmailJS ${mailType}] 키/템플릿 설정이 비어 있어 안전하게 건너뜁니다.`);
+                return;
+            }
+            if (!window.ensureEmailJsReady()) {
+                console.warn(`[EmailJS ${mailType}] SDK 미준비 상태로 안전하게 방어 처리되었습니다.`);
+                return;
+            }
+            try {
+                emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams, EMAIL_PUBLIC_KEY)
+                    .then(function(response) {
+                        console.log(`[EmailJS ${mailType} 발송 성공]`, response.status || response);
+                    })
+                    .catch(function(error) {
+                        console.warn(`[EmailJS ${mailType} 발송 실패 - 방어됨]`, error);
+                    });
+            } catch (err) {
+                console.warn(`[EmailJS ${mailType} 전송 예외 - 방어됨]`, err);
+            }
+        };
+
+        window.ensureEmailJsReady();
 
         window.getCurrentUserName = function(targetOrder) {
             if (targetOrder && targetOrder.shippingInfo && targetOrder.shippingInfo.name) {
@@ -693,15 +725,7 @@
                 message: orderMessage
             };
 
-            try {
-                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, templateParams, EMAIL_PUBLIC_KEY)
-                        .then(res => console.log("[EmailJS 신규 주문 발송 성공]", res.status))
-                        .catch(err => console.warn("[EmailJS 신규 주문 발송 경고 - 방어됨]", err));
-                }
-            } catch (e) {
-                console.warn("[EmailJS 발송 방어 처리]", e);
-            }
+            window.dispatchAdminMail('신규 주문 접수', templateParams);
         };
 
         // 2. 사용자 취소요청 시 관리자 이메일("heetsuki001@gmail.com") 발송 및 상태 반영
@@ -793,28 +817,7 @@
                 message: cancelMessage
             };
 
-            console.log("[EmailJS 취소요청 발송 시도]", {
-                service: EMAIL_SERVICE_ID,
-                template: EMAIL_TEMPLATE_ID,
-                to_email: ADMIN_EMAIL,
-                params: cancelParams
-            });
-
-            try {
-                if (typeof emailjs !== 'undefined' && typeof emailjs.send === 'function') {
-                    emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, cancelParams, EMAIL_PUBLIC_KEY)
-                        .then(function(response) {
-                            console.log("취소요청 메일 전송 성공:", response);
-                        })
-                        .catch(function(error) {
-                            console.warn("취소요청 메일 전송 경고(방어됨):", error);
-                        });
-                } else {
-                    console.warn("EmailJS SDK 미로드 상태(방어 처리됨)");
-                }
-            } catch (err) {
-                console.warn("취소요청 메일 발송 중 예외 방어됨:", err);
-            }
+            window.dispatchAdminMail('주문 취소요청', cancelParams);
         };
     </script>
 
